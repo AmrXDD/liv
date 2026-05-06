@@ -1,0 +1,592 @@
+-- ============================================================
+-- LIV FUNCTIONAL — Dynamic CMS seed
+-- Source of truth for products, static pages, accreditations.
+-- Idempotent: safe to re-run. All content is admin-editable.
+-- ============================================================
+
+-- ---------- 0) Helpers --------------------------------------
+do $$ begin
+  begin alter type product_category add value if not exists 'consultation'; exception when others then null; end;
+  begin alter type product_category add value if not exists 'physical';     exception when others then null; end;
+end $$;
+
+do $$ begin
+  if exists (select 1 from information_schema.table_constraints
+             where table_name = 'products' and constraint_name = 'products_category_check') then
+    execute 'alter table public.products drop constraint products_category_check';
+  end if;
+end $$;
+
+alter table public.products
+  add constraint products_category_check
+  check (category in ('diy','coaching','consultation','physical'));
+
+-- Make sure all needed columns exist
+alter table public.products
+  add column if not exists slug           text unique,
+  add column if not exists category       text,
+  add column if not exists title_en       text,
+  add column if not exists title_ar       text,
+  add column if not exists tagline_en     text,
+  add column if not exists tagline_ar     text,
+  add column if not exists description_en text,
+  add column if not exists description_ar text,
+  add column if not exists long_en        text,
+  add column if not exists long_ar        text,
+  add column if not exists price          numeric not null default 0,
+  add column if not exists currency       text not null default 'KWD',
+  add column if not exists duration_en    text,
+  add column if not exists duration_ar    text,
+  add column if not exists format         text,
+  add column if not exists badge_en       text,
+  add column if not exists badge_ar       text,
+  add column if not exists hero_image     text,
+  add column if not exists images         text[] default '{}',
+  add column if not exists accent         text default 'forest',
+  add column if not exists outcomes       jsonb default '[]'::jsonb,
+  add column if not exists inclusions     jsonb default '[]'::jsonb,
+  add column if not exists is_published   boolean not null default true,
+  add column if not exists position       int not null default 0,
+  add column if not exists created_at     timestamptz not null default now();
+
+-- ---------- 1) PRODUCTS — replace authoritative content ----------
+-- Pricing is KWD per Reham's source brief.
+
+-- Discovery Call (free consultation)
+insert into public.products
+  (slug, category, title_en, title_ar, tagline_en, tagline_ar,
+   description_en, description_ar, long_en, long_ar,
+   price, currency, duration_en, duration_ar, format, badge_en, badge_ar, accent,
+   outcomes, inclusions, is_published, position)
+values
+('discovery-call', 'consultation',
+ 'Free Discovery Call', 'مكالمة تعارف مجانية',
+ '15 minutes. No commitment. A real conversation about your next step.',
+ '15 دقيقة. بدون أي التزام. حوار حقيقي حول خطوتك التالية.',
+ 'A short, free call to understand where you are, what you have tried, and which Liv path actually fits — even if it is not with us.',
+ 'مكالمة قصيرة ومجانية لفهم أين أنت، وما الذي جرّبتِه، وأي مسار من ليف يناسبك فعلاً — حتى لو لم يكن معنا.',
+ 'Tell us where you are. Walk away with a next step — even if it is not with us. Available on Zoom, WhatsApp call, or phone. Most calls last 12–15 minutes.',
+ 'أخبرينا أين أنت. ستخرجين بخطوة تالية واضحة — حتى لو لم تكن معنا. متاحة على زووم أو واتساب أو الهاتف. معظم المكالمات 12–15 دقيقة.',
+ 0, 'KWD', '15 minutes', '15 دقيقة', '1:1', 'Free', 'مجاني', 'forest',
+ '[{"en":"A clear next step","ar":"خطوة تالية واضحة"},
+   {"en":"An honest read on whether Liv is the right fit","ar":"رأي صريح إن كانت ليف هي الخيار المناسب"},
+   {"en":"No pressure to enroll","ar":"بدون أي ضغط للتسجيل"}]'::jsonb,
+ '[{"en":"15-min Zoom / WhatsApp / phone call","ar":"مكالمة زووم / واتساب / هاتف 15 دقيقة"},
+   {"en":"Pre-call intake form","ar":"استمارة قبل المكالمة"},
+   {"en":"Post-call recommendation in writing","ar":"توصية مكتوبة بعد المكالمة"}]'::jsonb,
+ true, 5),
+
+-- Program 1 — Root Cause Session  (135 KWD, new clients only)
+('root-cause-session', 'consultation',
+ 'The Root Cause Session', 'جلسة الجذور',
+ 'For the self-driven woman who knows something is wrong but cannot pinpoint why.',
+ 'للمرأة التي تشعر أن شيئاً ما خاطئ لكنها لا تستطيع تحديده.',
+ 'A focused 60-minute deep-dive — emotional landscape, lifestyle, symptoms, lab results — followed by a custom holistic protocol delivered within 3–5 business days.',
+ 'جلسة 60 دقيقة مركّزة — الحالة العاطفية، نمط الحياة، الأعراض، نتائج التحاليل — يتبعها بروتوكول شامل مخصّص خلال 3–5 أيام عمل.',
+ 'Most women spend years managing symptoms without ever addressing the root cause. This session changes that. In one focused hour we go deep — your emotional landscape, lifestyle patterns, symptom history, and lab results. You leave with a custom protocol you can execute independently. No ongoing follow-up is included; clients who want accountability after this session can move into The Guided Reset.',
+ 'تقضي معظم النساء سنوات في إدارة الأعراض دون معالجة السبب الجذري. هذه الجلسة تغيّر ذلك. في ساعة مركّزة نتعمّق — حالتك العاطفية، أنماط حياتك، تاريخ أعراضك، ونتائج تحاليلك. تخرجين ببروتوكول مخصّص تنفّذينه باستقلالية. لا تتضمن متابعة لاحقة؛ من ترغب بالمساءلة بعدها يمكنها الانتقال إلى الإعادة الموجَّهة.',
+ 135, 'KWD', '60 minutes', '60 دقيقة', '1:1', 'New clients only', 'للعميلات الجدد فقط', 'coral',
+ '[{"en":"Symptom mapping and root-cause analysis","ar":"تحديد الأعراض وتحليل أسبابها الجذرية"},
+   {"en":"Lab results review and interpretation","ar":"مراجعة وتفسير نتائج التحاليل"},
+   {"en":"Custom holistic protocol within 3–5 business days","ar":"بروتوكول مخصص خلال 3–5 أيام عمل"}]'::jsonb,
+ '[{"en":"60-minute 1:1 session — Kuwait, Zoom, or WhatsApp","ar":"جلسة 1:1 لمدة 60 دقيقة — الكويت، زووم، أو واتساب"},
+   {"en":"Full emotional and lifestyle intake","ar":"تقييم كامل لنمط الحياة والحالة العاطفية"},
+   {"en":"Lab results review","ar":"مراجعة نتائج التحاليل"},
+   {"en":"Written custom protocol delivered within 3–5 days","ar":"بروتوكول مكتوب خلال 3–5 أيام"}]'::jsonb,
+ true, 10),
+
+-- Program 2 — The Guided Reset  (250 KWD/month, renewal 225)
+('guided-reset', 'coaching',
+ 'The Guided Reset', 'الإعادة الموجَّهة',
+ 'For the woman who has a plan but needs someone to hold her accountable to it.',
+ 'للمرأة التي تملك خطة لكنها تحتاج من يساءلها عليها.',
+ 'A clinical-style intake, a written protocol built around your labs and symptoms, twice-weekly check-in calls, and a six-hour WhatsApp response guarantee. Renewal at 225 KWD/month.',
+ 'تقييم سريري كامل، بروتوكول مكتوب مبني على تحاليلك وأعراضك، مكالمتا متابعة أسبوعياً، وضمان رد على واتساب خلال 6 ساعات. تجديد بـ 225 د.ك/شهر.',
+ 'A full clinical-style intake in your first session, a written protocol built around your labs and symptoms, and twice-weekly calls to keep you on track. CGM integration is optional at this tier — live dashboard access plus real-time food-spike analysis via WhatsApp food photos.',
+ 'تقييم سريري كامل في الجلسة الأولى، بروتوكول مكتوب مبني على تحاليلك وأعراضك، ومكالمتان أسبوعياً لإبقائك على المسار. دمج جهاز CGM اختياري في هذا المستوى — وصول مباشر للوحة البيانات وتحليل ارتفاعات الطعام لحظياً عبر صور واتساب.',
+ 250, 'KWD', 'per month', 'شهرياً', '1:1', 'Most popular', 'الأكثر طلباً', 'forest',
+ '[{"en":"Structured support without daily check-ins","ar":"دعم منظم دون متابعة يومية"},
+   {"en":"Written holistic protocol from your data","ar":"بروتوكول مكتوب مبني على بياناتك"},
+   {"en":"6-hour WhatsApp response (Sun–Thu)","ar":"رد على واتساب خلال 6 ساعات (الأحد–الخميس)"}]'::jsonb,
+ '[{"en":"60-min onboarding (Kuwait / Zoom / WhatsApp)","ar":"جلسة افتتاحية 60 دقيقة"},
+   {"en":"Full lifestyle, symptom, emotional intake","ar":"تقييم كامل لنمط الحياة والأعراض"},
+   {"en":"Lab results review and interpretation","ar":"مراجعة وتفسير التحاليل"},
+   {"en":"Custom written holistic protocol (3–5 days)","ar":"بروتوكول مكتوب مخصص (3–5 أيام)"},
+   {"en":"Gulf-friendly meal plan","ar":"خطة وجبات خليجية"},
+   {"en":"Personal glucose & habit tracker","ar":"متابع الجلوكوز والعادات"},
+   {"en":"2× weekly check-in calls (up to 15 min)","ar":"مكالمتان أسبوعياً (حتى 15 دقيقة)"},
+   {"en":"WhatsApp group access","ar":"الوصول لمجموعة واتساب"},
+   {"en":"Optional CGM integration","ar":"دمج CGM اختياري"}]'::jsonb,
+ true, 20),
+
+-- Program 3 — The Daily Reset  (350 KWD/month, renewal 315)
+('daily-reset', 'coaching',
+ 'The Daily Reset', 'الإعادة اليومية',
+ 'Real-time coaching based on real data. Not guesswork — your glucose, your patterns, your protocol.',
+ 'تدريب لحظي مبني على بيانات حقيقية. لا تخمين — جلوكوزك، أنماطك، بروتوكولك.',
+ 'Everything in The Guided Reset, plus a CGM-required live dashboard, real-time food-spike analysis, daily WhatsApp check-ins, and mid-month protocol adjustments. Renewal at 315 KWD/month.',
+ 'كل ما في الإعادة الموجَّهة، بالإضافة إلى لوحة CGM إلزامية، تحليل ارتفاعات الطعام لحظياً، تواصل يومي على واتساب، وتعديلات منتصف الشهر. تجديد بـ 315 د.ك/شهر.',
+ 'From this tier onward a CGM is required — non-negotiable. Coaching is based on what your body is actually doing in real time. CGM device and sensors are sourced and paid for by the client. Full setup guidance is provided at onboarding.',
+ 'من هذا المستوى يصبح جهاز CGM إلزامياً — لا تنازل. التدريب مبني على ما يفعله جسمك فعلاً لحظياً. الجهاز والمستشعرات على حساب العميلة. يُقدَّم دليل إعداد كامل في الانطلاقة.',
+ 350, 'KWD', 'per month', 'شهرياً', '1:1', 'CGM required', 'CGM إلزامي', 'coral',
+ '[{"en":"Real-time food-spike analysis","ar":"تحليل ارتفاعات الجلوكوز فوراً"},
+   {"en":"Daily WhatsApp check-ins","ar":"تواصل يومي عبر واتساب"},
+   {"en":"Mid-month protocol adjustments","ar":"تعديلات منتصف الشهر"}]'::jsonb,
+ '[{"en":"Everything in The Guided Reset","ar":"كل ما في الإعادة الموجَّهة"},
+   {"en":"Required CGM with live dashboard access","ar":"CGM إلزامي مع وصول مباشر للوحة"},
+   {"en":"Real-time food-spike analysis via WhatsApp photos","ar":"تحليل ارتفاعات الطعام عبر صور واتساب"},
+   {"en":"Daily WhatsApp text check-in","ar":"تواصل نصي يومي على واتساب"},
+   {"en":"Mid-month protocol adjustments if data calls for it","ar":"تعديلات على البروتوكول حسب البيانات"}]'::jsonb,
+ true, 30),
+
+-- Program 4 — The LIV Inner Circle  (500 KWD/month, renewal 450)
+('inner-circle', 'coaching',
+ 'The LIV Inner Circle', 'الدائرة الداخلية',
+ 'Total immersion. Daily coaching, live glucose data, weekly sessions, and LIV products delivered to you.',
+ 'انغماس كامل. تدريب يومي، بيانات جلوكوز حية، جلسات أسبوعية، ومنتجات ليف تصلك.',
+ 'Protocol, CGM data, daily habits, supplements, and products — all working together. A complete metabolic reset with expert eyes on you every single day. Renewal at 450 KWD/month.',
+ 'البروتوكول، بيانات CGM، العادات اليومية، المكملات، والمنتجات — كلها تعمل معاً. إعادة ضبط أيضية كاملة بعين خبيرة كل يوم. تجديد بـ 450 د.ك/شهر.',
+ 'For women who are done experimenting. You want your data analyzed, your protocol adjusted in real time, and a lifestyle that is sustainable — not punishing.',
+ 'للنساء اللواتي انتهين من التجريب. تريدين بياناتك مُحلَّلة، وبروتوكولك يُعدَّل لحظياً، ونمط حياة مستدام — لا عقابي.',
+ 500, 'KWD', 'per month', 'شهرياً', 'Hybrid', 'High touch', 'متابعة مكثّفة', 'forest',
+ '[{"en":"Daily expert eyes on your data","ar":"متابعة يومية لبياناتك من الخبيرة"},
+   {"en":"Weekly 30-minute session (Kuwait or online)","ar":"جلسة أسبوعية 30 دقيقة"},
+   {"en":"15% off all LIV products + monthly supply","ar":"خصم 15% على منتجات ليف ومخزون شهري"}]'::jsonb,
+ '[{"en":"Everything in The Daily Reset","ar":"كل ما في الإعادة اليومية"},
+   {"en":"Weekly 30-min session — Kuwait or online","ar":"جلسة أسبوعية 30 دقيقة"},
+   {"en":"Daily personalized supplement reminders","ar":"تذكيرات يومية للمكملات"},
+   {"en":"15% discount on all LIV products","ar":"خصم 15% على جميع منتجات ليف"},
+   {"en":"Monthly LIV product supply (fermented foods or kombucha)","ar":"إمدادات شهرية من منتجات ليف"}]'::jsonb,
+ true, 40),
+
+-- VVIP — The LIV Concierge (by application, Kuwait only)
+('vvip-concierge', 'coaching',
+ 'VVIP — The LIV Concierge', 'كونسيرج ليف',
+ 'Your protocol, inside your home. The full LIV experience — coaching, live data, hands-on culinary support.',
+ 'بروتوكولك داخل منزلك. تجربة ليف الكاملة — تدريب، بيانات حية، ودعم طهوي مباشر.',
+ 'The highest-touch program offered. Limited spots. Kuwait-based clients only. Includes a monthly in-home visit: personal meal-prep session or training your household cook directly.',
+ 'البرنامج الأرقى. أماكن محدودة. للعميلات في الكويت فقط. يتضمن زيارة منزلية شهرية: جلسة تحضير وجبات شخصية أو تدريب طاهي المنزل مباشرة.',
+ 'By application only — Kuwait based. Limited to a small number of clients at any time. Renewal pricing assessed individually.',
+ 'بالتقديم فقط — للعميلات في الكويت. عدد محدود من العميلات في أي وقت. تسعير التجديد يُحدَّد فردياً.',
+ 0, 'KWD', 'monthly · by application', 'شهرياً · بالتقديم', 'Hybrid', 'By application', 'بالتقديم فقط', 'coral',
+ '[{"en":"Monthly in-home visit (Kuwait)","ar":"زيارة منزلية شهرية (الكويت)"},
+   {"en":"Personal meal prep or cook training","ar":"تحضير وجبات شخصي أو تدريب الطباخ"},
+   {"en":"Full monthly LIV product supply","ar":"إمدادات ليف شهرية كاملة"}]'::jsonb,
+ '[{"en":"Everything in The Inner Circle","ar":"كل ما في الدائرة الداخلية"},
+   {"en":"Monthly in-home visit — meal prep or cook training","ar":"زيارة منزلية شهرية"},
+   {"en":"Fermented foods + kombucha included","ar":"أطعمة مخمرة وكومبوتشا مشمولة"}]'::jsonb,
+ true, 50),
+
+-- DIY — 10-Day Insulin Sensitivity Reset
+('insulin-sensitivity-reset', 'diy',
+ 'The 10-Day Insulin Sensitivity Reset', 'إعادة ضبط حساسية الإنسولين — 10 أيام',
+ 'Lower fasting insulin, stabilize blood sugar, rebuild your metabolic foundation — no medications, no gym, no guesswork.',
+ 'خفض إنسولين الصيام، تثبيت سكر الدم، إعادة بناء أساسك الأيضي — بدون أدوية، بدون نادٍ، بدون تخمين.',
+ 'A structured, science-backed 10-day system designed for prediabetes, PCOS, elevated fasting insulin, and high A1C. Tested on an insulin-dependent patient with 24/7 monitoring.',
+ 'نظام منظم وعلمي 10 أيام مصمم لما قبل السكري، تكيس المبايض، إنسولين الصيام المرتفع، وارتفاع A1C. اختُبر على مريض يعتمد على الإنسولين بمراقبة 24/7.',
+ 'Insulin resistance does not develop overnight — and it does not reverse overnight. But 10 days of precise, consistent action create measurable shifts most people can feel before they can measure them. Targets four interconnected systems: blood sugar regulation (meal timing, food sequencing, macro structure), insulin sensitivity (post-meal movement, circadian-aligned eating, metabolic rest), gut microbiome restoration (fiber diversity, fermented foods, digestive rhythm), and hormonal rhythm alignment (light exposure, sleep architecture, cortisol management). Includes 8 non-negotiable nutrition rules; eat-freely / eat-sparingly / eliminate food lists; gut protocol (ACV, fermented foods, psyllium, bone broth); movement protocol (walking + bodyweight resistance, no gym); circadian + sleep optimization; complete supplement stack with timing; daily protocol Days 1–10; expected biomarker outcomes (fasting glucose, fasting insulin, HOMA-IR, HbA1c, triglycerides, HDL, hsCRP, waist circumference). Designed for prediabetes, PCOS, elevated fasting insulin, and high A1C. Tested on an insulin-dependent patient with 24/7 glucose monitoring.',
+ 'مقاومة الإنسولين لا تتطور بين ليلة وضحاها — ولا تنعكس بين ليلة وضحاها. لكن 10 أيام من العمل الدقيق المتسق تخلق تحوّلات يشعر بها معظم الناس قبل أن يقيسوها. يستهدف أربعة أنظمة مترابطة: تنظيم سكر الدم (توقيت الوجبات، تسلسل الطعام، بنية المغذيات الكبرى)، حساسية الإنسولين (الحركة بعد الوجبات، الأكل المتوافق مع الإيقاع اليومي، الراحة الأيضية)، استعادة ميكروبيوم الأمعاء (تنوع الألياف، الأطعمة المخمرة، إيقاع الهضم)، ومحاذاة الإيقاع الهرموني (التعرّض للضوء، بنية النوم، إدارة الكورتيزول). يتضمن 8 قواعد تغذوية أساسية؛ قوائم طعام (تُؤكل بحرية / باعتدال / تُحذف)؛ بروتوكول الأمعاء (خل التفاح، أطعمة مخمرة، قشر السيليوم، مرق العظام)؛ بروتوكول الحركة (مشي + مقاومة بوزن الجسم، بدون نادٍ)؛ تحسين الإيقاع اليومي والنوم؛ قائمة مكملات كاملة بالتوقيت؛ بروتوكول يومي للأيام 1–10؛ المخرجات الحيوية المتوقعة (سكر الصيام، إنسولين الصيام، HOMA-IR، A1C، الدهون الثلاثية، HDL، hsCRP، محيط الخصر). مصمّم لما قبل السكري وتكيس المبايض وارتفاع إنسولين الصيام وارتفاع A1C. اختُبر على مريض يعتمد على الإنسولين بمراقبة جلوكوز 24/7.',
+ 12, 'KWD', 'Instant download', 'تحميل فوري', 'PDF', 'New', 'جديد', 'forest',
+ '[{"en":"Reduced cravings and stable energy","ar":"شغف أقل وطاقة ثابتة"},
+   {"en":"Better sleep and lower bloating","ar":"نوم أفضل وانتفاخ أقل"},
+   {"en":"Measurable changes in fasting glucose","ar":"تغييرات قابلة للقياس في سكر الصيام"}]'::jsonb,
+ '[{"en":"Nutrition framework with 8 non-negotiable rules","ar":"إطار غذائي مع 8 قواعد أساسية"},
+   {"en":"Gut health + fermented food protocol","ar":"بروتوكول صحة الأمعاء والأطعمة المخمرة"},
+   {"en":"Movement protocol (no gym needed)","ar":"بروتوكول حركة دون نادٍ"},
+   {"en":"Circadian + sleep optimization","ar":"تحسين الإيقاع اليومي والنوم"},
+   {"en":"Full supplement stack with timing","ar":"قائمة مكملات كاملة بالجرعات"},
+   {"en":"Behavioral if-then rules","ar":"قواعد سلوكية بتنسيق إذا/فـ"}]'::jsonb,
+ true, 60),
+
+-- DIY — 90-Day Thyroid Reset
+('thyroid-reset-90', 'diy',
+ 'The 90-Day Thyroid Reset', 'إعادة ضبط الغدة الدرقية — 90 يوماً',
+ 'For women who have not been put on medication, and do not want to be.',
+ 'للنساء اللواتي لم يبدأن دواءً، ولا يردن ذلك.',
+ 'A food-first, lifestyle-led, twelve-week protocol for women navigating thyroid symptoms — fatigue, weight gain, brain fog, hair thinning, cold hands — without a Levothyroxine prescription.',
+ 'بروتوكول 12 أسبوعاً يعتمد على الغذاء أولاً ونمط الحياة، للنساء اللواتي يواجهن أعراض الغدة الدرقية — الإرهاق، زيادة الوزن، تشوّش الدماغ، تساقط الشعر، برودة اليدين — دون وصفة ليفوثيروكسين.',
+ 'A 90-day, three-phase, twelve-week downloadable workbook. Designed to print or use on screen. Built to actually finish.\n\nPhase 1 — Remove (Weeks 1–4): take the foot off the inflammation pedal, stabilize blood sugar, restore sleep, heal the gut.\nPhase 2 — Rebuild (Weeks 5–8): replenish the minerals and nutrients your thyroid needs to make and convert hormones.\nPhase 3 — Regulate (Weeks 9–12): mitochondrial repair, hormonal balance for perimenopause, vagal tone and nervous system retraining, integration into a sustainable forever-rhythm.\n\nInside the workbook: weekly theme + the science behind it; hero foods and one signature meal per week; complete supplement stack with exact doses, timing, and pairings; weekly breathwork + meditation practice; one daily non-negotiable per week; 7-day tracker grid per week (energy, sleep, mood, basal temperature, cycle, gut); reflection prompts and a workbook page per week; recommended labs to ask your doctor for; red-flag escalation guide; Week 12 graduation map (maintenance stack, top-five keepers, retesting plan).\n\nWritten by Reham — certified holistic nutrition coach, diagnosed with LADA at 44 (an autoimmune disorder that also caused Hashimoto''s). This protocol is what I wish someone had handed me when my body started whispering. Note for women with elevated TPO antibodies: special instructions in Week 8 (iodine) and Week 10 (ashwagandha).',
+ 'دفتر عمل قابل للتحميل من 90 يوماً، ثلاث مراحل، 12 أسبوعاً. مصمّم للطباعة أو الاستخدام على الشاشة. مبني لتنهيه فعلاً.\n\nالمرحلة 1 — الإزالة (الأسابيع 1–4): رفع القدم عن دواسة الالتهاب، تثبيت سكر الدم، استعادة النوم، شفاء الأمعاء.\nالمرحلة 2 — البناء (5–8): تعويض المعادن والمغذيات التي تحتاجها الغدة الدرقية لإنتاج الهرمونات وتحويلها.\nالمرحلة 3 — التنظيم (9–12): إصلاح الميتوكوندريا، توازن هرموني لما قبل سن اليأس، توتر العصب المبهم، الاندماج في إيقاع حياة مستدام.\n\nفي دفتر العمل: موضوع أسبوعي مع شرحه العلمي؛ أطعمة بطلة ووجبة مميزة لكل أسبوع؛ قائمة مكملات كاملة بالجرعات والتوقيت والاقتران؛ تنفّس وتأمل أسبوعي؛ التزام يومي واحد أساسي لكل أسبوع؛ شبكة متابعة 7 أيام لكل أسبوع (طاقة، نوم، مزاج، حرارة قاعدية، دورة، أمعاء)؛ أسئلة تأمل وصفحة عمل لكل أسبوع؛ تحاليل موصى بطلبها من طبيبك؛ دليل العلامات التحذيرية؛ خارطة تخرّج الأسبوع 12 (مكملات الصيانة، أهم خمس عادات للاحتفاظ بها، خطة إعادة الفحص).\n\nمكتوب بقلم ريهام — مدرّبة تغذية شاملة معتمدة، تم تشخيصها بـLADA في الـ 44 (اضطراب مناعي ذاتي تسبب أيضاً بهاشيموتو). هذا البروتوكول ما كنت أتمنى أن يُسلّمني إياه أحد حين بدأ جسدي يهمس. ملاحظة لمن لديهن أجسام مضادة TPO مرتفعة: تعليمات خاصة في الأسبوع 8 (اليود) والأسبوع 10 (الأشواغاندا).',
+ 27, 'KWD', 'Instant download', 'تحميل فوري', 'PDF', 'Best seller', 'الأكثر مبيعاً', 'coral',
+ '[{"en":"Energy that does not crash at 3 pm","ar":"طاقة لا تنهار بعد الظهر"},
+   {"en":"Sleeping through the night","ar":"نوم متواصل طوال الليل"},
+   {"en":"Less hair shedding, better skin","ar":"تساقط شعر أقل، بشرة أفضل"},
+   {"en":"Body temperature back in healthy range","ar":"عودة درجة حرارة الجسم لمعدلها الطبيعي"}]'::jsonb,
+ '[{"en":"Weekly theme + the science behind it","ar":"موضوع أسبوعي مع شرح علمي"},
+   {"en":"Hero foods + one signature meal per week","ar":"أطعمة بطلة ووجبة مميزة لكل أسبوع"},
+   {"en":"Complete supplement stack — doses + timing","ar":"قائمة مكملات كاملة بالجرعات والتوقيت"},
+   {"en":"Weekly breathwork + meditation practice","ar":"تنفس وتأمل أسبوعي"},
+   {"en":"7-day tracker grid per week","ar":"شبكة متابعة لـ7 أيام لكل أسبوع"},
+   {"en":"Recommended labs to ask your doctor for","ar":"تحاليل موصى بطلبها من الطبيب"},
+   {"en":"Red-flag escalation guide","ar":"دليل العلامات التحذيرية"}]'::jsonb,
+ true, 70),
+
+-- DIY — 30-Day PCOS Reset (placeholder until copy is finalized)
+('pcos-reset-30', 'diy',
+ 'The 30-Day PCOS Reset', 'إعادة ضبط متلازمة تكيس المبايض — 30 يوماً',
+ 'Cycle support, insulin balance, and inflammation reduction — built for PCOS.',
+ 'دعم الدورة، توازن الإنسولين، تقليل الالتهاب — مصمّم لتكيس المبايض.',
+ 'A 30-day food, movement, and supplement protocol designed specifically for women with PCOS — to balance insulin, regulate cycles, and reduce androgen-driven symptoms.',
+ 'بروتوكول 30 يوماً للغذاء والحركة والمكملات مصمّم خصيصاً للنساء المصابات بتكيس المبايض — لتوازن الإنسولين، تنظيم الدورة، وتقليل الأعراض المرتبطة بالأندروجين.',
+ 'Detailed product copy coming soon. Reham is finalizing the workbook content.',
+ 'محتوى المنتج التفصيلي قريباً. ريهام تضع اللمسات الأخيرة على دفتر العمل.',
+ 15, 'KWD', 'Instant download', 'تحميل فوري', 'PDF', 'Coming soon', 'قريباً', 'forest',
+ '[{"en":"More predictable cycles","ar":"دورات أكثر انتظاماً"},
+   {"en":"Reduced androgen-driven symptoms","ar":"أعراض أقل مرتبطة بالأندروجين"},
+   {"en":"Better insulin response","ar":"استجابة إنسولين أفضل"}]'::jsonb,
+ '[{"en":"30-day food + lifestyle protocol","ar":"بروتوكول 30 يوماً للطعام ونمط الحياة"},
+   {"en":"Cycle-aware movement plan","ar":"خطة حركة مرتبطة بالدورة"},
+   {"en":"Supplement stack for PCOS","ar":"قائمة مكملات لتكيس المبايض"}]'::jsonb,
+ true, 80),
+
+-- Physical pantry placeholder
+('coming-soon-physical', 'physical',
+ 'LIV Pantry — Coming Soon', 'مؤن ليف — قريباً',
+ 'Fresh fermented foods, kombucha, and signature pantry staples.',
+ 'أطعمة مخمرة طازجة، كومبوتشا، ومنتجات مؤن مميزة.',
+ 'Reham''s small-batch fermented foods and kombucha — currently available only to Inner Circle and VVIP clients. Public storefront launching soon.',
+ 'أطعمة ريهام المخمرة بكميات صغيرة وكومبوتشا — متاحة حالياً فقط لعميلات الدائرة الداخلية وVVIP. المتجر العام يُطلق قريباً.',
+ null, null,
+ 0, 'KWD', null, null, 'Physical', 'Coming soon', 'قريباً', 'bone',
+ '[]'::jsonb, '[]'::jsonb,
+ true, 100)
+
+on conflict (slug) do update set
+  category       = excluded.category,
+  title_en       = excluded.title_en,
+  title_ar       = excluded.title_ar,
+  tagline_en     = excluded.tagline_en,
+  tagline_ar     = excluded.tagline_ar,
+  description_en = excluded.description_en,
+  description_ar = excluded.description_ar,
+  long_en        = excluded.long_en,
+  long_ar        = excluded.long_ar,
+  price          = excluded.price,
+  currency       = excluded.currency,
+  duration_en    = excluded.duration_en,
+  duration_ar    = excluded.duration_ar,
+  format         = excluded.format,
+  badge_en       = excluded.badge_en,
+  badge_ar       = excluded.badge_ar,
+  accent         = excluded.accent,
+  outcomes       = excluded.outcomes,
+  inclusions     = excluded.inclusions,
+  is_published   = excluded.is_published,
+  position       = excluded.position;
+
+-- ---------- 2) STATIC PAGES — bilingual blocks ----------
+-- All 8 static pages are seeded as admin-editable rows in `pages`.
+
+-- Helper macro: build a heading block
+-- (Inline in JSON — uuids are stable strings.)
+
+insert into public.pages (slug, title_en, title_ar, description_en, description_ar, blocks, is_published) values
+('about',
+ 'About', 'عن ريهام',
+ 'Type 1 diabetic at 44. Holistic nutrition consultant working with women on insulin resistance, inflammation, and perimenopausal metabolic shifts.',
+ 'مصابة بسكري النوع الأول في الـ 44. مستشارة تغذية شاملة تعمل مع النساء على مقاومة الإنسولين والالتهاب والتحوّلات الأيضية لما قبل سن اليأس.',
+ '[
+   {"id":"a1","type":"heading","level":1,"text":{"en":"I''m Reham.","ar":"أنا ريهام."}},
+   {"id":"a2","type":"text","text":{"en":"Type 1 diabetic at 44. Holistic nutrition consultant. I test every protocol on my own glucose monitor before I hand it to a client.","ar":"مصابة بالسكري من النوع الأول في الـ 44. مستشارة تغذية شاملة. أختبر كل بروتوكول على جهاز الجلوكوز الخاص بي قبل أن أُسلِّمه لأي عميلة."}},
+   {"id":"a3","type":"text","text":{"en":"I''m not a doctor. I''m not a dietitian. I''m not a wellness influencer. I work with women in their 40s, 50s, and 60s on the things conventional medicine waits too long to address: insulin resistance, chronic inflammation, perimenopausal metabolic shifts, and the silent damage that becomes a diagnosis when it''s already late.","ar":"لستُ طبيبة. لستُ أخصائية تغذية. لستُ مؤثرة عافية. أعمل مع نساء في الأربعينيات والخمسينيات والستينيات على ما ينتظره الطب التقليدي طويلاً قبل أن يعالجه: مقاومة الإنسولين، الالتهاب المزمن، التحوّلات الأيضية لما قبل سن اليأس، والضرر الصامت الذي يصبح تشخيصاً حين يكون قد فات الأوان."}},
+   {"id":"a4","type":"divider"},
+   {"id":"a5","type":"heading","level":2,"text":{"en":"What put me here","ar":"ما أوصلني إلى هنا"}},
+   {"id":"a6","type":"text","text":{"en":"In February 2021, I woke up with vision so blurred I couldn''t read a text message. Within two weeks, my brand-new prescription glasses had stopped working. I was thirsty constantly, tired on short walks, hungry through full meals. I''d been eating ''healthy'' by every conventional standard for fifteen years.","ar":"في فبراير 2021 استيقظتُ ورؤيتي ضبابية لدرجة أنني لم أستطع قراءة رسالة نصية. خلال أسبوعين، توقفت نظارتي الطبية الجديدة عن العمل. كنتُ عطشى باستمرار، متعَبة من المشي القصير، جائعة رغم الوجبات الكاملة. كنتُ آكل ''صحياً'' بكل المقاييس التقليدية منذ خمس عشرة سنة."}},
+   {"id":"a6b","type":"text","text":{"en":"I assumed it was age. It was diabetic ketoacidosis. My blood sugar was 500. Normal is around 100. Four days in the ICU. The diagnosis: an autoimmune attack on my pancreas. Type 1 diabetes. No family history. No warning. The doctors handed me some insulin pens and sent me home.","ar":"افترضتُ أنه التقدّم في العمر. كان حماضاً كيتونياً سكرياً. سكر دمي 500. الطبيعي حوالي 100. أربعة أيام في العناية المركزة. التشخيص: هجوم مناعي على البنكرياس. سكري النوع الأول. لا تاريخ عائلي. لا إنذار. سلّمني الأطباء أقلام إنسولين وأرسلوني للبيت."}},
+   {"id":"a6c","type":"text","text":{"en":"That''s where the medical system stopped being useful — and where my real education began.","ar":"هناك توقّف النظام الطبي عن أن يكون مفيداً — وهناك بدأ تعليمي الحقيقي."}},
+   {"id":"a7","type":"divider"},
+   {"id":"a8","type":"heading","level":2,"text":{"en":"What I learned that no one tells you","ar":"ما تعلّمته ولا يخبرك به أحد"}},
+   {"id":"a9","type":"text","text":{"en":"The system intervenes too late. It treats diagnoses, not the years of slow metabolic decline that produce them. Nobody teaches insulin sensitivity, inflammation, or how stress quietly remodels your metabolism. Not until you''re already sick.","ar":"النظام يتدخل متأخراً. يعالج التشخيصات، لا سنوات التراجع الأيضي البطيء التي تنتجها. لا أحد يُعلّمك حساسية الإنسولين، أو الالتهاب، أو كيف يُعيد التوتر تشكيل أيضك بهدوء. ليس قبل أن تمرضي."}},
+   {"id":"a9b","type":"text","text":{"en":"So I taught myself. Five years in, I''ve extended my honeymoon phase further than most T1Ds achieve. I run my own labs, my own glucose data, my own protocols. I built recipes that don''t spike blood sugar — and tested every one of them on my CGM before recommending a single bite to anyone else.","ar":"فعلَّمتُ نفسي. خلال خمس سنوات، مدّدتُ مرحلة شهر العسل أبعد مما يحققه معظم مرضى السكري النوع الأول. أُجري تحاليلي بنفسي، وأتابع بيانات جلوكوزي، وأبني بروتوكولاتي. صمّمتُ وصفات لا ترفع سكر الدم — واختبرتُ كل واحدة منها على جهاز الـ CGM قبل أن أوصي بلقمة واحدة لأي شخص آخر."}},
+   {"id":"a9c","type":"text","text":{"en":"Every protocol I hand a client has been pressure-tested against a real diabetic body. Mine.","ar":"كل بروتوكول أُسلِّمه لعميلة قد اخْتُبر تحت ضغط جسد سكري حقيقي. جسدي."}},
+   {"id":"a10","type":"divider"},
+   {"id":"a11","type":"heading","level":2,"text":{"en":"Why I work the way I work","ar":"لماذا أعمل بهذه الطريقة"}},
+   {"id":"a12","type":"text","text":{"en":"Most ''healthy'' advice for women in midlife is generic, motivational, and wrong about food. Snacks marketed as healthy spike insulin. ''No sugar added'' labels hide ingredients that behave exactly like sugar in your blood. Trends get repackaged as protocols. None of it accounts for how your metabolism actually responds — and that''s the only thing that matters.","ar":"معظم نصائح ''الصحة'' للنساء في منتصف العمر عامة، تحفيزية، ومخطئة بشأن الطعام. السناكات المسوَّقة كصحية ترفع الإنسولين. ملصقات ''بدون سكر مضاف'' تُخفي مكونات تتصرف تماماً كالسكر في دمك. التريندات تُعاد تغليفها كبروتوكولات. لا شيء من ذلك يأخذ في الاعتبار كيف يستجيب أيضك أنتِ — وهذا الشيء الوحيد المهم."}},
+   {"id":"a12b","type":"text","text":{"en":"I work the opposite way. We start with your data: your labs, your glucose patterns, your inflammation markers. We build a protocol around what your body is actually doing, not what works on average for someone else''s body.","ar":"أعمل بالطريقة المعاكسة. نبدأ ببياناتك: تحاليلك، أنماط جلوكوزك، علامات الالتهاب لديك. نبني بروتوكولاً حول ما يفعله جسدك فعلاً، لا حول ما ينجح بالمتوسط لجسد شخص آخر."}},
+   {"id":"a10b","type":"divider"},
+   {"id":"a11b","type":"heading","level":2,"text":{"en":"Who I work with","ar":"مع من أعمل"}},
+   {"id":"a12c","type":"text","text":{"en":"Women who''ve spent decades taking care of everyone else and have decided it''s their turn. Women who suspect insulin resistance, perimenopausal shifts, or low-grade inflammation is driving how they feel — and want a real answer instead of ''eat less, move more.'' Women willing to wear a CGM, look at their own numbers, and do the work.","ar":"نساء قضين عقوداً يعتنين بالجميع وقرّرن أن دورهن قد حان. نساء يشتبهن أن مقاومة الإنسولين أو تحوّلات سن اليأس أو الالتهاب الخفيف يقود ما يشعرن به — ويردن إجابة حقيقية بدلاً من ''كُلي أقل، تحرّكي أكثر.'' نساء على استعداد لارتداء جهاز CGM، والنظر إلى أرقامهن، وأداء العمل."}},
+   {"id":"a11c","type":"heading","level":2,"text":{"en":"Who I don''t work with","ar":"مع من لا أعمل"}},
+   {"id":"a12d","type":"text","text":{"en":"People looking for quick fixes. Anyone who wants to be told what they want to hear. People who want me to be a doctor or a dietitian. I''m neither. I''m a consultant who lives this every day, and that''s the only thing I commit to.","ar":"من يبحثن عن حلول سريعة. من يردن أن يُقال لهن ما يردن سماعه. من يردنني طبيبة أو أخصائية تغذية. لستُ أياً منهما. أنا مستشارة تعيش هذا كل يوم، وهذا الالتزام الوحيد الذي أُقدّمه."}},
+   {"id":"a13","type":"divider"},
+   {"id":"a14","type":"heading","level":2,"text":{"en":"Start here","ar":"ابدئي من هنا"}},
+   {"id":"a15","type":"text","text":{"en":"If something feels off and no doctor has given you a real answer, begin with The Root Cause Session. One conversation, one diagnostic, no commitment beyond it. You leave with a clear read on your current metabolic state and what to actually do about it.","ar":"إذا شعرتِ أن شيئاً ما خاطئ ولم يُعطك أي طبيب إجابة حقيقية، ابدئي بجلسة الجذور. محادثة واحدة، تشخيص واحد، بدون التزام يتجاوزها. ستخرجين بقراءة واضحة لحالتك الأيضية الحالية وما يجب فعله بشأنها."}},
+   {"id":"a16","type":"button","label":{"en":"Book the Root Cause Session","ar":"احجزي جلسة الجذور"},"href":"/consultations","variant":"primary"}
+ ]'::jsonb,
+ true),
+
+('my-story',
+ 'My Story', 'قصتي',
+ 'Diagnosed with Type 1 diabetes at 44 — and what it taught me about how the medical system treats women''s metabolic health.',
+ 'تشخيصي بسكري النوع الأول في الـ 44 — وما علّمني إياه عن طريقة تعامل النظام الطبي مع الصحة الأيضية للنساء.',
+ '[
+   {"id":"m0","type":"text","text":{"en":"Diagnosed with Type 1 diabetes at 44 — and what it taught me about how the medical system treats women''s metabolic health.","ar":"تشخيصي بسكري النوع الأول في الـ 44 — وما علّمني إياه عن طريقة تعامل النظام الطبي مع الصحة الأيضية للنساء."}},
+   {"id":"m1","type":"heading","level":1,"text":{"en":"The number was 500","ar":"كان الرقم 500"}},
+   {"id":"m2a","type":"text","text":{"en":"Valentine''s Day, 2021. Urgent care clinic in Los Angeles. The nurse pricked my finger. The meter read 500.","ar":"عيد الحب 2021. عيادة طوارئ في لوس أنجلوس. وخزت الممرضة إصبعي. أظهر الجهاز الرقم 500."}},
+   {"id":"m2b","type":"text","text":{"en":"She looked at me carefully. ''Does diabetes run in your family?'' No. It didn''t. She asked again, slower. I said no again. She told me a healthy fasting blood sugar is around 100. Mine was five times that. She wasn''t asking out of curiosity — she already knew.","ar":"نظرت إليّ بعناية. ''هل السكري في عائلتك؟'' لا. لم يكن. سألت مرة أخرى، أبطأ. قلتُ لا مجدداً. أخبرتني أن سكر الصيام الصحي حوالي 100. سكري كان خمسة أضعاف ذلك. لم تكن تسأل عن فضول — كانت تعرف."}},
+   {"id":"m2c","type":"text","text":{"en":"I went home with antibiotics for what I thought was kidney pain and a diabetes pill I didn''t believe I needed. Two hours later, my friend Caroline called the doctor for the lab results. They told her to drive me to the emergency room immediately. I don''t remember walking in.","ar":"رجعتُ إلى البيت مع مضادات حيوية لما اعتقدتُ أنه ألم في الكلى وحبة سكري لم أُصدّق أنني بحاجتها. بعد ساعتين اتصلت صديقتي كارولين بالطبيبة لاستلام نتائج التحاليل. أخبروها أن تأخذني فوراً إلى الطوارئ. لا أتذكّر دخولي إليها."}},
+   {"id":"m3","type":"divider"},
+   {"id":"m4","type":"heading","level":2,"text":{"en":"What no one tells you about a diagnosis at 44","ar":"ما لا يخبرك به أحد عن تشخيص في الـ 44"}},
+   {"id":"m5a","type":"text","text":{"en":"I had spent thirteen years in California, living the version of ''healthy'' that gets sold to women like me. I kayaked, biked, and paddleboarded. I lived a five-minute walk from the beach. I ran a small touring business I''d built from nothing. I ate three balanced meals a day. Green smoothies. Whole grains. Salmon. Olive oil. I wasn''t doing anything wrong by the standards everyone agrees on.","ar":"قضيت ثلاث عشرة سنة في كاليفورنيا أعيش نسخة ''الصحة'' التي تُباع لنساء مثلي. مارستُ الكاياك والدراجات والباديل بورد. سكنتُ على بُعد خمس دقائق من الشاطئ. أدرتُ شركة جولات صغيرة بنيتُها من الصفر. آكل ثلاث وجبات متوازنة يومياً. عصائر خضراء، حبوب كاملة، سلمون، زيت زيتون. لم أكن أفعل شيئاً خاطئاً حسب المقاييس المتفق عليها."}},
+   {"id":"m5b","type":"text","text":{"en":"But for the year before that ER visit, something had been quietly breaking. COVID had collapsed my touring business. I''d already sold my house — I was preparing to move back to Kuwait when the world locked down. I ended up living as a roommate with Caroline, in limbo, watching the life I''d built dissolve. The stress of that year was unrelenting, and I had no idea what it was doing to my pancreas.","ar":"لكن في السنة التي سبقت زيارة الطوارئ كان شيء ما ينكسر بهدوء. كوفيد دمّر شركة الجولات. كنتُ قد بعتُ بيتي — كنتُ أستعدّ للعودة إلى الكويت حين أُغلق العالم. انتهى بي المطاف كروم ميت مع كارولين، في حالة معلَّقة، أُشاهد الحياة التي بنيتُها تذوب. كان توتر تلك السنة بلا هوادة، ولم أكن أدري ما يفعله ببنكرياسي."}},
+   {"id":"m5c","type":"text","text":{"en":"The early signs read as nothing. Blurred vision I blamed on age. Thirst I blamed on heat. Fatigue I blamed on stress itself. Hunger through full meals — I thought I was just hungry.","ar":"الإشارات المبكرة بدت كلا شيء. رؤية ضبابية ألقيتُ باللوم على العمر. عطش ألقيتُ باللوم على الحرارة. إرهاق ألقيتُ باللوم على التوتر نفسه. جوع رغم الوجبات الكاملة — ظننتُ أنني فقط جائعة."}},
+   {"id":"m5d","type":"text","text":{"en":"By the time I made it to urgent care, I was in diabetic ketoacidosis. My veins were too dehydrated to take an IV in my arm. They had to find a wider one in my shoulder. One of the ER nurses said the words cellular decay out loud near my bed. I spent four days in the ICU.","ar":"حين وصلتُ إلى الطوارئ، كنتُ في حماض كيتوني سكري. أوردتي كانت جافّة جداً لتأخذ وريداً في ذراعي. اضطروا لإيجاد وريد أوسع في كتفي. قالت إحدى ممرضات الطوارئ كلمات ''تحلل خلوي'' بصوت عالٍ قرب سريري. قضيتُ أربعة أيام في العناية المركزة."}},
+   {"id":"m5e","type":"text","text":{"en":"The diagnosis was Type 1 diabetes — specifically, an autoimmune attack on my pancreas. Type 1 is what most people still call ''juvenile'' diabetes. It''s not supposed to start at 44. There was no family history on either side. No warning. There was just an ICU bed and a crash course on insulin, carbohydrate counting, and how to inject yourself before every meal for the rest of your life.","ar":"التشخيص: سكري النوع الأول — تحديداً، هجوم مناعي على البنكرياس. النوع الأول هو ما لا يزال معظم الناس يسمّونه السكري ''الطفولي''. لا يُفترض أن يبدأ في الـ 44. لا تاريخ عائلي من أي جهة. لا إنذار. فقط سرير عناية ودورة مكثفة في الإنسولين، حساب الكربوهيدرات، وكيف تحقنين نفسك قبل كل وجبة لبقية حياتك."}},
+   {"id":"m5f","type":"text","text":{"en":"My family was in Kuwait. Caroline couldn''t visit because of COVID restrictions. I learned to manage a chronic disease alone, in a hospital, with strangers.","ar":"عائلتي في الكويت. كارولين لم تستطع الزيارة بسبب قيود كوفيد. تعلّمتُ إدارة مرض مزمن وحدي، في مستشفى، مع غرباء."}},
+   {"id":"m6","type":"divider"},
+   {"id":"m7","type":"heading","level":2,"text":{"en":"What the medical system stopped doing","ar":"ما توقّف النظام الطبي عن فعله"}},
+   {"id":"m8a","type":"text","text":{"en":"When I was discharged, I was given: insulin, a glucose meter, a pamphlet, and a prescription.","ar":"عند خروجي أُعطيتُ: إنسولين، جهاز قياس، كتيب، ووصفة طبية."}},
+   {"id":"m8b","type":"text","text":{"en":"What I was not given: an explanation of how my immune system had attacked my own pancreas in the first place; any information about insulin resistance, inflammation, or the metabolic decline that runs underneath these diagnoses; any food guidance beyond ''count your carbs''; anything about the role of stress in autoimmune disease; anything about extending the honeymoon phase — the window where the pancreas is still producing some insulin; any acknowledgment that this didn''t have to happen the way it happened.","ar":"ما لم أُعطَه: أي تفسير لكيف هاجم جهازي المناعي بنكرياسي أصلاً؛ أي معلومة عن مقاومة الإنسولين أو الالتهاب أو التراجع الأيضي الذي يجري تحت هذه التشخيصات؛ أي توجيه غذائي أبعد من ''احسبي الكربوهيدرات''؛ أي شيء عن دور التوتر في أمراض المناعة الذاتية؛ أي شيء عن إطالة مرحلة شهر العسل — النافذة التي ينتج فيها البنكرياس بعض الإنسولين؛ أي اعتراف بأن هذا لم يكن مضطراً للحدوث بهذه الطريقة."}},
+   {"id":"m8c","type":"text","text":{"en":"The medical system is built to manage diagnoses. It is not built to prevent the slow metabolic damage that produces them. By the time you''re sitting in front of a doctor, the conversation is already too late. I went home and decided I would not be a passive patient.","ar":"النظام الطبي مبني لإدارة التشخيصات. ليس مبنياً لمنع التلف الأيضي البطيء الذي يُنتجها. حين تجلسين أمام طبيب، تكون المحادثة قد فات أوانها. عدتُ إلى البيت وقررتُ ألا أكون مريضة سلبية."}},
+   {"id":"m9","type":"divider"},
+   {"id":"m10","type":"heading","level":2,"text":{"en":"Becoming my own pancreas","ar":"أن أكون بنكرياسي بنفسي"}},
+   {"id":"m11a","type":"text","text":{"en":"I bought books. I read everything from Think Like a Pancreas to clinical papers I could barely parse. I joined T1D groups, went to meetups, walked with strangers who had what I had, talked to dietitians and functional medicine practitioners. I followed Dr. Berg and his work on insulin sensitivity. I started questioning every food belief I''d carried for forty-four years. Then I bought a continuous glucose monitor. That was the moment everything changed.","ar":"اشتريتُ كتباً. قرأتُ كل شيء من Think Like a Pancreas إلى أبحاث سريرية بالكاد فهمتها. انضممتُ إلى مجموعات T1D، حضرتُ لقاءات، مشيتُ مع غرباء يحملون ما أحمله، تحدّثتُ مع أخصائيات تغذية وممارسي الطب الوظيفي. تابعتُ د. بيرغ وعمله في حساسية الإنسولين. بدأتُ أُشكّك في كل اعتقاد غذائي حملتُه لأربع وأربعين سنة. ثم اشتريتُ جهاز مراقبة جلوكوز مستمر. تلك كانت اللحظة التي تغيّر فيها كل شيء."}},
+   {"id":"m11b","type":"text","text":{"en":"The CGM showed me, in real time, what every single thing I ate was doing to my blood sugar. ''Healthy'' oatmeal — spike. A medjool date — spike. Whole-grain sourdough — spike. The ''no added sugar'' snack from the health-food aisle, the one that hides date paste and apple juice concentrate in the ingredient list? Spike. The marketing was not telling me the truth. The labels were not telling me the truth. My own intuition about what was healthy was, in many cases, not telling me the truth. The CGM did not lie.","ar":"أراني الـ CGM لحظياً ما يفعله كل شيء آكله بسكر دمي. شوفان ''صحي'' — ارتفاع. تمرة مدجول — ارتفاع. خبز ساوردو حبوب كاملة — ارتفاع. السناك ''بدون سكر مضاف'' من رف الصحة، الذي يُخفي معجون التمر وعصير التفاح المركّز في المكونات؟ ارتفاع. التسويق لم يكن يقول الحقيقة. الملصقات لم تكن تقول الحقيقة. حدسي عمّا هو صحي، في حالات كثيرة، لم يكن يقول الحقيقة. الـ CGM لم يكذب."}},
+   {"id":"m11c","type":"text","text":{"en":"I rebuilt my way of eating from scratch using data instead of advice. I developed recipes that didn''t move my blood sugar at all — testing each one on myself before I''d consider feeding it to anyone else. I extended my honeymoon phase well beyond what most newly diagnosed T1Ds achieve. My A1C stabilized. My energy came back.","ar":"أعدتُ بناء طريقتي في الأكل من الصفر باستخدام البيانات بدلاً من النصائح. طوّرتُ وصفات لم تُحرّك سكر دمي إطلاقاً — أختبر كل واحدة على نفسي قبل أن أفكّر في إطعامها لأي أحد. مدّدتُ مرحلة شهر العسل أبعد بكثير مما يحققه معظم مرضى T1D الجدد. استقر A1C. عادت طاقتي."}},
+   {"id":"m11d","type":"text","text":{"en":"And I started to understand something the medical system had never explained to me: the patterns I was seeing in my own body — the inflammation, the insulin response, the stress sensitivity — were the same patterns running, undiagnosed, in millions of women in their 40s and 50s. Women who hadn''t yet had their ER moment. Women who still had time.","ar":"وبدأتُ أفهم شيئاً لم يشرحه لي النظام الطبي قط: الأنماط التي كنتُ أراها في جسدي — الالتهاب، استجابة الإنسولين، الحساسية للتوتر — كانت الأنماط ذاتها تجري، غير مُشخَّصة، في ملايين النساء في الأربعينيات والخمسينيات. نساء لم تأتِ لحظة الطوارئ بعد. نساء ما زال لديهن وقت."}},
+   {"id":"m12","type":"divider"},
+   {"id":"m13","type":"heading","level":2,"text":{"en":"Why I built LIV","ar":"لماذا بنيتُ ليف"}},
+   {"id":"m14a","type":"text","text":{"en":"When I moved back to Kuwait, women started reaching out. Friends, then friends of friends. They had the symptoms I''d ignored for a year before my collapse — the fatigue, the brain fog, the weight that wouldn''t move, the bloating, the perimenopausal shifts no one was helping them understand. They didn''t want another doctor''s appointment that ended in a prescription. They wanted someone who actually understood what was happening inside their bodies and could tell them what to do about it.","ar":"حين عدتُ إلى الكويت، بدأت نساء يتواصلن معي. صديقات، ثم صديقات صديقات. كانت لديهن الأعراض التي تجاهلتها لسنة قبل انهياري — الإرهاق، تشوّش الدماغ، الوزن الذي لا يتحرك، الانتفاخ، تحوّلات سن اليأس التي لم يساعدهن أحد على فهمها. لم يردن موعداً آخر مع طبيب ينتهي بوصفة. أردن شخصاً يفهم فعلاً ما يحدث داخل أجسادهن ويستطيع أن يخبرهن ماذا يفعلن."}},
+   {"id":"m14b","type":"text","text":{"en":"So I built protocols. Then I built products — small-batch fermented foods, kombucha, recipes — for the clients in my higher-tier programs. Then I built a full coaching practice around what I now know works:","ar":"فبنيتُ بروتوكولات. ثم بنيتُ منتجات — أطعمة مخمرة بكميات صغيرة، كومبوتشا، وصفات — لعميلات برامجي العليا. ثم بنيتُ ممارسة تدريب كاملة حول ما أعرف الآن أنه يعمل:"}},
+   {"id":"m14c","type":"text","text":{"en":"Real data, from your body. A continuous glucose monitor for clients in Program 3 and above. Lab review, not lab dismissal. Protocols designed for your metabolism, not someone else''s. Education before diagnosis, while there''s still time to change the trajectory.","ar":"بيانات حقيقية، من جسدك. جهاز مراقبة جلوكوز للعميلات في البرنامج 3 وما فوق. مراجعة التحاليل، لا الاستهانة بها. بروتوكولات مصمّمة لأيضك أنتِ، لا لأيض شخص آخر. تعليم قبل التشخيص، حين ما زال هناك وقت لتغيير المسار."}},
+   {"id":"m14d","type":"text","text":{"en":"LIV exists because I didn''t have any of that when I needed it. By the time anyone in the medical system was paying attention to me, I was already in a hospital bed. You don''t have to wait until you''re in mine.","ar":"ليف موجودة لأنني لم يكن لديّ أي من ذلك حين احتجتُه. حين بدأ أي شخص في النظام الطبي ينتبه لي، كنتُ أصلاً في سرير مستشفى. لستِ مضطرة للانتظار حتى تكوني في سريري."}},
+   {"id":"m15","type":"divider"},
+   {"id":"m16","type":"heading","level":2,"text":{"en":"If any of this sounds familiar","ar":"إن بدا أيٌّ من هذا مألوفاً"}},
+   {"id":"m17","type":"text","text":{"en":"If you''ve been telling yourself the fatigue is just age, the weight is just hormones, the brain fog is just stress — and somewhere underneath, you suspect it''s more than that — start with The Root Cause Session. One conversation, one diagnostic, no commitment beyond it. We''ll look at where you actually are. Then we''ll decide what to do next. I won''t promise you a transformation. I''ll show you what''s true.","ar":"إن كنتِ تقولين لنفسك إن الإرهاق مجرد عمر، والوزن مجرد هرمونات، وتشوّش الدماغ مجرد توتر — وفي مكان ما تحت السطح تشكّين أنه أكثر من ذلك — ابدئي بجلسة الجذور. محادثة واحدة، تشخيص واحد، بدون التزام يتجاوزها. سننظر إلى أين أنتِ فعلاً. ثم نُقرّر ماذا بعد. لن أعدكِ بتحوّل. سأُريكِ ما هو حقيقي."}},
+   {"id":"m18","type":"button","label":{"en":"Book the Root Cause Session","ar":"احجزي جلسة الجذور"},"href":"/consultations","variant":"primary"}
+ ]'::jsonb,
+ true),
+
+('how-it-works',
+ 'How It Works', 'كيف نعمل',
+ 'Two paths. Same methodology. Different levels of support.',
+ 'مساران. المنهجية ذاتها. مستويات دعم مختلفة.',
+ '[
+   {"id":"h1","type":"heading","level":1,"text":{"en":"How It Works","ar":"كيف نعمل"}},
+   {"id":"h2","type":"text","text":{"en":"Two paths. Same methodology. Different levels of support. Some women already know what''s driving their symptoms. Others have layered cases that need real-time data to untangle. I work with both. The methodology underneath is the same — The LIV Method: identify the metabolic driver, intervene with food, supplementation, and lifestyle, measure the response, and adjust.","ar":"مساران. المنهجية ذاتها. مستويات دعم مختلفة. بعض النساء يعرفن ما يحرّك أعراضهن. أخريات حالاتهن متشابكة وتحتاج بيانات لحظية. أعمل مع النوعين. المنهجية تحت السطح واحدة — منهج ليف: تحديد المحرّك الأيضي، التدخّل بالغذاء والمكملات ونمط الحياة، قياس الاستجابة، ثم التعديل."}},
+   {"id":"h3","type":"divider"},
+   {"id":"h4","type":"heading","level":2,"text":{"en":"DIY Plans — for women who already know the problem","ar":"خطط DIY — للنساء اللواتي يعرفن المشكلة سلفاً"}},
+   {"id":"h5","type":"text","text":{"en":"Each DIY Plan is a complete reset built for one specific condition. You download the e-booklet, follow the sequence, and track your response. No waiting for replies, no scheduled check-ins — you run it on your own timeline.","ar":"كل خطة DIY إعادة ضبط كاملة مبنية لحالة محددة. تُحمّلين الكتيب، تتبعين التسلسل، وتراقبين استجابتك. لا انتظار للردود، ولا متابعات مجدولة — تنفّذينها وفق وقتك."}},
+   {"id":"h5b","type":"heading","level":3,"text":{"en":"What''s inside every plan","ar":"ما داخل كل خطة"}},
+   {"id":"h5c","type":"text","text":{"en":"• A 30-day meal plan with a grocery list, structured week by week\n• Supplement protocol — what to take, when, and how to pair for absorption\n• Tracker sheets for symptoms, energy, sleep, and digestion\n• The reasoning behind every intervention, so you understand what each food and supplement is actually doing","ar":"• خطة وجبات 30 يوماً مع قائمة تسوّق، مرتّبة أسبوعياً\n• بروتوكول مكملات — ماذا تأخذين ومتى وكيف تُقرَن للامتصاص\n• أوراق متابعة للأعراض والطاقة والنوم والهضم\n• المنطق وراء كل تدخّل، حتى تفهمي ما يفعله كل طعام ومكمّل"}},
+   {"id":"h5d","type":"heading","level":3,"text":{"en":"Right for you if","ar":"تناسبك إذا"}},
+   {"id":"h5e","type":"text","text":{"en":"• You have a clear diagnosis or a strong working theory\n• You want autonomy and a defined sequence to follow\n• You''ll execute without weekly accountability","ar":"• لديكِ تشخيص واضح أو فرضية قوية\n• تريدين استقلالية وتسلسلاً محدداً\n• ستنفّذين دون مساءلة أسبوعية"}},
+   {"id":"h5f","type":"heading","level":3,"text":{"en":"Not right for you if","ar":"لا تناسبك إذا"}},
+   {"id":"h5g","type":"text","text":{"en":"• You''re managing multiple medications or recovering from surgery\n• Your symptoms span more than one system, and you''re not sure what''s primary\n• You need someone to interpret your data week to week","ar":"• تتعاملين مع أدوية متعددة أو تتعافين من جراحة\n• أعراضك تمتد لأكثر من نظام، ولا تعرفين ما هو الأساسي\n• تحتاجين شخصاً لتفسير بياناتك أسبوعياً"}},
+   {"id":"h6","type":"button","label":{"en":"Browse DIY Plans","ar":"تصفّحي خطط DIY"},"href":"/diy-plans","variant":"primary"},
+   {"id":"h7","type":"divider"},
+   {"id":"h8","type":"heading","level":2,"text":{"en":"Coaching — for layered cases that need real-time data","ar":"التدريب — للحالات المتشابكة التي تحتاج بيانات لحظية"}},
+   {"id":"h9","type":"text","text":{"en":"Coaching is for women whose symptoms don''t fit a single label, or whose case has too many variables to solve with a generic protocol. We map your metabolic baseline, build your plan from your data, and adjust weekly until the markers move.","ar":"التدريب للنساء اللواتي لا تنطبق على أعراضهن تسمية واحدة، أو حالاتهن فيها متغيرات أكثر من أن يحلّها بروتوكول عام. نرسم خط الأيض الأساسي، نبني الخطة من بياناتك، ونعدّل أسبوعياً حتى تتحرك المؤشرات."}},
+   {"id":"h9b","type":"heading","level":3,"text":{"en":"How it works","ar":"كيف تعمل"}},
+   {"id":"h9c","type":"text","text":{"en":"1. Root Cause Session. Lab review, full history, current state. We define what''s actually driving your symptoms before any protocol gets written.\n2. Protocol design. Your plan is built from your data, not a template. Food, supplements, sequencing — all specific to you.\n3. CGM-based feedback (from The Daily Reset onward). Your glucose response is visible in real time. We see what each meal, stress event, and night of poor sleep does to your numbers, and we adjust on that data — not on guesswork.\n4. Weekly review and iteration. What''s working stays. What isn''t changes. WhatsApp response within 6 hours, Sunday through Thursday.","ar":"1. جلسة الجذور. مراجعة التحاليل، التاريخ الكامل، الوضع الحالي. نحدّد ما يقود أعراضك قبل كتابة أي بروتوكول.\n2. تصميم البروتوكول. خطتك مبنية على بياناتك، لا على قالب. الطعام والمكملات والتسلسل — كلها خاصة بك.\n3. تغذية راجعة مبنية على CGM (من الإعادة اليومية فصاعداً). استجابة الجلوكوز مرئية لحظياً. نرى ما يفعله كل وجبة وحدث توتر وليلة نوم سيئ بأرقامك، ونعدّل على تلك البيانات — لا على التخمين.\n4. مراجعة أسبوعية وتكرار. ما ينفع يبقى. ما لا ينفع يتغيّر. رد على واتساب خلال 6 ساعات من الأحد إلى الخميس."}},
+   {"id":"h9d","type":"heading","level":3,"text":{"en":"Right for you if","ar":"تناسبك إذا"}},
+   {"id":"h9e","type":"text","text":{"en":"• Your case is multi-system — insulin resistance, thyroid, perimenopause, sleep, all overlapping\n• You''ve run generic protocols and they didn''t hold\n• You want someone reading your CGM with you\n• You need accountability built into the structure","ar":"• حالتك متعددة الأنظمة — مقاومة إنسولين، غدة درقية، سن يأس، نوم، كلها متداخلة\n• جرّبتِ بروتوكولات عامة ولم تثبت\n• تريدين من يقرأ CGM معكِ\n• تحتاجين مساءلة مدمجة في البنية"}},
+   {"id":"h9f","type":"heading","level":3,"text":{"en":"Not right for you if","ar":"لا تناسبك إذا"}},
+   {"id":"h9g","type":"text","text":{"en":"• You want a quick fix or a 7-day cleanse\n• You''re not willing to test, track, and adjust\n• You''re looking for validation of an approach you''ve already decided on","ar":"• تريدين حلاً سريعاً أو ديتوكس 7 أيام\n• لستِ مستعدة للاختبار والتتبع والتعديل\n• تبحثين عن تأكيد لنهج قرّرتِه بالفعل"}},
+   {"id":"h10","type":"button","label":{"en":"See Coaching Options","ar":"اطّلعي على خيارات التدريب"},"href":"/coaching","variant":"primary"},
+   {"id":"h11","type":"divider"},
+   {"id":"h12","type":"heading","level":2,"text":{"en":"Still deciding?","ar":"ما زلتِ تُقرّرين؟"}},
+   {"id":"h13","type":"text","text":{"en":"Two questions: Do you know what''s driving your symptoms? Will a structured written protocol be enough — or do you need real-time interpretation? If yes and protocol is enough → start with a DIY Plan. If no, or you need interpretation → start with the Root Cause Session.","ar":"سؤالان: هل تعرفين ما يحرّك أعراضك؟ هل البروتوكول المكتوب كافٍ — أم تحتاجين تفسيراً لحظياً؟ نعم وكافٍ → ابدئي بخطة DIY. لا، أو تحتاجين تفسيراً → ابدئي بجلسة الجذور."}},
+   {"id":"h14","type":"button","label":{"en":"Book the Root Cause Session","ar":"احجزي جلسة الجذور"},"href":"/consultations","variant":"primary"}
+ ]'::jsonb,
+ true),
+
+('faq',
+ 'FAQs', 'الأسئلة الشائعة',
+ 'Answers to the most common questions about working with Liv Functional.',
+ 'إجابات على أكثر الأسئلة شيوعاً حول العمل مع ليف.',
+ '[
+   {"id":"f0","type":"heading","level":1,"text":{"en":"FAQ — 1:1 Discovery Consultation","ar":"الأسئلة الشائعة — استشارة التعارف 1:1"}},
+   {"id":"f1","type":"heading","level":3,"text":{"en":"Is this consultation right for me?","ar":"هل هذه الاستشارة مناسبة لي؟"}},
+   {"id":"f2","type":"text","text":{"en":"If you feel like something in your body isn''t working the way it should but you don''t have clarity on why, this is exactly where to start. Ideal if you want real answers and a clear direction, not guesswork.","ar":"إذا شعرتِ أن شيئاً ما في جسدك لا يعمل كما يجب ولا تملكين وضوحاً عن السبب، فهذا هو المكان الصحيح للبدء. مثالية إذا أردتِ إجابات حقيقية واتجاهاً واضحاً، لا تخمينات."}},
+   {"id":"f3","type":"heading","level":3,"text":{"en":"What makes this different from a regular nutrition consultation?","ar":"ما الذي يميزها عن استشارة تغذية عادية؟"}},
+   {"id":"f4","type":"text","text":{"en":"Most consultations give general advice. This session focuses on identifying root causes, connecting your symptoms to your lifestyle and biology, and giving you a clear, prioritized strategy. You leave with direction, not just more information.","ar":"معظم الاستشارات تقدم نصائح عامة. هذه الجلسة تركز على تحديد الأسباب الجذرية، وربط أعراضك بنمط حياتك وبيولوجيتك، ومنحك استراتيجية واضحة ومرتّبة. تخرجين باتجاه، لا بمزيد من المعلومات."}},
+   {"id":"f5","type":"heading","level":3,"text":{"en":"Will I get a meal plan?","ar":"هل سأحصل على خطة وجبات؟"}},
+   {"id":"f6","type":"text","text":{"en":"It depends. This is a strategy session, not a full program. You will get clear nutrition guidance and direction, but not a fully customized meal plan. If you need that level of detail, you''ll be guided to the right next step.","ar":"يعتمد. هذه جلسة استراتيجية، لا برنامج كامل. ستحصلين على توجيه غذائي واضح، لا خطة وجبات مفصّلة بالكامل. إن احتجتِ ذلك المستوى من التفصيل، ستوجَّهين للخطوة التالية."}},
+   {"id":"f7","type":"heading","level":3,"text":{"en":"Do I need lab tests?","ar":"هل أحتاج إلى تحاليل؟"}},
+   {"id":"f8","type":"text","text":{"en":"No, but if you have them, bring them. If not, we work with your symptoms, lifestyle patterns, and history to identify what''s likely happening.","ar":"لا، لكن إن كانت لديك فأحضريها. إن لم تكن، نعمل مع أعراضك وأنماط حياتك وتاريخك لتحديد ما يحدث على الأرجح."}},
+   {"id":"f8b","type":"heading","level":3,"text":{"en":"How should I prepare for the session?","ar":"كيف أستعدّ للجلسة؟"}},
+   {"id":"f8c","type":"text","text":{"en":"You''ll receive a pre-session intake form or a screening call to welcome you. During that call we''ll ask questions to prepare you for the meeting with Reham. Be honest and detailed; the quality of your answers directly impacts the accuracy of your strategy.","ar":"ستتلقّين استمارة قبل الجلسة أو مكالمة تعارف للترحيب بكِ. خلالها نسألك أسئلة تُعدّك للقاء مع ريهام. كوني صادقة ومفصّلة؛ جودة إجاباتك تؤثر مباشرةً على دقة الاستراتيجية."}},
+   {"id":"f9","type":"heading","level":3,"text":{"en":"What exactly will I walk away with?","ar":"بماذا سأخرج بالضبط؟"}},
+   {"id":"f10","type":"text","text":{"en":"You''ll leave with: a clear understanding of what''s going on in your body, the main factors holding you back, a personalized action plan, and immediate steps you can start the same day.","ar":"ستخرجين بـ: فهم واضح لما يجري في جسدك، العوامل الأساسية التي تعيقك، خطة عمل مخصصة، وخطوات فورية يمكنك البدء بها في اليوم نفسه."}},
+   {"id":"f11","type":"heading","level":3,"text":{"en":"Is one session enough?","ar":"هل تكفي جلسة واحدة؟"}},
+   {"id":"f12","type":"text","text":{"en":"For clarity, yes. For full transformation, no. This session gives you the roadmap. Implementation and deeper work may require ongoing support, depending on your goals.","ar":"للوضوح، نعم. للتحوّل الكامل، لا. هذه الجلسة تعطيكِ خارطة الطريق. التنفيذ والعمل الأعمق قد يتطلّبان دعماً مستمراً، حسب أهدافك."}},
+   {"id":"f12a","type":"heading","level":3,"text":{"en":"Will this help with weight loss / blood sugar / hormones?","ar":"هل تساعد على إنقاص الوزن أو سكر الدم أو الهرمونات؟"}},
+   {"id":"f12b","type":"text","text":{"en":"Yes — if those issues are connected to your lifestyle, nutrition, or metabolic function. This session identifies what''s driving those issues and shows you how to start correcting them.","ar":"نعم — إن كانت هذه القضايا مرتبطة بنمط حياتك أو تغذيتك أو وظيفتك الأيضية. تحدّد هذه الجلسة ما يقود تلك القضايا وتُريك كيف تبدئين بتصحيحها."}},
+   {"id":"f13","type":"heading","level":3,"text":{"en":"What if I''ve already tried everything?","ar":"ماذا لو جرّبتُ كل شيء؟"}},
+   {"id":"f14","type":"text","text":{"en":"You probably haven''t tried the right strategy for your body. Most people repeat the same approaches without understanding why they''re not working. That''s exactly what we fix here.","ar":"على الأرجح لم تجرّبي الاستراتيجية المناسبة لجسدك. معظم الناس يكرّرون المناهج نفسها دون فهم سبب فشلها. هذا تماماً ما نُصلحه هنا."}},
+   {"id":"f15","type":"heading","level":3,"text":{"en":"Do you offer refunds?","ar":"هل توجد استردادات؟"}},
+   {"id":"f16","type":"text","text":{"en":"No. This is a time-based, personalized service. Once booked, your slot is reserved.","ar":"لا. هذه خدمة شخصية مرتبطة بالوقت. بمجرد الحجز، تُحجز حصتك."}},
+   {"id":"f17","type":"heading","level":3,"text":{"en":"How do I book my session?","ar":"كيف أحجز جلستي؟"}},
+   {"id":"f18","type":"text","text":{"en":"Simply click the Book Your Consultation button and choose your time slot.","ar":"اضغطي زر احجزي استشارتك واختاري وقتك."}},
+   {"id":"f18a","type":"heading","level":3,"text":{"en":"What happens after I book?","ar":"ماذا يحدث بعد الحجز؟"}},
+   {"id":"f18b","type":"text","text":{"en":"You''ll receive: a confirmation email, your intake form, and instructions for the session.","ar":"ستتلقّين: بريد تأكيد، استمارتك التحضيرية، وتعليمات الجلسة."}},
+   {"id":"f19","type":"button","label":{"en":"Book Your Consultation","ar":"احجزي استشارتك"},"href":"/consultations","variant":"primary"}
+ ]'::jsonb,
+ true),
+
+('privacy-policy',
+ 'Privacy Policy', 'سياسة الخصوصية',
+ 'How Liv Functional collects, uses, and discloses Personal Information.',
+ 'كيف تجمع ليف وتستخدم وتُفصح عن المعلومات الشخصية.',
+ '[
+   {"id":"p1","type":"heading","level":1,"text":{"en":"Privacy Policy","ar":"سياسة الخصوصية"}},
+   {"id":"p2","type":"text","text":{"en":"Effective May 1, 2026. livfunctional.com is operated by Liv Functional. This page explains how Liv Functional collects, uses, and discloses Personal Information about our users. Liv Functional uses your Personal Information only to provide you with the best possible coaching services. The collection and use of information in accordance with this policy is a condition of using the coaching services of Liv Functional.","ar":"سارية من 1 مايو 2026. livfunctional.com يشغّله ليف. تشرح هذه الصفحة كيف تجمع ليف وتستخدم وتُفصح عن المعلومات الشخصية للمستخدمين. تستخدم ليف معلوماتك فقط لتقديم أفضل خدمة تدريب ممكنة. جمع المعلومات واستخدامها وفق هذه السياسة شرط لاستخدام خدمات ليف."}},
+   {"id":"p3","type":"heading","level":2,"text":{"en":"Collection and use of information","ar":"جمع المعلومات واستخدامها"}},
+   {"id":"p4","type":"text","text":{"en":"To use our site, you may be asked to provide personally identifiable information, including but not limited to your name, email address, or text message credentials.","ar":"لاستخدام موقعنا، قد يُطلب منك تقديم معلومات تعريفية، تشمل دون حصر اسمك وبريدك الإلكتروني أو بيانات التواصل عبر الرسائل النصية."}},
+   {"id":"p5","type":"heading","level":2,"text":{"en":"Exchange of information","ar":"تبادل المعلومات"}},
+   {"id":"p6","type":"text","text":{"en":"Your Personal Information may be used to contact you with newsletters, marketing materials, or other information about our coaching services. To unsubscribe, contact us at info@livfunctional.com.","ar":"قد تُستخدم معلوماتك للتواصل بنشرات إخبارية ومواد تسويقية وغيرها من المعلومات. لإلغاء الاشتراك، تواصلي معنا على info@livfunctional.com."}},
+   {"id":"p7","type":"heading","level":2,"text":{"en":"Safeguards","ar":"الحماية"}},
+   {"id":"p8","type":"text","text":{"en":"Even though we strive to protect your Personal Information using commercially acceptable means, we cannot ensure its absolute security.","ar":"رغم سعينا لحماية معلوماتك بالوسائل المقبولة تجارياً، لا يمكننا ضمان الأمان المطلق."}},
+   {"id":"p9","type":"heading","level":2,"text":{"en":"Privacy policy changes","ar":"تغييرات السياسة"}},
+   {"id":"p10","type":"text","text":{"en":"As of May 1, 2026, this Privacy Policy is in effect and remains unchanged except for future modifications, which go into effect immediately upon posting. Please check this page periodically. We will notify you of changes by email or by posting a clear notice on our website.","ar":"اعتباراً من 1 مايو 2026، هذه السياسة سارية ولا تتغيّر إلا بتعديلات مستقبلية تنفذ فوراً عند النشر. يُرجى مراجعة هذه الصفحة دورياً. سنُعلمك بالتغييرات عبر البريد أو إشعار واضح على الموقع."}},
+   {"id":"p11","type":"heading","level":2,"text":{"en":"Contact","ar":"تواصل"}},
+   {"id":"p12","type":"text","text":{"en":"info@livfunctional.com","ar":"info@livfunctional.com"}}
+ ]'::jsonb,
+ true),
+
+('refund-policy',
+ 'Refund Policy', 'سياسة الاسترداد',
+ 'Liv Functional Nutrition Consultation & Coaching Policy. All sales are final.',
+ 'سياسة استشارات وتدريب ليف. جميع المبيعات نهائية.',
+ '[
+   {"id":"r1","type":"heading","level":1,"text":{"en":"Refund & Cancellation Policy","ar":"سياسة الاسترداد والإلغاء"}},
+   {"id":"r2","type":"text","text":{"en":"Effective April 29, 2026. At Liv Functional, our holistic nutrition services are deeply personalized, requiring significant preparatory research and dedicated resources for every client. To maintain integrity of our coaching, we adhere to the following policy.","ar":"سارية من 29 أبريل 2026. خدمات ليف الشاملة مخصّصة بعمق، وتتطلب بحثاً تحضيرياً كبيراً وموارد مخصصة لكل عميلة. للحفاظ على نزاهة تدريبنا، نلتزم بالسياسة التالية."}},
+   {"id":"r3","type":"heading","level":2,"text":{"en":"1. All sales are final","ar":"1. جميع المبيعات نهائية"}},
+   {"id":"r4","type":"text","text":{"en":"All payments for holistic nutrition consultations, coaching packages, and digital resources (eBooks, guides) are strictly non-refundable once the transaction is completed.","ar":"جميع المدفوعات للاستشارات وحزم التدريب والموارد الرقمية (كتب وأدلة) غير قابلة للاسترداد بمجرد إتمام المعاملة."}},
+   {"id":"r5","type":"heading","level":2,"text":{"en":"2. Individual consultation sessions","ar":"2. جلسات الاستشارات الفردية"}},
+   {"id":"r6a","type":"text","text":{"en":"Non-refundable after delivery. Once a consultation has taken place, no refunds will be issued for any reason.","ar":"غير قابلة للاسترداد بعد التسليم. بمجرد إجراء الاستشارة لا تُصدَر استردادات لأي سبب."}},
+   {"id":"r6b","type":"text","text":{"en":"Cancellation & rescheduling: 48+ hours notice — reschedule at no additional cost. Less than 24 hours notice or no-shows — forfeiture of the session fee. The session will be considered ''delivered.''","ar":"الإلغاء وإعادة الجدولة: 48 ساعة أو أكثر — إعادة جدولة بدون تكلفة. أقل من 24 ساعة أو عدم الحضور — فقدان رسوم الجلسة. تُعتبر الجلسة ''مُسلَّمة.''"}},
+   {"id":"r7","type":"heading","level":2,"text":{"en":"3. Nutrition coaching packages","ar":"3. حزم التدريب الغذائي"}},
+   {"id":"r8a","type":"text","text":{"en":"Program commencement: Once you have received your initial assessment, meal plan, or had your first coaching call, the entire package fee becomes non-refundable.","ar":"بدء البرنامج: بمجرد استلام التقييم الأولي أو خطة الوجبات أو إجراء أول مكالمة تدريب، تصبح رسوم الحزمة كاملةً غير قابلة للاسترداد."}},
+   {"id":"r8b","type":"text","text":{"en":"Unused sessions: Any unused sessions within a package will not be refunded. Packages expire 6 months from the date of purchase.","ar":"الجلسات غير المستخدمة: لا تُستردّ. الحزم تنتهي بعد 6 أشهر من تاريخ الشراء."}},
+   {"id":"r9","type":"heading","level":2,"text":{"en":"4. Digital products","ar":"4. المنتجات الرقمية"}},
+   {"id":"r10","type":"text","text":{"en":"Because instant access is granted to proprietary materials (meal plans, supplement protocols, educational guides), digital goods are non-refundable under any circumstances.","ar":"لأن الوصول الفوري يُمنح لمواد ملكية (خطط وجبات، بروتوكولات مكملات، أدلة)، المنتجات الرقمية غير قابلة للاسترداد تحت أي ظرف."}},
+   {"id":"r11","type":"heading","level":2,"text":{"en":"5. Exceptional circumstances","ar":"5. الحالات الاستثنائية"}},
+   {"id":"r12","type":"text","text":{"en":"Exceptions for medical emergencies or unavoidable hardships may be considered case-by-case at the sole discretion of Liv Functional management. Clients in the EU or UK have a 14-day cooling-off period for services that have not yet started.","ar":"قد يُنظر في استثناءات للطوارئ الطبية أو الظروف القاهرة حسب كل حالة وبتقدير إدارة ليف. عميلات الاتحاد الأوروبي والمملكة المتحدة لديهن فترة تراجع 14 يوماً للخدمات التي لم تبدأ بعد."}}
+ ]'::jsonb,
+ true),
+
+('coaching-agreement',
+ 'Coaching Agreement', 'اتفاقية التدريب',
+ 'Agreement for client coaching services. Built on the ICF Code of Ethics.',
+ 'اتفاقية خدمات التدريب. مبنية على مدونة أخلاقيات ICF.',
+ '[
+   {"id":"c1","type":"heading","level":1,"text":{"en":"Agreement for Client Service","ar":"اتفاقية خدمة العميلة"}},
+   {"id":"c1a","type":"text","text":{"en":"Agreement between the Coach and the Client. Coaching services are provided by the Coach in accordance with this agreement. A Client and Coach work collaboratively (not as business associates or in legal alliances) to enhance the Client''s personal and professional performance.","ar":"اتفاقية بين المدرّبة والعميلة. تُقدَّم خدمات التدريب من المدرّبة وفق هذه الاتفاقية. تعمل العميلة والمدرّبة بشكل تعاوني (لا كشركاء عمل أو تحالف قانوني) لتعزيز أداء العميلة الشخصي والمهني."}},
+   {"id":"c3","type":"heading","level":2,"text":{"en":"Responsibilities","ar":"المسؤوليات"}},
+   {"id":"c4a","type":"text","text":{"en":"1. Coach agrees to follow the Ethics and Standards of Conduct set forth by the International Coach Federation (ICF). The ICF''s Code of Ethics is outlined at coachingfederation.org/ethics/code-of-ethics.","ar":"١. تلتزم المدرّبة بأخلاقيات ومعايير سلوك الاتحاد الدولي للمدربين (ICF). مدونة الأخلاقيات على coachingfederation.org/ethics/code-of-ethics."}},
+   {"id":"c4b","type":"text","text":{"en":"2. The Client''s emotional, mental, and physical well-being is her responsibility. The Client is responsible for all her own choices, decisions, behaviors, and actions. Coach is not liable or accountable for any action or inaction, or for any direct or indirect results of service provided. Coaching does not work as therapy nor is it a therapy in and of itself. It is in no way designed to treat any mental disorder or medical problem, nor does it prevent them.","ar":"٢. رفاه العميلة العاطفي والعقلي والجسدي مسؤوليتها. العميلة مسؤولة عن خياراتها وقراراتها وسلوكها وأفعالها. لا تتحمّل المدرّبة المسؤولية أو المساءلة عن أي فعل أو امتناع، أو عن أي نتائج مباشرة أو غير مباشرة للخدمة المقدّمة. التدريب ليس علاجاً نفسياً ولا هو علاج بحد ذاته. ليس مصمّماً بأي شكل لمعالجة اضطراب نفسي أو مشكلة طبية، ولا يمنعهما."}},
+   {"id":"c4c","type":"text","text":{"en":"3. Client knows that coaching is not a substitute for legal, medical, mental, or any other qualified professional advice, and she will seek specialized help from certified independent practitioners for respective matters. If the Client is under the care of a mental health professional, the Coach must be informed.","ar":"٣. تعلم العميلة أن التدريب ليس بديلاً عن النصح القانوني أو الطبي أو النفسي أو أي نصح مهني مؤهل، وستطلب المساعدة المتخصّصة من ممارسين مستقلين معتمدين. إن كانت العميلة تحت رعاية أخصائي صحة نفسية، يجب إبلاغ المدرّبة."}},
+   {"id":"c4d","type":"text","text":{"en":"4. A successful Coach/Client relationship is built on honesty. In addition to offering full energy to the program, the Client agrees to communicate openly, truthfully, and share direct feedback.","ar":"٤. تُبنى علاقة المدرّبة/العميلة الناجحة على الصدق. إضافة إلى تقديم طاقتها الكاملة للبرنامج، توافق العميلة على التواصل بصدق وانفتاح ومشاركة التغذية الراجعة المباشرة."}},
+   {"id":"c4e","type":"heading","level":2,"text":{"en":"Services","ar":"الخدمات"}},
+   {"id":"c4f","type":"text","text":{"en":"Both parties agree to participate in a coaching program (defined number of months and sessions) by telephone, WhatsApp, or face-to-face. Between scheduled meetings, Coach is available by email, text, and voicemail with a defined maximum response time. As needed, Coach may also provide additional services at a prorated hourly rate, according to the Client''s specific needs (e.g., analyzing documents, reading, or writing reports).","ar":"يوافق الطرفان على المشاركة في برنامج تدريب (عدد محدد من الأشهر والجلسات) عبر الهاتف أو واتساب أو لقاء مباشر. بين الجلسات، تتوفّر المدرّبة عبر البريد والرسائل والبريد الصوتي بحد أقصى محدد للاستجابة. عند الحاجة، قد تقدّم المدرّبة خدمات إضافية بسعر بالساعة وفق احتياجات العميلة المحددة (مثل تحليل المستندات أو القراءة أو كتابة التقارير)."}},
+   {"id":"c4g","type":"heading","level":2,"text":{"en":"Schedule & fees","ar":"الجدول والرسوم"}},
+   {"id":"c4h","type":"text","text":{"en":"This agreement is considered valid as of the start date. A defined hourly or monthly fee is charged. Hourly billing requires payment 24 hours before every session. For monthly billing, the first month''s payment is due before the initial coaching session, and subsequent payments are due every four-week period until the agreement ends. Calls or meetings last a defined number of minutes. If Coach''s offerings or fees change before this agreement has been signed and dated, the most current rates will apply.","ar":"تعتبر الاتفاقية سارية من تاريخ البدء. تُحتسب رسوم محددة بالساعة أو شهرياً. الفوترة بالساعة تتطلب الدفع قبل كل جلسة بـ24 ساعة. الفوترة الشهرية: دفعة الشهر الأول قبل الجلسة الأولى، وما يليها كل أربعة أسابيع حتى نهاية الاتفاقية. تستمر المكالمات/اللقاءات عدداً محدداً من الدقائق. إذا تغيّرت العروض أو الرسوم قبل توقيع الاتفاقية، تُطبَّق الأسعار الأحدث."}},
+   {"id":"c4i","type":"heading","level":2,"text":{"en":"Procedure","ar":"الإجراءات"}},
+   {"id":"c4j","type":"text","text":{"en":"Coaching meetings take place at a mutually agreed time and method. All scheduled calls/meetings will be initiated by the Client, who calls the Coach on the agreed channel. Clients will be notified by email or text if the Coach will be at any other location for the appointment.","ar":"تتم اللقاءات في وقت ووسيلة يتفق عليهما الطرفان. تبدأ العميلة كل المكالمات/اللقاءات عبر القناة المتفق عليها. تُخطَر العميلة عبر البريد أو الرسائل إن كانت المدرّبة في موقع آخر للموعد."}},
+   {"id":"c5","type":"heading","level":2,"text":{"en":"Confidentiality","ar":"السرية"}},
+   {"id":"c6","type":"text","text":{"en":"By virtue of the ICF Code of Ethics, this coaching relationship and all information the Client shares with the Coach is deemed confidential, but not necessarily legally confidential (as in medicine or law). Any information regarding the Client will not be disclosed without her written consent. Client''s name will not be disclosed as a reference without her permission.","ar":"بموجب مدونة أخلاقيات ICF، تُعد علاقة التدريب وجميع المعلومات التي تشاركها العميلة سرية، لكنها ليست بالضرورة محمية قانونياً (كما في الطب أو القانون). لن تُفصح أي معلومة عن العميلة دون موافقتها الكتابية. لن يُفصح اسم العميلة كمرجع دون إذنها."}},
+   {"id":"c6a","type":"text","text":{"en":"Information not considered confidential is that which: (a) was in the Coach''s possession before the Client shared it; (b) has been widely publicized or is typical in the Client''s industry; (c) is obtained by the Coach from a third party without breach of any obligation; (d) is independently developed by the Coach without referencing the Client''s confidential information; or (e) is required by law to be disclosed.","ar":"المعلومات غير السرية هي: (أ) ما كان بحوزة المدرّبة قبل أن تشاركه العميلة؛ (ب) ما نُشر على نطاق واسع أو هو شائع في مجال العميلة؛ (ج) ما تحصل عليه المدرّبة من طرف ثالث دون انتهاك أي التزام؛ (د) ما تطوّره المدرّبة باستقلالية دون الإشارة إلى معلومات العميلة السرية؛ (هـ) ما يلزم القانون الإفصاح عنه."}},
+   {"id":"c7","type":"heading","level":2,"text":{"en":"Cancellation policy","ar":"سياسة الإلغاء"}},
+   {"id":"c8","type":"text","text":{"en":"If the Client wishes to reschedule a coaching call, she must provide 48 hours notice in advance. Rescheduled sessions will generally be held within an agreed window of the original date. No replacement will be possible if changes are not made with 48 hours prior notice.","ar":"إذا أرادت العميلة إعادة جدولة مكالمة، عليها إشعار 48 ساعة مسبقاً. تُعقد الجلسات المُعاد جدولتها عادة ضمن نافذة متفق عليها من التاريخ الأصلي. لا تتم إعادة جدولة دون إشعار 48 ساعة."}},
+   {"id":"c9","type":"heading","level":2,"text":{"en":"Refund policy","ar":"سياسة الاسترداد"}},
+   {"id":"c10","type":"text","text":{"en":"Coaching is a relationship that requires full commitment and refunds will not generally be offered. Each request will be evaluated on a case-by-case basis, contingent on extenuating and unexpected circumstances that may arise in the Client''s life.","ar":"التدريب علاقة تتطلب التزاماً كاملاً ولا تُقدَّم الاستردادات عادةً. كل طلب يُقيَّم على حدة، حسب الظروف الاستثنائية وغير المتوقّعة التي قد تطرأ في حياة العميلة."}},
+   {"id":"c11","type":"heading","level":2,"text":{"en":"Limited liability","ar":"المسؤولية المحدودة"}},
+   {"id":"c12","type":"text","text":{"en":"Coach makes no expressed or implied guarantees or warranties, except as specifically provided in this agreement. Coach shall not be liable for any consequential, special, or exemplary damages. Coach''s entire liability and the Client''s exclusive remedy under this agreement are limited to the amount paid by the Client to the Coach for all services rendered up until the termination date, regardless of any damages sustained.","ar":"لا تقدّم المدرّبة ضمانات صريحة أو ضمنية، إلا ما هو منصوص عليه في الاتفاقية. لا تتحمل المدرّبة المسؤولية عن أي أضرار تبعية أو خاصة أو نموذجية. تقتصر مسؤولية المدرّبة وحلّ العميلة الحصري بموجب هذه الاتفاقية على المبلغ المدفوع للمدرّبة عن الخدمات المقدّمة حتى تاريخ الإنهاء، بصرف النظر عن أي أضرار."}},
+   {"id":"c12a","type":"heading","level":2,"text":{"en":"Disputes","ar":"النزاعات"}},
+   {"id":"c12b","type":"text","text":{"en":"In the event of a dispute, both parties pledge to attempt mediation in good faith for up to 30 days after notice. If unresolved, the dispute will be settled in a court with appropriate jurisdiction. This agreement, along with all other documents given to Client during enrollment, constitutes the entire agreement between both parties and supersedes all prior representations.","ar":"في حال نشوء نزاع، يتعهّد الطرفان بمحاولة الوساطة بحسن نية لمدة تصل إلى 30 يوماً بعد الإشعار. في حال عدم الحل، يُسوّى النزاع في محكمة ذات اختصاص. تُشكّل هذه الاتفاقية، مع المستندات الأخرى المسلّمة للعميلة عند التسجيل، الاتفاقية الكاملة بين الطرفين وتلغي كل التمثيلات السابقة."}},
+   {"id":"c12c","type":"heading","level":2,"text":{"en":"Signatures","ar":"التوقيعات"}},
+   {"id":"c12d","type":"text","text":{"en":"Please email a signed copy of this agreement to your Coach before the first session, and keep a copy for your records. Required signatures: Client name and date, Client signature, Coach name and date, Coach signature.","ar":"يُرجى إرسال نسخة موقَّعة من هذه الاتفاقية إلى المدرّبة بالبريد قبل الجلسة الأولى، والاحتفاظ بنسخة لسجلاتك. التوقيعات المطلوبة: اسم العميلة والتاريخ، توقيع العميلة، اسم المدرّبة والتاريخ، توقيع المدرّبة."}}
+ ]'::jsonb,
+ true),
+
+('partners',
+ 'Partners & Affiliates', 'الشركاء والمنتسبون',
+ 'Organizations we trust to provide outstanding products and services that complement our purpose.',
+ 'منظمات نثق بها لتقديم منتجات وخدمات مميزة تكمّل غرضنا.',
+ '[
+   {"id":"x1","type":"heading","level":1,"text":{"en":"Partners, Affiliates & Collaborations","ar":"الشركاء والمنتسبون والتعاونات"}},
+   {"id":"x2","type":"text","text":{"en":"We work with organizations that we trust to provide outstanding products and services that complement our purpose. Tested on the founder''s own blood sugar levels.","ar":"نعمل مع منظمات نثق بها لتقديم منتجات وخدمات مميزة تكمّل غرضنا. مُختبرة على مستويات سكر دم المؤسِّسة."}},
+   {"id":"x3","type":"heading","level":2,"text":{"en":"Partners","ar":"الشركاء"}},
+   {"id":"x3a","type":"heading","level":3,"text":{"en":"Greenzoon","ar":"Greenzoon"}},
+   {"id":"x3b","type":"text","text":{"en":"Trusted partner aligned with the LIV Functional methodology.","ar":"شريك موثوق يتماشى مع منهجية ليف."}},
+   {"id":"x3c","type":"heading","level":3,"text":{"en":"To Diet For","ar":"To Diet For"}},
+   {"id":"x3d","type":"text","text":{"en":"Trusted partner aligned with the LIV Functional methodology.","ar":"شريك موثوق يتماشى مع منهجية ليف."}},
+   {"id":"x5","type":"heading","level":2,"text":{"en":"Affiliates","ar":"المنتسبون"}},
+   {"id":"x6","type":"text","text":{"en":"We get a small commission if you choose to purchase the items below — at no extra cost to you.","ar":"نتلقّى عمولة صغيرة عند الشراء عبر روابطنا — دون تكلفة إضافية عليكِ."}}
+ ]'::jsonb,
+ true),
+
+('cgm-guide',
+ 'Your CGM Guide', 'دليل جهاز CGM',
+ 'What to buy, where to get it, and how to start. Required for Programs 3, 4, and VVIP.',
+ 'ماذا تشترين، من أين، وكيف تبدئين. إلزامي للبرامج 3 و4 وVVIP.',
+ '[
+   {"id":"g1","type":"heading","level":1,"text":{"en":"Your CGM — what to buy, where to get it, and how to start","ar":"جهاز CGM — ماذا تشترين، من أين، وكيف تبدئين"}},
+   {"id":"g2","type":"text","text":{"en":"Required for Programs 3, 4, and VVIP. A CGM (Continuous Glucose Monitor) is a small sensor worn on the upper arm that tracks blood sugar every few minutes — automatically, without finger pricks. It sends data to your phone in real time.","ar":"إلزامي للبرامج 3 و4 وVVIP. جهاز CGM (مراقبة جلوكوز مستمر) مستشعر صغير يُلبس على أعلى الذراع يقيس سكر الدم كل بضع دقائق — تلقائياً، دون وخز الأصابع. يُرسل البيانات إلى هاتفك لحظياً."}},
+   {"id":"g3","type":"text","text":{"en":"From Program 3 onward, this is not optional. It is the foundation of data-driven coaching. It shows exactly how your body responds to specific foods, stress, sleep, and movement — which means the protocol can be adjusted based on real evidence, not guesswork.","ar":"من البرنامج 3 فصاعداً، هذا ليس اختيارياً. إنه أساس التدريب المعتمد على البيانات. يُظهر بالضبط كيف يستجيب جسمك لأطعمة محددة وللتوتر والنوم والحركة — مما يعني أن البروتوكول يمكن تعديله بناءً على دليل حقيقي، لا تخمين."}},
+   {"id":"g4","type":"divider"},
+   {"id":"g5","type":"heading","level":2,"text":{"en":"What to buy in Kuwait","ar":"ماذا تشترين في الكويت"}},
+   {"id":"g6","type":"heading","level":3,"text":{"en":"FreeStyle Libre — recommended starting point","ar":"FreeStyle Libre — نقطة البدء الموصى بها"}},
+   {"id":"g7","type":"text","text":{"en":"The most accessible CGM option in Kuwait. Available at most major pharmacies. 17 KWD per sensor — each sensor lasts 15 days. Monthly cost: approximately 34 KWD. Free app for iPhone and Android. Simple to apply, easy to read — recommended starting point for most clients.","ar":"الخيار الأكثر إتاحة في الكويت. متوفر في معظم الصيدليات الكبرى. 17 د.ك للمستشعر — كل مستشعر يدوم 15 يوماً. التكلفة الشهرية: حوالي 34 د.ك. تطبيق مجاني لـiPhone وAndroid. سهل التطبيق وسهل القراءة — نقطة بدء موصى بها لمعظم العميلات."}},
+   {"id":"g8","type":"heading","level":3,"text":{"en":"Other options","ar":"خيارات أخرى"}},
+   {"id":"g9","type":"text","text":{"en":"For clients who need continuous real-time alerts (especially Type 1 diabetics or those with significant glucose variability):\n• Dexcom G7 — advanced alerts for drops and spikes; higher cost; available through medical suppliers or online order\n• Aidex CGM — newer to market, competitively priced, compatible with most smartphones","ar":"للعميلات اللواتي يحتجن تنبيهات لحظية مستمرة (خاصةً مرضى السكري النوع الأول أو من لديهن تذبذب جلوكوز كبير):\n• Dexcom G7 — تنبيهات متقدمة للانخفاض والارتفاع؛ تكلفة أعلى؛ يتوفر عبر موردي الأجهزة الطبية أو الطلب أونلاين\n• Aidex CGM — جديد في السوق، سعر منافس، متوافق مع معظم الهواتف الذكية"}},
+   {"id":"g10","type":"text","text":{"en":"The right CGM for your situation will be discussed during your onboarding session.","ar":"الجهاز المناسب لحالتك يُناقَش في جلسة الانطلاق."}},
+   {"id":"g11","type":"divider"},
+   {"id":"g12","type":"heading","level":2,"text":{"en":"Referral disclosure","ar":"إفصاح الإحالات"}},
+   {"id":"g13","type":"text","text":{"en":"LIV has referral partnerships with CGM suppliers. If you purchase through a LIV referral link, a small fee is received — at no extra cost to you. Only brands that have been personally used or vetted are referred. You are never obligated to use the referral link, and your coaching program is identical either way. This is disclosed directly because transparency is non-negotiable at LIV.","ar":"لدى ليف شراكات إحالة مع موردي CGM. عند الشراء عبر رابط ليف، تُحتسب عمولة صغيرة — دون تكلفة إضافية عليك. لا تُحال إلا العلامات التجارية التي اختُبرت أو دُقّقت شخصياً. لستِ ملزمة باستخدام الرابط، وبرنامج التدريب متطابق في الحالتين. يُفصح عن هذا مباشرة لأن الشفافية غير قابلة للتفاوض في ليف."}},
+   {"id":"g14","type":"divider"},
+   {"id":"g15","type":"heading","level":2,"text":{"en":"What happens after you get it","ar":"ماذا يحدث بعد الاستلام"}},
+   {"id":"g16","type":"text","text":{"en":"• Apply the sensor to the back of your upper arm — full setup guidance is provided\n• Share dashboard access before your first session\n• From that point, real-time data analysis begins. You focus on the protocol — the analysis is handled.","ar":"• ضعي المستشعر خلف أعلى الذراع — يُقدَّم دليل إعداد كامل\n• شاركي وصول لوحة البيانات قبل جلستك الأولى\n• من تلك اللحظة يبدأ تحليل البيانات لحظياً. تركّزين على البروتوكول — التحليل عندنا."}},
+   {"id":"g17","type":"text","text":{"en":"WhatsApp response guarantee: 6 hours or less, Sunday–Thursday.","ar":"ضمان الرد على واتساب: 6 ساعات أو أقل، الأحد–الخميس."}},
+   {"id":"g18","type":"button","label":{"en":"Book the Root Cause Session","ar":"احجزي جلسة الجذور"},"href":"/consultations","variant":"primary"}
+ ]'::jsonb,
+ true)
+
+on conflict (slug) do update set
+  title_en       = excluded.title_en,
+  title_ar       = excluded.title_ar,
+  description_en = excluded.description_en,
+  description_ar = excluded.description_ar,
+  blocks         = excluded.blocks,
+  is_published   = excluded.is_published;
+
+-- ---------- 3) ACCREDITATIONS table ----------
+create table if not exists public.accreditations (
+  id          uuid primary key default gen_random_uuid(),
+  name_en     text not null,
+  name_ar     text not null default '',
+  issuer_en   text,
+  issuer_ar   text,
+  image_url   text,
+  link_url    text,
+  position    int not null default 0,
+  is_published boolean not null default true,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.accreditations enable row level security;
+
+drop policy if exists "accreditations read"  on public.accreditations;
+create policy "accreditations read"
+  on public.accreditations for select to anon, authenticated using (is_published = true);
+
+drop policy if exists "accreditations admin" on public.accreditations;
+create policy "accreditations admin"
+  on public.accreditations for all to authenticated using (true) with check (true);
+
+-- Seed the certificates from /Acreditation folder (image paths point to public/accreditations/)
+insert into public.accreditations (name_en, name_ar, issuer_en, issuer_ar, image_url, position) values
+('Holistic Nutrition Certificate', 'شهادة التغذية الشاملة', 'Holistic Nutrition Programme', 'برنامج التغذية الشاملة', '/accreditations/holistic-nutrition-certificate.pdf', 10),
+('Nutrition Coach Certificate', 'شهادة مدربة تغذية', 'Accredited Provider', 'مزود معتمد', '/accreditations/nutrition-coach-certificate.png', 20),
+('NLP Practitioner Certificate', 'شهادة ممارس البرمجة اللغوية العصبية', 'NLP Institute', 'معهد البرمجة اللغوية العصبية', '/accreditations/reham-nlp-certificate.pdf', 30),
+('Center of CPD Accreditation', 'اعتماد مركز التطوير المهني المستمر', 'Center of CPD', 'مركز CPD', '/accreditations/center-of-cpd.jpg', 40),
+('Contemporary Medical Association', 'الجمعية الطبية المعاصرة', 'Contemporary Medical Association', 'الجمعية الطبية المعاصرة', '/accreditations/contemporary-medical-association.jpg', 50),
+('International Compliance Assurance — Accredited Training Provider', 'الامتثال الدولي — مزوّد تدريب معتمد', 'International Compliance Assurance', 'الامتثال الدولي', '/accreditations/international-compliance-assurance.png', 60),
+('International Practitioners of Holistic Medicine', 'الممارسون الدوليون للطب الشمولي', 'IPHM', 'IPHM', '/accreditations/international-practitioners-of-holistic-medicine.png', 70)
+on conflict do nothing;
+
+-- ---------- 4) Reload PostgREST cache ----------
+notify pgrst, 'reload schema';
