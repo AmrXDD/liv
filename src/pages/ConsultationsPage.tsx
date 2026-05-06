@@ -4,7 +4,7 @@ import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CollectionHero } from "@/components/product/CollectionHero";
-import { BookingWidget } from "@/components/booking/BookingWidget";
+import { CalEmbed } from "@/components/booking/CalEmbed";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { useProducts } from "@/lib/queries";
 import { Button } from "@/components/ui/Button";
@@ -109,7 +109,7 @@ export function ConsultationsPage() {
 
       <Section variant="default" pad="md" id="booking">
         <Container>
-          <BookingWidget />
+          <CalEmbed />
         </Container>
       </Section>
 

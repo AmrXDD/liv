@@ -7,9 +7,12 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Button } from "@/components/ui/Button";
 import { ChevronDown } from "lucide-react";
 import { BloodSugarAnimation } from "./BloodSugarAnimation";
+import { useDirection } from "@/hooks/useDirection";
+import { cn } from "@/lib/utils";
 
 export function Hero() {
   const { t } = useTranslation();
+  const { isRtl } = useDirection();
   const root = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
 
@@ -97,7 +100,7 @@ export function Hero() {
       className="relative isolate overflow-hidden bg-surface-base bg-editorial pb-24 pt-16 lg:pt-24"
     >
       {/* Background visual layer */}
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 z-0">
         <div
           data-hero-blob="1"
           data-hero-shape
@@ -111,7 +114,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-grain opacity-40" />
       </div>
 
-      <Container className="relative">
+      <Container className="relative z-10">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <header className="lg:col-span-8">
             <div data-hero-eyebrow className="eyebrow mb-8">
@@ -120,13 +123,24 @@ export function Hero() {
 
             <h1
               ref={titleRef}
-              className="display-serif text-display-2xl tracking-tightest text-balance"
+              className={cn(
+                "display-serif text-display-2xl text-balance",
+                isRtl ? "tracking-normal leading-[1.15]" : "tracking-tightest"
+              )}
               aria-label={titleWords.join(" ")}
             >
               {titleWords.map((word, i) => (
                 <span key={i} className="hero-word inline-block overflow-hidden align-baseline mx-1.5">
                   <span className="inline-block will-change-transform">
-                    {i === 1 ? <em className="text-gradient-forest not-italic">{word}</em> : word}
+                    {i === 1 ? (
+                      isRtl ? (
+                        <em className="not-italic text-forest-600">{word}</em>
+                      ) : (
+                        <em className="text-gradient-forest not-italic">{word}</em>
+                      )
+                    ) : (
+                      word
+                    )}
                   </span>
                 </span>
               ))}

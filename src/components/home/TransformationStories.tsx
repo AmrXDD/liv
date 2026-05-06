@@ -87,11 +87,11 @@ export function TransformationStories() {
     <Section variant="ink" pad="xl" className="!py-0">
       <div
         ref={root}
-        className="relative overflow-x-clip overflow-y-hidden py-20 lg:flex lg:h-screen lg:flex-col lg:py-0"
+        className="relative overflow-x-clip overflow-y-hidden py-20 lg:h-screen lg:py-0"
       >
-        <div className="absolute inset-0 bg-radial-forest opacity-50" />
+        <div className="absolute inset-0 bg-radial-forest opacity-50 pointer-events-none" />
 
-        <Container className="relative lg:flex-shrink-0 lg:pt-24">
+        <Container className="relative lg:pt-24">
           <div className="eyebrow mb-6 text-bone-200/70">
             {t("stories.eyebrow")}
           </div>
@@ -101,10 +101,10 @@ export function TransformationStories() {
           <p className="mt-6 max-w-md text-bone-200/70">{t("stories.lede")}</p>
         </Container>
 
-        <div className="relative mt-12 overflow-x-auto overscroll-x-contain snap-x snap-mandatory lg:mt-0 lg:flex lg:flex-1 lg:items-center lg:overflow-visible">
+        <div className="relative mt-12 overflow-x-auto overscroll-x-contain snap-x snap-mandatory lg:absolute lg:inset-x-0 lg:bottom-[8vh] lg:mt-0 lg:overflow-visible">
           <div
             data-story-track
-            className="flex w-max items-stretch gap-8 px-8 will-change-transform lg:flex-shrink-0"
+            className="flex w-max items-stretch gap-8 px-8 will-change-transform"
           >
             {testimonials.map((tt) => (
               <article
