@@ -104,7 +104,7 @@ export function TransformationStories() {
         <div className="relative mt-12 overflow-x-auto overscroll-x-contain snap-x snap-mandatory lg:mt-0 lg:flex lg:flex-1 lg:items-center lg:overflow-visible">
           <div
             data-story-track
-            className="flex w-max items-stretch gap-8 px-8 will-change-transform"
+            className="flex w-max items-stretch gap-8 px-8 will-change-transform lg:flex-shrink-0"
           >
             {testimonials.map((tt) => (
               <article
