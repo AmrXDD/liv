@@ -6,7 +6,7 @@
   "installCommand": "npm install",
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!assets/|.*\\.).*)", "destination": "/" }
+    { "source": "/:path*", "destination": "/" }
   ],
   "headers": [
     {
