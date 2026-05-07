@@ -209,4 +209,5 @@ Set the four env vars listed above in the host's dashboard. Ensure `VITE_SITE_UR
 - Service-role operations (admin reads, Stripe/Calendar webhooks, signed-URL minting) belong in Supabase Edge Functions or a separate server. Do not ship the service-role key to the client.
 - Reduced-motion compliance is wired in everywhere; new animation work should follow the same pattern (`if (prefersReducedMotion()) return;` early-return inside GSAP hooks).
 #   l i v  
+ #   l i v f u n c t i o n a l  
  
