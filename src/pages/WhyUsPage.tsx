@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { ConversionFunnel } from "@/components/home/ConversionFunnel";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
+import { Credentials } from "@/components/home/Credentials";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 interface Item { title: string; body: string }
@@ -41,6 +42,7 @@ export function WhyUsPage() {
           </div>
         </Container>
       </Section>
+      <Credentials />
       <TestimonialsSlider />
       <ConversionFunnel />
     </>

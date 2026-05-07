@@ -28,6 +28,8 @@ export interface Product {
   accent?: Accent;
   isPublished?: boolean;
   position?: number;
+  downloadUrl?: string;
+  seoKeywords?: string;
 }
 
 export interface Collection {

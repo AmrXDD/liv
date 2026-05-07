@@ -68,7 +68,7 @@ export function AdminConsultationsPage() {
     <>
       <PageHeader
         title="Consultations"
-        description="Free 15-minute discovery calls and paid consultations."
+        description="Free 45-minute discovery calls and paid consultations."
       />
 
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">

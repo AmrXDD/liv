@@ -36,9 +36,9 @@ export function TestimonialsSlider() {
           <div className="lg:col-span-4">
             <div className="text-eyebrow uppercase opacity-70 mb-6">{t("stories.eyebrow")}</div>
             <h2 className="display-serif text-display-lg tracking-tightest text-balance">
-              Voices that stayed.
+              {t("stories.voices", { defaultValue: "Voices that stayed." })}
             </h2>
-            <div className="mt-8 flex items-center gap-3">
+            <div dir="ltr" className="mt-8 flex items-center gap-3">
               <button
                 onClick={isRtl ? next : prev}
                 className="grid h-12 w-12 place-items-center rounded-full border border-bone-50/30 hover:bg-bone-50 hover:text-forest-700 transition-colors"

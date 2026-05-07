@@ -71,9 +71,8 @@
   }
 
   .display-serif {
-    font-family: "Fraunces", "Cairo", Georgia, serif;
+    font-family: "Cairo", "Inter", system-ui, sans-serif;
     font-feature-settings: "ss01";
-    font-variation-settings: "opsz" 144;
   }
 
   .btn {

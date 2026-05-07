@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number, currency = "USD", locale = "en-US") {
+  if (!amount || amount <= 0) {
+    return locale.startsWith("ar") ? "حسب الطلب" : "On quote";
+  }
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,

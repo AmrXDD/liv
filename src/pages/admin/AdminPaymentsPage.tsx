@@ -117,7 +117,11 @@ export function AdminPaymentsPage() {
       />
 
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Stat label="Total revenue" value={formatPrice(totalRevenue, currency)} accent="forest" />
+        <Stat
+          label={`Total revenue (${currency})`}
+          value={new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(totalRevenue)}
+          accent="forest"
+        />
         <Stat label="Pending" value={String(pendingCount)} accent="coral" />
         <Stat label="Cart orders" value={String(orders.length)} />
         <Stat label="Digital captures" value={String(digital.length)} />

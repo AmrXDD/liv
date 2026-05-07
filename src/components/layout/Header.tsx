@@ -28,9 +28,9 @@ export function Header() {
   }, [location.pathname]);
 
   const aboutItems = [
-    { href: "/contact", label: t("nav.contact") },
-    { href: "/my-story", label: t("nav.myStory") },
     { href: "/why-us", label: t("nav.whyUs") },
+    { href: "/my-story", label: t("nav.myStory") },
+    { href: "/contact", label: t("nav.contact") },
   ];
 
   const navItem = (to: string, label: string) => (
@@ -59,13 +59,22 @@ export function Header() {
             : "bg-transparent py-5"
         )}
       >
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-5 md:px-8 lg:px-12 xl:px-16">
-          <Link to="/" className="group flex items-center gap-2.5" aria-label="Liv Functional">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-500 text-bone-50 font-bold text-sm shadow-glow transition-transform duration-500 group-hover:rotate-[-8deg]">
-              L
-            </span>
-            <span className="display-serif text-lg font-semibold tracking-tight">
-              Liv <span className="text-coral-500">Functional</span>
+        <div dir="ltr" className="mx-auto flex max-w-[1440px] items-center justify-between px-5 md:px-8 lg:px-12 xl:px-16">
+          <Link
+            to="/"
+            dir="ltr"
+            className="group flex items-center gap-1.5"
+            aria-label="Liv Functional"
+          >
+            <img
+              src="/liv-logo.png"
+              alt="Liv"
+              className="h-11 w-auto transition-transform duration-700 ease-editorial group-hover:scale-[1.06] group-hover:rotate-[-3deg]"
+            />
+            <span
+              className="display-serif text-xl font-semibold tracking-tight leading-none inline-block text-coral-500 transition-all duration-700 ease-editorial group-hover:translate-x-0.5 group-hover:text-forest-600"
+            >
+              Functional
             </span>
           </Link>
 

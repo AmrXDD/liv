@@ -4,7 +4,7 @@ import { mapBlogPost, mapCollection, mapPage, mapProduct } from "./mappers";
 import type { BlogPost, Collection, Page, Product, ProductCategory } from "@/types";
 
 const PRODUCT_COLS =
-  "id,slug,category,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar,long_en,long_ar,price,currency,duration_en,duration_ar,format,badge_en,badge_ar,hero_image,images,accent,outcomes,inclusions,is_published,position";
+  "id,slug,category,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar,long_en,long_ar,price,currency,duration_en,duration_ar,format,badge_en,badge_ar,hero_image,images,accent,outcomes,inclusions,is_published,position,download_url,seo_keywords";
 
 const COLLECTION_COLS =
   "id,slug,title_en,title_ar,description_en,description_ar,cover_image,accent,is_published,position";

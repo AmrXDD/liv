@@ -131,7 +131,9 @@ export function BlogPage() {
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-3 text-eyebrow uppercase text-ink-muted">
-                    <span className="rounded-full bg-coral-100 text-coral-700 px-3 py-1">{p.category}</span>
+                    <span className="rounded-full bg-coral-100 text-coral-700 px-3 py-1">
+                      {t(`blog.categories.${p.category}` as never, { defaultValue: p.category })}
+                    </span>
                     <span>{p.readingMinutes} {t("blog.minRead")}</span>
                   </div>
                   <h3 className="mt-4 display-serif text-xl tracking-tight">{p.title[lang]}</h3>

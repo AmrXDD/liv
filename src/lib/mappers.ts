@@ -35,6 +35,8 @@ type ProductRow = {
   inclusions: LocalizedString[] | null;
   is_published: boolean;
   position: number;
+  download_url?: string | null;
+  seo_keywords?: string | null;
 };
 
 const ls = (en: string | null, ar: string | null): LocalizedString | undefined =>
@@ -61,6 +63,8 @@ export function mapProduct(row: ProductRow): Product {
     accent: (row.accent as Accent) ?? "forest",
     isPublished: row.is_published,
     position: row.position,
+    downloadUrl: row.download_url ?? undefined,
+    seoKeywords: row.seo_keywords ?? undefined,
   };
 }
 
@@ -102,6 +106,8 @@ export function productToRow(p: Partial<Product>): Record<string, unknown> {
   if (p.inclusions !== undefined) out.inclusions = p.inclusions;
   if (p.isPublished !== undefined) out.is_published = p.isPublished;
   if (p.position !== undefined) out.position = p.position;
+  if (p.downloadUrl !== undefined) out.download_url = p.downloadUrl;
+  if (p.seoKeywords !== undefined) out.seo_keywords = p.seoKeywords;
   return out;
 }
 

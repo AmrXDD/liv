@@ -60,7 +60,7 @@ export default {
       fontFamily: {
         sans: ['"Cairo"', '"Inter"', "system-ui", "sans-serif"],
         display: ['"Cairo"', '"Inter"', "system-ui", "sans-serif"],
-        serif: ['"Fraunces"', '"Cairo"', "Georgia", "serif"],
+        serif: ['"Cairo"', '"Inter"', "system-ui", "sans-serif"],
       },
       fontSize: {
         // Editorial scale

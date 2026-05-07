@@ -26,6 +26,7 @@ export function CoachingPage() {
         title={t("coaching.hero.title")}
         description={t("coaching.hero.lede")}
         path="/coaching"
+        keywords="metabolic health program, insulin sensitivity reset, insulin resistance protocol, lower fasting insulin, lower A1C naturally, fasting glucose protocol, blood sugar stabilization, gut health insulin resistance, functional nutrition protocol, no medication for diabetes prevention, prediabetes plan, PCOS nutrition plan, pcos, مقاومه الأنسولين, علاج السكري من غير دوا, علاج السكري الكويت, دايت لعلاج السكري, تكيس المبايض"
       />
 
       <CollectionHero

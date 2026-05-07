@@ -1,4 +1,5 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
@@ -8,13 +9,14 @@ import { Button } from "@/components/ui/Button";
 import { useProduct } from "@/lib/queries";
 import { formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
-import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 export function CoachingProductPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { data: product, isLoading } = useProduct(slug);
+  const [agreed, setAgreed] = useState(false);
 
   if (isLoading) {
     return (
@@ -34,6 +36,7 @@ export function CoachingProductPage() {
         description={product.description[lang]}
         path={`/coaching/${product.slug}`}
         type="product"
+        keywords={product.seoKeywords}
       />
 
       <Section variant="default" pad="md" className="bg-editorial">
@@ -106,14 +109,50 @@ export function CoachingProductPage() {
                   </div>
                   <div className="mt-1 text-sm opacity-70">{product.duration?.[lang]}</div>
 
-                  <div className="mt-8">
-                    <AddToCartButton product={product} variant="secondary" />
-                  </div>
-                  <Button to="/consultations" variant="ghost" arrow size="md" className="mt-3 w-full !border-bone-50/30 !text-bone-50 hover:!bg-bone-50 hover:!text-ink">
-                    {t("coaching.apply")}
+                  <Button
+                    variant="secondary"
+                    arrow
+                    size="lg"
+                    className="mt-8 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!agreed}
+                    onClick={() => {
+                      if (!agreed) return;
+                      navigate("/contact");
+                    }}
+                  >
+                    {t("coaching.apply", { defaultValue: "Apply now" })}
                   </Button>
+
+                  <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-bone-200/90">
+                    <input
+                      type="checkbox"
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.currentTarget.checked)}
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-bone-50/30 bg-transparent accent-coral-500"
+                    />
+                    <span>
+                      {t("coaching.agreePrefix", {
+                        defaultValue: "I agree to the",
+                      })}{" "}
+                      <Link
+                        to="/coaching-agreement"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline underline-offset-2 hover:text-bone-50"
+                      >
+                        {t("coaching.agreementLink", {
+                          defaultValue: "coaching terms",
+                        })}
+                      </Link>
+                      .
+                    </span>
+                  </label>
+
                   <p className="mt-3 text-xs opacity-70">
-                    Every program starts with a free 15-minute discovery call.
+                    {t("coaching.discoveryNote", {
+                      defaultValue:
+                        "Every program starts with a free 45-minute discovery call.",
+                    })}
                   </p>
                 </div>
               </div>

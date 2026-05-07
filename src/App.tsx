@@ -31,6 +31,7 @@ import { AdminCoachingPage } from "@/pages/admin/AdminCoachingPage";
 import { AdminImportPage } from "@/pages/admin/AdminImportPage";
 import { AdminInquiriesPage } from "@/pages/admin/AdminInquiriesPage";
 import { AdminEmailsPage } from "@/pages/admin/AdminEmailsPage";
+import { AdminNewsletterPage } from "@/pages/admin/AdminNewsletterPage";
 import { AdminBlogPage } from "@/pages/admin/AdminBlogPage";
 import { AdminBlogFormPage } from "@/pages/admin/AdminBlogFormPage";
 import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
@@ -96,6 +97,7 @@ export function App() {
         <Route path="import" element={<AdminImportPage />} />
         <Route path="inquiries" element={<AdminInquiriesPage />} />
         <Route path="emails" element={<AdminEmailsPage />} />
+        <Route path="newsletter" element={<AdminNewsletterPage />} />
         <Route path="blog" element={<AdminBlogPage />} />
         <Route path="blog/:id" element={<AdminBlogFormPage />} />
         <Route path="accreditations" element={<AdminAccreditationsPage />} />

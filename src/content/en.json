@@ -19,10 +19,12 @@
     "language": "العربية",
     "menu": "Menu",
     "close": "Close",
-    "bookFree": "Book free consultation"
+    "bookFree": "Book free consultation",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "cta": {
-    "primary": "Book a free 15-min call",
+    "primary": "Book a free 45-min call",
     "secondary": "Explore programs",
     "shopPlans": "Shop the plans",
     "joinNewsletter": "Join the newsletter",
@@ -77,7 +79,7 @@
       {
         "tag": "03",
         "title": "Consultations",
-        "summary": "A free 15-minute call to map your next best step.",
+        "summary": "A free 45-minute call to map your next best step.",
         "outcome": "Walk away with clarity, even if we never work together.",
         "href": "/consultations"
       }
@@ -86,7 +88,8 @@
   "stories": {
     "eyebrow": "Transformations",
     "title": "What real women say after 90 days.",
-    "lede": "Stories from clients across the GCC, Europe, and North America."
+    "lede": "Stories from clients across the GCC, Europe, and North America.",
+    "voices": "Voices that stayed."
   },
   "credentials": {
     "eyebrow": "Trust the framework",
@@ -102,7 +105,7 @@
     "eyebrow": "How it works",
     "title": "Four steps from stuck to systemized.",
     "steps": [
-      { "n": "01", "title": "Free 15-min call", "body": "We listen, we don't sell. You leave with a next step." },
+      { "n": "01", "title": "Free 45-min call", "body": "We listen, we don't sell. You leave with a next step." },
       { "n": "02", "title": "Choose your path", "body": "DIY plan, coaching program, or hybrid — your pace." },
       { "n": "03", "title": "Run the protocol", "body": "Weekly check-ins, structured habits, measurable wins." },
       { "n": "04", "title": "Live functional", "body": "You graduate with skills you keep — not a subscription you forget." }
@@ -158,12 +161,15 @@
     "outcomes": "Outcomes",
     "timeline": "Timeline",
     "pricing": "Investment",
-    "apply": "Apply now"
+    "apply": "Apply now",
+    "agreePrefix": "I agree to the",
+    "agreementLink": "coaching terms",
+    "discoveryNote": "Every program starts with a free 45-minute discovery call."
   },
   "consultations": {
     "hero": {
       "eyebrow": "Consultations",
-      "title": "Book your free 15-minute call.",
+      "title": "Book your free 45-minute call.",
       "lede": "Tell us where you are. Walk away with a next step — even if it isn't with us."
     },
     "form": {
@@ -183,7 +189,7 @@
     "trust": [
       "100% confidential",
       "No sales pitch",
-      "15 minutes, max"
+      "45 minutes, max"
     ]
   },
   "blog": {
@@ -200,20 +206,21 @@
       "gut": "Gut",
       "metabolic": "Metabolic",
       "mindset": "Mindset",
-      "habits": "Habits"
+      "habits": "Habits",
+      "energy": "Energy"
     },
     "empty": "No articles yet. Subscribe and we'll let you know."
   },
   "footer": {
     "tagline": "Functional wellness, real transformation.",
-    "newsletter": "Get the Sunday letter",
+    "newsletter": "Join our circle",
     "whatsapp": "Join our WhatsApp circle",
     "rights": "All rights reserved.",
     "explore": "Explore",
     "company": "Company",
     "support": "Support",
     "social": "Follow",
-    "made": "Built with intention in Riyadh, Beirut & beyond."
+    "made": "Built with Intention"
   },
   "static": {
     "about": {

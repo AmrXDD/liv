@@ -9,6 +9,8 @@ import { SEO } from "@/components/seo/SEO";
 import { useCart } from "@/lib/cart";
 import { getSupabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import type { Product } from "@/types";
 
 export function CheckoutPage() {
   const { t, i18n } = useTranslation();
@@ -22,6 +24,10 @@ export function CheckoutPage() {
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [downloads, setDownloads] = useState<
+    Array<{ slug: string; title: string; url: string }>
+  >([]);
+  const qc = useQueryClient();
 
   if (items.length === 0 && status !== "ok") {
     return <Navigate to="/" replace />;
@@ -56,9 +62,29 @@ export function CheckoutPage() {
         const { error } = await sb.from("orders").insert(payload);
         if (error) throw error;
       }
+      const purchasedDownloads = items
+        .filter((i) => i.category === "diy")
+        .map((i) => {
+          const cached = qc
+            .getQueriesData<Product[]>({ queryKey: ["products", "diy"] })
+            .flatMap(([, data]) => data ?? [])
+            .find((p) => p?.id === i.productId);
+          const single = qc.getQueryData<Product | null>(["product", i.slug]);
+          const product = cached ?? single ?? null;
+          if (!product?.downloadUrl) return null;
+          return {
+            slug: i.slug,
+            title: product.title[lang] || i.title[lang],
+            url: product.downloadUrl,
+          };
+        })
+        .filter(Boolean) as Array<{ slug: string; title: string; url: string }>;
+      setDownloads(purchasedDownloads);
       setStatus("ok");
       clear();
-      setTimeout(() => navigate("/"), 4000);
+      if (purchasedDownloads.length === 0) {
+        setTimeout(() => navigate("/"), 4000);
+      }
     } catch (err) {
       console.error(err);
       setErrorMsg(err instanceof Error ? err.message : "Order failed.");
@@ -79,6 +105,27 @@ export function CheckoutPage() {
               We've received your order and will email you shortly with payment instructions and
               next steps.
             </p>
+            {downloads.length > 0 && (
+              <div className="mt-10 rounded-3xl border border-forest-500/30 bg-forest-50 p-6 text-start">
+                <div className="text-eyebrow uppercase text-forest-700 mb-3">
+                  Your digital products
+                </div>
+                <ul className="space-y-3">
+                  {downloads.map((d) => (
+                    <li key={d.slug} className="flex items-center justify-between gap-4">
+                      <span className="text-sm font-medium">{d.title}</span>
+                      <a
+                        href={d.url}
+                        download
+                        className="inline-flex items-center rounded-full bg-forest-600 px-4 py-2 text-xs font-semibold text-bone-50 transition-colors hover:bg-forest-700"
+                      >
+                        Download
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <Link
               to="/"
               className="mt-8 inline-flex rounded-full bg-forest-500 px-6 py-3 text-sm font-semibold text-bone-50 hover:bg-forest-600"

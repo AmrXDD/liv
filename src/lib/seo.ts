@@ -6,6 +6,7 @@ export interface SeoMeta {
   type?: "website" | "article" | "product";
   noindex?: boolean;
   schema?: Record<string, unknown>;
+  keywords?: string;
 }
 
 const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://livfunctional.com";

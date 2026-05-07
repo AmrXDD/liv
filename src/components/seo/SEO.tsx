@@ -6,7 +6,7 @@ const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://livfunctional.com";
 const DEFAULT_OG_IMAGE = `${SITE_URL.replace(/\/$/, "")}/liv-logo.png`;
 const TWITTER_HANDLE = "@livfunctional";
 
-export function SEO({ title, description, path = "/", image, type = "website", noindex, schema }: SeoMeta) {
+export function SEO({ title, description, path = "/", image, type = "website", noindex, schema, keywords }: SeoMeta) {
   const { lang } = useDirection();
   const isAr = lang.startsWith("ar");
   const htmlLang = isAr ? "ar" : "en";
@@ -23,6 +23,7 @@ export function SEO({ title, description, path = "/", image, type = "website", n
       <html lang={htmlLang} dir={isAr ? "rtl" : "ltr"} />
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
+      {keywords && <meta name="keywords" content={keywords} />}
       <link rel="canonical" href={url} />
       <meta
         name="robots"

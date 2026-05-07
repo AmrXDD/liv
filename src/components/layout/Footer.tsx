@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Instagram, Linkedin, MessageCircle, ArrowUpRight } from "lucide-react";
+import { Instagram, Linkedin, Facebook, ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { getSupabase } from "@/lib/supabase";
+import { useAccreditations } from "@/lib/queries";
 
 export function Footer() {
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const isAr = i18n.language?.startsWith("ar");
+  const { data: accreditations = [] } = useAccreditations();
 
   const explore = [
     { to: "/diy-plans", label: t("nav.diy") },
@@ -29,8 +32,8 @@ export function Footer() {
 
   const support = [
     { to: "/faq", label: t("nav.faq") },
-    { to: "/privacy", label: "Privacy" },
-    { to: "/terms", label: "Terms" },
+    { to: "/privacy", label: t("nav.privacy", { defaultValue: "Privacy" }) },
+    { to: "/terms", label: t("nav.terms", { defaultValue: "Terms" }) },
   ];
 
   const subscribe = async (e: React.FormEvent) => {
@@ -40,12 +43,23 @@ export function Footer() {
     const sb = getSupabase();
     try {
       if (sb) {
-        const { error } = await sb.from("newsletter").insert({ email, locale: i18n.language });
+        const { error } = await sb
+          .from("newsletter")
+          .upsert(
+            {
+              email: email.trim().toLowerCase(),
+              locale: i18n.language?.startsWith("ar") ? "ar" : "en",
+              source: "footer",
+            },
+            { onConflict: "email", ignoreDuplicates: true }
+          );
         if (error) throw error;
       }
       setStatus("ok");
       setEmail("");
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Newsletter signup failed", err);
       setStatus("err");
     }
   };
@@ -89,17 +103,6 @@ export function Footer() {
                 {status === "err" && t("newsletter.error")}
               </p>
             </form>
-
-            <a
-              href="https://chat.whatsapp.com/livfunctional"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-bone-50/15 px-5 py-3 text-sm font-medium hover:border-bone-50/40 transition-colors"
-            >
-              <MessageCircle className="h-4 w-4" />
-              {t("footer.whatsapp")}
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
           </div>
 
           <div className="md:col-span-7 grid grid-cols-2 gap-10 sm:grid-cols-3">
@@ -108,6 +111,31 @@ export function Footer() {
             <FooterColumn title={t("footer.support")} items={support} />
           </div>
         </div>
+
+        {accreditations.length > 0 && (
+          <div className="mt-16 border-t border-bone-50/10 pt-10">
+            <div className="text-eyebrow uppercase opacity-70 mb-5">
+              {t("credentials.eyebrow", { defaultValue: "Accreditations" })}
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {accreditations.map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-2xl border border-bone-50/10 bg-bone-50/[0.03] px-4 py-3 text-sm text-bone-200/90"
+                >
+                  <div className="font-medium text-bone-50">
+                    {isAr ? a.name_ar : a.name_en}
+                  </div>
+                  {(isAr ? a.issuer_ar : a.issuer_en) && (
+                    <div className="mt-0.5 text-xs text-bone-200/60">
+                      {isAr ? a.issuer_ar : a.issuer_en}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mt-20 flex flex-col items-start justify-between gap-6 border-t border-bone-50/10 pt-8 md:flex-row md:items-center">
           <div className="flex items-center gap-4">
@@ -120,16 +148,22 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-3">
-            <SocialIcon href="https://instagram.com/livfunctional" label="Instagram">
+            <SocialIcon href="https://www.instagram.com/liv.lowcarb/" label="Instagram">
               <Instagram className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://linkedin.com/company/liv-functional" label="LinkedIn">
+            <SocialIcon href="https://www.facebook.com/liv.lowcarb/" label="Facebook">
+              <Facebook className="h-4 w-4" />
+            </SocialIcon>
+            <SocialIcon href="https://x.com/LivFunctional" label="X">
+              <XGlyph />
+            </SocialIcon>
+            <SocialIcon href="https://www.linkedin.com/company/liv-functional-nutrition/" label="LinkedIn">
               <Linkedin className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://tiktok.com/@livfunctional" label="TikTok">
+            <SocialIcon href="https://www.tiktok.com/@liv.lowcarb" label="TikTok">
               <TikTokGlyph />
             </SocialIcon>
-            <SocialIcon href="https://www.threads.net/@livfunctional" label="Threads">
+            <SocialIcon href="https://www.threads.com/@liv.lowcarb" label="Threads">
               <ThreadsGlyph />
             </SocialIcon>
           </div>
@@ -185,6 +219,14 @@ function SocialIcon({
     >
       {children}
     </a>
+  );
+}
+
+function XGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+      <path d="M18.244 2H21l-6.52 7.45L22 22h-6.797l-4.74-6.205L4.96 22H2.2l6.973-7.97L2 2h6.94l4.28 5.66L18.244 2zm-1.19 18h1.83L7.04 4H5.1l11.954 16z" />
+    </svg>
   );
 }
 

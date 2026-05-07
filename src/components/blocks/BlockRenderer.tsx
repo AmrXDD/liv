@@ -50,27 +50,35 @@ export function BlockRenderer({ block }: { block: Block }) {
           </p>
         </Container>
       );
-    case "image":
+    case "image": {
+      const isPortrait = block.id === "founder-portrait";
       return (
         <Container>
-          <figure>
+          <figure className={cn(isPortrait && "max-w-[14rem] sm:max-w-[16rem] me-auto")}>
             <img
               src={block.url}
               alt={block.alt ?? ""}
               className={cn(
-                "w-full object-cover",
-                block.rounded ? "rounded-3xl" : "rounded-none"
+                "object-cover",
+                isPortrait ? "w-full aspect-[3/4]" : "w-full",
+                block.rounded || isPortrait ? "rounded-3xl" : "rounded-none"
               )}
               loading="lazy"
             />
             {block.caption && (
-              <figcaption className="mt-3 text-center text-sm text-ink-muted">
+              <figcaption
+                className={cn(
+                  "mt-3 text-sm text-ink-muted",
+                  isPortrait ? "text-start" : "text-center"
+                )}
+              >
                 {block.caption[lang]}
               </figcaption>
             )}
           </figure>
         </Container>
       );
+    }
     case "button":
       return (
         <Container>
@@ -138,11 +146,43 @@ function ProductGridBlockRenderer({
 }
 
 export function BlocksList({ blocks }: { blocks: Block[] }) {
-  return (
-    <div className="space-y-12 py-12 md:space-y-16 md:py-20">
-      {blocks.map((b) => (
-        <BlockRenderer key={b.id} block={b} />
-      ))}
-    </div>
-  );
+  const lang = useLang();
+  const out: JSX.Element[] = [];
+  for (let i = 0; i < blocks.length; i++) {
+    const b = blocks[i];
+    const next = blocks[i + 1];
+    if (
+      b.type === "image" &&
+      b.id === "founder-portrait" &&
+      next &&
+      next.type === "text"
+    ) {
+      out.push(
+        <Container key={b.id}>
+          <div className="grid items-start gap-6 md:gap-8 md:grid-cols-[14rem_1fr] lg:grid-cols-[16rem_1fr]">
+            <figure className="m-0">
+              <img
+                src={b.url}
+                alt={b.alt ?? ""}
+                className="w-full aspect-[3/4] rounded-3xl object-cover"
+                loading="lazy"
+              />
+              {b.caption && (
+                <figcaption className="mt-3 text-start text-sm text-ink-muted">
+                  {b.caption[lang]}
+                </figcaption>
+              )}
+            </figure>
+            <p className="max-w-3xl text-base leading-relaxed text-ink">
+              {next.text[lang]}
+            </p>
+          </div>
+        </Container>
+      );
+      i++;
+      continue;
+    }
+    out.push(<BlockRenderer key={b.id} block={b} />);
+  }
+  return <div className="space-y-12 py-12 md:space-y-16 md:py-20">{out}</div>;
 }

@@ -19,6 +19,7 @@ export function DIYProductPage() {
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const [unlocked, setUnlocked] = useState(false);
   const { data: product, isLoading } = useProduct(slug);
 
   if (isLoading) {
@@ -48,6 +49,7 @@ export function DIYProductPage() {
       }
       setStatus("ok");
       setEmail("");
+      if (product?.downloadUrl) setUnlocked(true);
     } catch {
       setStatus("err");
     }
@@ -60,6 +62,7 @@ export function DIYProductPage() {
         description={product.description[lang]}
         path={`/diy-plans/${product.slug}`}
         type="product"
+        keywords={product.seoKeywords}
         schema={productSchema({
           name: product.title.en,
           description: product.description.en,
@@ -149,7 +152,27 @@ export function DIYProductPage() {
                   <span className="h-px flex-1 bg-ink/10" />
                 </div>
 
-                <form onSubmit={requestDownload} className="mt-2">
+                {unlocked && product.downloadUrl ? (
+                  <div className="mt-2 rounded-2xl border border-forest-500/30 bg-forest-50 p-5">
+                    <div className="text-eyebrow uppercase text-forest-700 mb-2">
+                      Your download is ready
+                    </div>
+                    <p className="text-sm text-ink-muted mb-4">
+                      We've also emailed you the file. Lifetime access on this device for the next 7 days.
+                    </p>
+                    <a
+                      href={product.downloadUrl}
+                      download
+                      className="inline-flex w-full items-center justify-center rounded-full bg-forest-600 px-5 py-3 text-sm font-semibold text-bone-50 transition-colors hover:bg-forest-700"
+                    >
+                      Download {product.title[lang]}
+                    </a>
+                  </div>
+                ) : null}
+                <form
+                  onSubmit={requestDownload}
+                  className={`mt-2 ${unlocked ? "hidden" : ""}`}
+                >
                   <label className="text-sm font-medium block mb-2">
                     {t("static.contact.form.email")}
                   </label>

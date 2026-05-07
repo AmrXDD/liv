@@ -63,7 +63,7 @@ export function BlogPreview() {
                 <div className="p-6 md:p-8">
                   <div className="flex items-center gap-3 text-eyebrow uppercase text-ink-muted">
                     <span className="rounded-full bg-coral-100 text-coral-700 px-3 py-1 font-semibold">
-                      {p.category}
+                      {t(`blog.categories.${p.category}` as never, { defaultValue: p.category })}
                     </span>
                     <span>{formatDate(p.publishedAt, lang === "ar" ? "ar-SA" : "en-US")}</span>
                   </div>
