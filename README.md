@@ -210,4 +210,5 @@ Set the four env vars listed above in the host's dashboard. Ensure `VITE_SITE_UR
 - Reduced-motion compliance is wired in everywhere; new animation work should follow the same pattern (`if (prefersReducedMotion()) return;` early-return inside GSAP hooks).
 #   l i v  
  #   l i v f u n c t i o n a l  
+ #   l i v f u n c t i o n a l  
  
