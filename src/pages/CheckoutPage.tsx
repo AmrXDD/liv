@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, Lock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -9,27 +9,20 @@ import { SEO } from "@/components/seo/SEO";
 import { useCart } from "@/lib/cart";
 import { getSupabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
-import type { Product } from "@/types";
 
 export function CheckoutPage() {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
-  const { items, subtotal, currency, updateQty, removeItem, clear } = useCart();
-  const navigate = useNavigate();
+  const { items, subtotal, currency, updateQty, removeItem } = useCart();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "err">("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [downloads, setDownloads] = useState<
-    Array<{ slug: string; title: string; url: string }>
-  >([]);
-  const qc = useQueryClient();
 
-  if (items.length === 0 && status !== "ok") {
+  if (items.length === 0) {
     return <Navigate to="/" replace />;
   }
 
@@ -38,105 +31,47 @@ export function CheckoutPage() {
     setStatus("loading");
     setErrorMsg("");
     const sb = getSupabase();
+    if (!sb) {
+      setStatus("err");
+      setErrorMsg("Payment is not configured. Please try again later.");
+      return;
+    }
     try {
-      if (sb) {
-        const payload = {
+      const { data, error } = await sb.functions.invoke<{
+        url: string;
+        session_id: string;
+        order_id: string;
+      }>("create-checkout-session", {
+        body: {
           email,
           name,
-          phone: phone || null,
-          items: items.map((i) => ({
-            product_id: i.productId,
-            slug: i.slug,
-            category: i.category,
-            title: i.title,
-            price: i.price,
-            qty: i.qty,
-          })),
-          subtotal,
-          total: subtotal,
-          currency,
-          notes: notes || null,
-          status: "pending",
+          phone: phone || undefined,
+          notes: notes || undefined,
           locale: lang,
-        };
-        const { error } = await sb.from("orders").insert(payload);
-        if (error) throw error;
+          items: items.map((i) => ({ product_id: i.productId, qty: i.qty })),
+        },
+      });
+      if (error) {
+        // FunctionsHttpError hides the server message in error.context (a Response)
+        const ctx = (error as { context?: Response }).context;
+        let serverMsg = error.message;
+        if (ctx && typeof ctx.json === "function") {
+          try {
+            const body = await ctx.json();
+            if (body?.error) serverMsg = body.error;
+          } catch { /* ignore */ }
+        }
+        throw new Error(serverMsg);
       }
-      const purchasedDownloads = items
-        .filter((i) => i.category === "diy")
-        .map((i) => {
-          const cached = qc
-            .getQueriesData<Product[]>({ queryKey: ["products", "diy"] })
-            .flatMap(([, data]) => data ?? [])
-            .find((p) => p?.id === i.productId);
-          const single = qc.getQueryData<Product | null>(["product", i.slug]);
-          const product = cached ?? single ?? null;
-          if (!product?.downloadUrl) return null;
-          return {
-            slug: i.slug,
-            title: product.title[lang] || i.title[lang],
-            url: product.downloadUrl,
-          };
-        })
-        .filter(Boolean) as Array<{ slug: string; title: string; url: string }>;
-      setDownloads(purchasedDownloads);
-      setStatus("ok");
-      clear();
-      if (purchasedDownloads.length === 0) {
-        setTimeout(() => navigate("/"), 4000);
-      }
+      if (!data?.url) throw new Error("No checkout URL returned");
+      // Hand off to Stripe Checkout. Cart stays untouched until webhook confirms.
+      window.location.href = data.url;
     } catch (err) {
       console.error(err);
       setErrorMsg(err instanceof Error ? err.message : "Order failed.");
       setStatus("err");
     }
   };
-
-  if (status === "ok") {
-    return (
-      <Section variant="default" pad="md" className="bg-editorial">
-        <Container>
-          <div className="mx-auto max-w-xl py-20 text-center">
-            <div className="text-eyebrow uppercase mb-4 text-forest-700">Order received</div>
-            <h1 className="display-serif text-display-lg tracking-tightest">
-              Thank you{name ? `, ${name}` : ""}.
-            </h1>
-            <p className="mt-6 text-ink-muted">
-              We've received your order and will email you shortly with payment instructions and
-              next steps.
-            </p>
-            {downloads.length > 0 && (
-              <div className="mt-10 rounded-3xl border border-forest-500/30 bg-forest-50 p-6 text-start">
-                <div className="text-eyebrow uppercase text-forest-700 mb-3">
-                  Your digital products
-                </div>
-                <ul className="space-y-3">
-                  {downloads.map((d) => (
-                    <li key={d.slug} className="flex items-center justify-between gap-4">
-                      <span className="text-sm font-medium">{d.title}</span>
-                      <a
-                        href={d.url}
-                        download
-                        className="inline-flex items-center rounded-full bg-forest-600 px-4 py-2 text-xs font-semibold text-bone-50 transition-colors hover:bg-forest-700"
-                      >
-                        Download
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <Link
-              to="/"
-              className="mt-8 inline-flex rounded-full bg-forest-500 px-6 py-3 text-sm font-semibold text-bone-50 hover:bg-forest-600"
-            >
-              Back to home
-            </Link>
-          </div>
-        </Container>
-      </Section>
-    );
-  }
 
   return (
     <>
@@ -195,12 +130,12 @@ export function CheckoutPage() {
               <div className="rounded-3xl border border-ink/10 bg-surface-raised p-6 md:p-8">
                 <h2 className="display-serif text-2xl mb-2">Payment</h2>
                 <p className="text-sm text-ink-muted mb-4">
-                  We'll email you secure payment instructions once you confirm. Bank transfer,
-                  KNET, or Stripe link — your choice.
+                  Card payment is processed securely by Stripe. You'll be redirected to Stripe's
+                  hosted checkout to complete your purchase, then returned to a download page.
                 </p>
-                <div className="rounded-xl bg-bone-100 px-4 py-3 text-xs text-ink-muted">
-                  No card is charged on this page. Your order is held as <strong>pending</strong>{" "}
-                  until payment is confirmed.
+                <div className="inline-flex items-center gap-2 rounded-xl bg-bone-100 px-4 py-3 text-xs text-ink-muted">
+                  <Lock className="h-3.5 w-3.5" />
+                  256-bit TLS · PCI DSS Level 1 (Stripe)
                 </div>
               </div>
 
@@ -212,7 +147,7 @@ export function CheckoutPage() {
                 className="w-full"
                 disabled={status === "loading"}
               >
-                {status === "loading" ? "Placing order…" : "Place order"}
+                {status === "loading" ? "Redirecting to Stripe…" : "Pay with card"}
               </Button>
               {status === "err" && (
                 <p className="text-sm text-coral-600">{errorMsg || "Couldn't place order."}</p>

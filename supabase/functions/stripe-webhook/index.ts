@@ -1,0 +1,234 @@
+// Supabase Edge Function: stripe-webhook
+//   - Verifies Stripe signature using STRIPE_WEBHOOK_SECRET.
+//   - On checkout.session.completed: marks order paid + creates digital_orders
+//     rows for each DIY line item (so the success page can serve downloads).
+//   - On checkout.session.expired / async_payment_failed: marks order cancelled.
+//
+// IMPORTANT: deploy this function with `--no-verify-jwt` so Stripe (an
+// unauthenticated source) can hit it. Do NOT add CORS headers — webhooks are
+// server-to-server only.
+//
+// Env required:
+//   STRIPE_SECRET_KEY            (read scope on Checkout Sessions / line items)
+//   STRIPE_WEBHOOK_SECRET        (whsec_…)
+//   SUPABASE_URL
+//   SUPABASE_SERVICE_ROLE_KEY
+
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const DOWNLOAD_TTL_DAYS = 7;
+
+// ---- Stripe signature verification (manual; no SDK) ----
+async function verifyStripeSignature(
+  rawBody: string,
+  sigHeader: string | null,
+  secret: string,
+  toleranceSeconds = 300,
+): Promise<boolean> {
+  if (!sigHeader) return false;
+  const parts = Object.fromEntries(
+    sigHeader.split(",").map((kv) => kv.split("=").map((s) => s.trim()) as [string, string]),
+  );
+  const t = parts["t"];
+  const v1 = parts["v1"];
+  if (!t || !v1) return false;
+
+  const ts = Number(t);
+  if (!Number.isFinite(ts)) return false;
+  if (Math.abs(Date.now() / 1000 - ts) > toleranceSeconds) return false;
+
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(`${t}.${rawBody}`));
+  const expected = Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  // Constant-time compare
+  if (expected.length !== v1.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) {
+    mismatch |= expected.charCodeAt(i) ^ v1.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+interface StripeSession {
+  id: string;
+  payment_intent?: string | null;
+  payment_status?: string;
+  customer_email?: string | null;
+  customer_details?: { email?: string | null; name?: string | null } | null;
+  metadata?: Record<string, string>;
+  amount_total?: number | null;
+  currency?: string | null;
+}
+
+async function listSessionLineItems(
+  sessionId: string,
+  stripeKey: string,
+): Promise<Array<{ price?: { product?: string }; quantity?: number }>> {
+  const items: Array<{ price?: { product?: string }; quantity?: number }> = [];
+  let url = `https://api.stripe.com/v1/checkout/sessions/${sessionId}/line_items?limit=100&expand[]=data.price.product`;
+  while (url) {
+    const r = await fetch(url, {
+      headers: { Authorization: `Bearer ${stripeKey}`, "Stripe-Version": "2024-06-20" },
+    });
+    if (!r.ok) throw new Error(`stripe line_items failed: ${await r.text()}`);
+    const j = await r.json();
+    for (const x of j.data ?? []) items.push(x);
+    if (j.has_more && j.data?.length) {
+      const last = j.data[j.data.length - 1];
+      url = `https://api.stripe.com/v1/checkout/sessions/${sessionId}/line_items?limit=100&starting_after=${last.id}&expand[]=data.price.product`;
+    } else {
+      url = "";
+    }
+  }
+  return items;
+}
+
+async function fulfillCheckoutSession(
+  sb: SupabaseClient,
+  session: StripeSession,
+  stripeKey: string,
+): Promise<void> {
+  const orderId = session.metadata?.order_id;
+  const sessionId = session.id;
+  if (!orderId) {
+    console.warn("[stripe-webhook] session missing order_id metadata", sessionId);
+    return;
+  }
+
+  // Idempotency — if already paid, no-op.
+  const { data: existing } = await sb
+    .from("orders")
+    .select("id, status, items, locale, email")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (!existing) {
+    console.warn("[stripe-webhook] order not found", orderId);
+    return;
+  }
+  if (existing.status === "paid") return;
+
+  // Mark order paid
+  const { error: updErr } = await sb
+    .from("orders")
+    .update({
+      status: "paid",
+      paid_at: new Date().toISOString(),
+      stripe_payment_intent: session.payment_intent ?? null,
+      stripe_session_id: sessionId,
+    })
+    .eq("id", orderId);
+  if (updErr) throw updErr;
+
+  // Create digital_orders rows for each DIY item so the success page can show
+  // downloads + the customer has a permanent record.
+  const items = (existing.items as Array<{
+    product_id: string;
+    slug: string;
+    category: string;
+    price: number;
+    currency: string;
+    quantity: number;
+  }>) ?? [];
+  const diyItems = items.filter((i) => i.category === "diy");
+  if (diyItems.length === 0) return;
+
+  // Fetch download URLs from products table
+  const { data: prods } = await sb
+    .from("products")
+    .select("id, slug, download_url")
+    .in("id", diyItems.map((i) => i.product_id));
+  const downloadBySlug = new Map((prods ?? []).map((p) => [p.slug as string, p.download_url as string | null]));
+
+  const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
+  const rows = diyItems.map((i) => ({
+    email: existing.email,
+    product_slug: i.slug,
+    locale: existing.locale ?? "en",
+    amount_paid: i.price * i.quantity,
+    payment_ref: session.payment_intent ?? null,
+    download_url: downloadBySlug.get(i.slug) ?? null,
+    download_expires_at: expiresAt,
+    fulfilled: true,
+    order_id: orderId,
+    stripe_session_id: sessionId,
+  }));
+  if (rows.length > 0) {
+    const { error: dErr } = await sb.from("digital_orders").insert(rows);
+    if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
+  }
+
+  // Touch line items via Stripe API to keep an audit trail in logs (best-effort).
+  try {
+    await listSessionLineItems(sessionId, stripeKey);
+  } catch (e) {
+    console.warn("[stripe-webhook] line items fetch failed", e);
+  }
+}
+
+Deno.serve(async (req) => {
+  if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
+
+  const secret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+  const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+  if (!secret || !stripeKey) return new Response("Server misconfigured", { status: 500 });
+
+  const sigHeader = req.headers.get("stripe-signature");
+  const rawBody = await req.text();
+
+  const ok = await verifyStripeSignature(rawBody, sigHeader, secret);
+  if (!ok) return new Response("Invalid signature", { status: 400 });
+
+  let event: { type: string; data: { object: StripeSession } };
+  try {
+    event = JSON.parse(rawBody);
+  } catch {
+    return new Response("Invalid JSON", { status: 400 });
+  }
+
+  const sb = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+
+  try {
+    switch (event.type) {
+      case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded": {
+        await fulfillCheckoutSession(sb, event.data.object, stripeKey);
+        break;
+      }
+      case "checkout.session.expired":
+      case "checkout.session.async_payment_failed": {
+        const session = event.data.object;
+        const orderId = session.metadata?.order_id;
+        if (orderId) {
+          await sb.from("orders").update({ status: "cancelled" }).eq("id", orderId);
+        }
+        break;
+      }
+      default:
+        // Acknowledge — Stripe expects a 2xx for events we don't handle.
+        break;
+    }
+    return new Response(JSON.stringify({ received: true }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (e) {
+    console.error("[stripe-webhook] handler error", e);
+    // Returning 500 makes Stripe retry, which is what we want for transient errors.
+    return new Response(JSON.stringify({ error: (e as Error).message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+});

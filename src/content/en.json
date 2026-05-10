@@ -3,6 +3,17 @@
     "name": "Liv Functional",
     "tagline": "Functional wellness, real transformation."
   },
+  "apply": {
+    "eyebrow": "Application",
+    "title": "Apply for {{product}}",
+    "lede": "Tell us a little about you and we'll be in touch within 1 business day to schedule a discovery call.",
+    "cta": "Apply for {{product}}",
+    "submit": "Apply for {{product}}",
+    "phone": "Phone (optional)",
+    "notes": "Anything we should know?",
+    "success": "Thanks — we'll be in touch within 1 business day.",
+    "error": "Couldn't submit. Try again?"
+  },
   "nav": {
     "diy": "DIY Plans",
     "consultations": "Consultations",
@@ -41,7 +52,6 @@
     "titleC": "rooted in",
     "titleD": "functional science.",
     "lede": "Bilingual programs in functional medicine, behaviour change, and metabolic health — designed for women rebuilding their energy, hormones, and confidence.",
-    "scrollHint": "Scroll to begin",
     "metrics": [
       { "value": "12+", "label": "Years in practice" },
       { "value": "1.4k", "label": "Clients transformed" },

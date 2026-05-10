@@ -15,6 +15,9 @@ import { RecommendedProductsPage } from "@/pages/RecommendedProductsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { DynamicPage } from "@/pages/DynamicPage";
 import { CheckoutPage } from "@/pages/CheckoutPage";
+import { CheckoutSuccessPage } from "@/pages/CheckoutSuccessPage";
+import { CheckoutCancelPage } from "@/pages/CheckoutCancelPage";
+import { ApplyPage } from "@/pages/ApplyPage";
 
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
@@ -25,6 +28,7 @@ import { AdminCollectionsPage } from "@/pages/admin/AdminCollectionsPage";
 import { AdminCollectionFormPage } from "@/pages/admin/AdminCollectionFormPage";
 import { AdminPagesPage } from "@/pages/admin/AdminPagesPage";
 import { AdminPageBuilderPage } from "@/pages/admin/AdminPageBuilderPage";
+import { AdminPageTextPage } from "@/pages/admin/AdminPageTextPage";
 import { AdminConsultationsPage } from "@/pages/admin/AdminConsultationsPage";
 import { AdminPaymentsPage } from "@/pages/admin/AdminPaymentsPage";
 import { AdminCoachingPage } from "@/pages/admin/AdminCoachingPage";
@@ -49,6 +53,8 @@ export function App() {
         <Route path="/coaching" element={<CoachingPage />} />
         <Route path="/coaching/:slug" element={<CoachingProductPage />} />
 
+        <Route path="/apply/:slug" element={<ApplyPage />} />
+
         <Route path="/consultations" element={<ConsultationsPage />} />
 
         <Route path="/blog" element={<BlogPage />} />
@@ -64,6 +70,8 @@ export function App() {
         <Route path="/b2b" element={<B2BPage />} />
         <Route path="/recommended" element={<RecommendedProductsPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+        <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
         <Route path="/privacy" element={<DynamicPage slug="privacy-policy" />} />
         <Route path="/terms" element={<DynamicPage slug="refund-policy" />} />
         <Route path="/coaching-agreement" element={<DynamicPage slug="coaching-agreement" />} />
@@ -90,6 +98,7 @@ export function App() {
         <Route path="collections" element={<AdminCollectionsPage />} />
         <Route path="collections/:id" element={<AdminCollectionFormPage />} />
         <Route path="pages" element={<AdminPagesPage />} />
+        <Route path="pages/text/:slug" element={<AdminPageTextPage />} />
         <Route path="pages/:id" element={<AdminPageBuilderPage />} />
         <Route path="coaching" element={<AdminCoachingPage />} />
         <Route path="consultations" element={<AdminConsultationsPage />} />

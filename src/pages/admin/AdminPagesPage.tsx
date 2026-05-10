@@ -1,12 +1,15 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Plus, Trash2, Type } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
 import { mapPage } from "@/lib/mappers";
 import { Card, PageHeader } from "@/components/admin/ui";
+import { listManagedPages } from "@/lib/content";
 
 export function AdminPagesPage() {
   const qc = useQueryClient();
+  const sections = listManagedPages();
+
   const { data: pages = [], isLoading } = useQuery({
     queryKey: ["admin-pages"],
     queryFn: async () => {
@@ -30,23 +33,66 @@ export function AdminPagesPage() {
 
   return (
     <>
-      <PageHeader title="Pages" description="Custom pages built from blocks. Live at /p/:slug.">
+      <PageHeader
+        title="Pages"
+        description="Edit text for every page on the site. Layout and structure are locked — text only."
+      >
         <Link
           to="/admin/pages/new"
           className="inline-flex items-center justify-center gap-2 rounded-full bg-forest-500 px-5 py-2.5 text-sm font-semibold text-bone-50 hover:bg-forest-600"
         >
-          <Plus className="h-4 w-4" /> New page
+          <Plus className="h-4 w-4" /> New custom page
         </Link>
       </PageHeader>
 
+      {/* Site sections — static pages whose copy lives in content + site_content */}
+      <Card className="mb-8 p-0 overflow-hidden">
+        <div className="border-b border-ink/10 bg-bone-100/60 px-6 py-3">
+          <h2 className="text-eyebrow uppercase tracking-wider text-ink-muted">Site sections</h2>
+        </div>
+        <table className="w-full text-sm">
+          <thead className="border-b border-ink/10 text-left text-xs uppercase tracking-wider text-ink-muted">
+            <tr>
+              <th className="px-6 py-3">Section</th>
+              <th className="px-6 py-3">Slug</th>
+              <th className="px-6 py-3">Text elements</th>
+              <th className="px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {sections.map((s) => (
+              <tr key={s.slug} className="border-b border-ink/5 last:border-0 hover:bg-bone-100/30">
+                <td className="px-6 py-4 font-medium">{s.label}</td>
+                <td className="px-6 py-4 text-ink-muted font-mono text-xs">{s.slug}</td>
+                <td className="px-6 py-4 text-ink-muted">{s.count}</td>
+                <td className="px-6 py-4">
+                  <div className="flex justify-end gap-2">
+                    <Link
+                      to={`/admin/pages/text/${s.slug}`}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold hover:bg-bone-100"
+                    >
+                      <Type className="h-3.5 w-3.5" /> Edit Text
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+
+      {/* Custom pages — admin-built block pages live at /p/:slug */}
       <Card className="p-0 overflow-hidden">
+        <div className="border-b border-ink/10 bg-bone-100/60 px-6 py-3">
+          <h2 className="text-eyebrow uppercase tracking-wider text-ink-muted">Custom pages</h2>
+        </div>
         {isLoading && <div className="p-8 text-sm text-ink-muted">Loading…</div>}
         {!isLoading && pages.length === 0 && (
-          <div className="p-12 text-center text-sm text-ink-muted">No pages yet.</div>
+          <div className="p-12 text-center text-sm text-ink-muted">No custom pages yet.</div>
         )}
         {pages.length > 0 && (
           <table className="w-full text-sm">
-            <thead className="border-b border-ink/10 bg-bone-100/60 text-left text-xs uppercase tracking-wider text-ink-muted">
+            <thead className="border-b border-ink/10 text-left text-xs uppercase tracking-wider text-ink-muted">
               <tr>
                 <th className="px-6 py-3">Title</th>
                 <th className="px-6 py-3">URL</th>
@@ -78,13 +124,22 @@ export function AdminPagesPage() {
                           target="_blank"
                           rel="noreferrer"
                           className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-bone-100"
+                          title="View"
                         >
                           <ExternalLink className="h-4 w-4" />
                         </a>
                       )}
                       <Link
                         to={`/admin/pages/${p.id}`}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold hover:bg-bone-100"
+                        title="Edit text & blocks"
+                      >
+                        <Type className="h-3.5 w-3.5" /> Edit Text
+                      </Link>
+                      <Link
+                        to={`/admin/pages/${p.id}`}
                         className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-bone-100"
+                        title="Open page builder"
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
@@ -92,6 +147,7 @@ export function AdminPagesPage() {
                         type="button"
                         onClick={() => onDelete(p.id)}
                         className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-coral-100 hover:text-coral-700"
+                        title="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

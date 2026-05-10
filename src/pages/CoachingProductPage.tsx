@@ -117,10 +117,13 @@ export function CoachingProductPage() {
                     disabled={!agreed}
                     onClick={() => {
                       if (!agreed) return;
-                      navigate("/contact");
+                      navigate(`/apply/${product.slug}`);
                     }}
                   >
-                    {t("coaching.apply", { defaultValue: "Apply now" })}
+                    {t("apply.cta", {
+                      product: product.title[lang],
+                      defaultValue: `Apply for ${product.title[lang]}`,
+                    })}
                   </Button>
 
                   <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-bone-200/90">

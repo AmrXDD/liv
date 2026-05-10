@@ -5,7 +5,6 @@ import { prefersReducedMotion } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Button } from "@/components/ui/Button";
-import { ChevronDown } from "lucide-react";
 import { BloodSugarAnimation } from "./BloodSugarAnimation";
 import { useDirection } from "@/hooks/useDirection";
 import { cn } from "@/lib/utils";
@@ -183,11 +182,6 @@ export function Hero() {
           ))}
         </div>
       </Container>
-
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-eyebrow uppercase text-ink-muted">
-        {t("hero.scrollHint")}
-        <ChevronDown className="h-4 w-4 animate-floaty" />
-      </div>
     </section>
   );
 }

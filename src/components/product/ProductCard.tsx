@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Check, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types";
 import { cn, formatPrice } from "@/lib/utils";
@@ -98,27 +99,40 @@ export function ProductCard({ product, variant = "default" }: Props) {
               {formatPrice(product.price, product.currency)}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              addItem(product, 1);
-              setAdded(true);
-              setTimeout(() => setAdded(false), 1400);
-            }}
-            className={cn(
-              "inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-colors",
-              added
-                ? "bg-forest-500 text-bone-50"
-                : "bg-ink text-bone-50 hover:bg-coral-600"
-            )}
-          >
-            {added ? <Check className="h-3.5 w-3.5" /> : <ShoppingBag className="h-3.5 w-3.5" />}
-            {added
-              ? t("cart.added", { defaultValue: "Added" })
-              : t("cart.add", { defaultValue: "Add to cart" })}
-          </button>
+          {product.category === "diy" ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                addItem(product, 1);
+                setAdded(true);
+                setTimeout(() => setAdded(false), 1400);
+              }}
+              className={cn(
+                "inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-colors",
+                added
+                  ? "bg-forest-500 text-bone-50"
+                  : "bg-ink text-bone-50 hover:bg-coral-600"
+              )}
+            >
+              {added ? <Check className="h-3.5 w-3.5" /> : <ShoppingBag className="h-3.5 w-3.5" />}
+              {added
+                ? t("cart.added", { defaultValue: "Added" })
+                : t("cart.add", { defaultValue: "Add to cart" })}
+            </button>
+          ) : (
+            <Link
+              to={`/apply/${product.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-xs font-semibold text-bone-50 transition-colors hover:bg-coral-600"
+            >
+              {t("apply.cta", {
+                product: product.title[lang],
+                defaultValue: `Apply for ${product.title[lang]}`,
+              })}
+            </Link>
+          )}
         </div>
       </div>
     </article>
