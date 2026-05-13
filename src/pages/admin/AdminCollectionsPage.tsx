@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
 import { mapCollection } from "@/lib/mappers";
 import { Card, PageHeader } from "@/components/admin/ui";
@@ -85,6 +85,15 @@ export function AdminCollectionsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2">
+                      <a
+                        href={`/collections/${c.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={c.isPublished ? "View live" : "Preview (draft — not visible publicly)"}
+                        className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-bone-100"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
                       <Link
                         to={`/admin/collections/${c.id}`}
                         className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-bone-100"

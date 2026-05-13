@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, GripVertical, Search, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, GripVertical, Search, X } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -229,6 +229,16 @@ export function AdminCollectionFormPage() {
         >
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
+        {!isNew && form.slug && (
+          <a
+            href={`/collections/${form.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-sm hover:bg-bone-100"
+          >
+            <ExternalLink className="h-4 w-4" /> View live
+          </a>
+        )}
         <Btn type="submit" variant="primary" loading={saving}>
           Save
         </Btn>

@@ -21,12 +21,24 @@ export const isRtl = (lang: string): boolean => RTL_LANGS.includes(lang as Lang)
 const siteContentPostProcessor = {
   type: "postProcessor" as const,
   name: "siteContent",
-  process(value: string, key: string | string[], _options: unknown, translator: { language: string }) {
+  process(
+    value: string,
+    key: string | string[],
+    options: Record<string, unknown> | undefined,
+    translator: { language: string }
+  ) {
     const k = Array.isArray(key) ? key[0] : key;
     if (!k) return value;
     const lang = (translator?.language ?? i18n.language ?? "en").startsWith("ar") ? "ar" : "en";
     const override = getOverride(k, lang);
-    return override ?? value;
+    if (override == null) return value;
+    if (typeof override !== "string" || !override.includes("{{")) return override;
+    // Re-run interpolation on the override so placeholders like {{product}}
+    // resolve against the same options i18next received.
+    return override.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (_, name: string) => {
+      const v = options?.[name];
+      return v == null ? "" : String(v);
+    });
   },
 };
 

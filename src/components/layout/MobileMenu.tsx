@@ -25,6 +25,7 @@ export function MobileMenu({ open, onClose }: Props) {
     { to: "/diy-plans", label: t("nav.diy") },
     { to: "/consultations", label: t("nav.consultations") },
     { to: "/coaching", label: t("nav.coaching") },
+    { to: "/about", label: t("nav.about") },
     { to: "/why-us", label: t("nav.whyUs") },
     { to: "/my-story", label: t("nav.myStory") },
     { to: "/contact", label: t("nav.contact") },

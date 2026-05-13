@@ -15,6 +15,7 @@
 //   SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendEmail, digitalOrderEmail } from "../_shared/resend.ts";
 
 const DOWNLOAD_TTL_DAYS = 7;
 
@@ -145,7 +146,7 @@ async function fulfillCheckoutSession(
   // Fetch download URLs from products table
   const { data: prods } = await sb
     .from("products")
-    .select("id, slug, download_url")
+    .select("id, slug, download_url, title")
     .in("id", diyItems.map((i) => i.product_id));
   const downloadBySlug = new Map((prods ?? []).map((p) => [p.slug as string, p.download_url as string | null]));
 
@@ -165,6 +166,31 @@ async function fulfillCheckoutSession(
   if (rows.length > 0) {
     const { error: dErr } = await sb.from("digital_orders").insert(rows);
     if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
+  }
+
+  // Email the download link(s) to the customer via Resend (non-blocking on
+  // failure — the success page is still the source of truth).
+  if (existing.email) {
+    const titleBySlug = new Map(
+      (prods ?? []).map((p) => [p.slug as string, (p as { slug: string; title?: { en?: string } | null }).title?.en ?? p.slug]),
+    );
+    for (const row of rows) {
+      if (!row.download_url) continue;
+      const { subject, html, text } = digitalOrderEmail({
+        name: session.customer_details?.name ?? null,
+        productTitle: titleBySlug.get(row.product_slug) ?? row.product_slug,
+        downloadUrl: row.download_url,
+        expiresAt: row.download_expires_at,
+        locale: row.locale === "ar" ? "ar" : "en",
+      });
+      await sendEmail({
+        to: existing.email,
+        subject,
+        html,
+        text,
+        tags: [{ name: "type", value: "digital-order" }],
+      });
+    }
   }
 
   // Touch line items via Stripe API to keep an audit trail in logs (best-effort).

@@ -56,9 +56,24 @@ create table if not exists products (
   download_url    text,
   is_published    boolean not null default true,
   position        integer not null default 0,
+  -- Physical-product attributes (only meaningful when format = 'Physical')
+  sku             text,
+  weight_grams    integer,
+  length_cm       numeric(6,2),
+  width_cm        numeric(6,2),
+  height_cm       numeric(6,2),
+  stock           integer,
+  requires_shipping boolean not null default false,
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
+alter table products add column if not exists sku text;
+alter table products add column if not exists weight_grams integer;
+alter table products add column if not exists length_cm numeric(6,2);
+alter table products add column if not exists width_cm numeric(6,2);
+alter table products add column if not exists height_cm numeric(6,2);
+alter table products add column if not exists stock integer;
+alter table products add column if not exists requires_shipping boolean not null default false;
 create index if not exists products_category_idx on products(category, is_published, position);
 drop trigger if exists trg_products_updated on products;
 create trigger trg_products_updated before update on products
@@ -179,6 +194,7 @@ create table if not exists contacts (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,
   email       text not null,
+  phone       text not null,
   subject     text,
   message     text not null,
   locale      lf_locale not null default 'en',
@@ -186,6 +202,9 @@ create table if not exists contacts (
   user_agent  text,
   created_at  timestamptz not null default now()
 );
+alter table contacts add column if not exists phone text;
+update contacts set phone = '' where phone is null;
+alter table contacts alter column phone set not null;
 create index if not exists contacts_email_idx on contacts(lower(email));
 
 create table if not exists newsletter (

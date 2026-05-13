@@ -37,6 +37,13 @@ type ProductRow = {
   position: number;
   download_url?: string | null;
   seo_keywords?: string | null;
+  sku?: string | null;
+  weight_grams?: number | null;
+  length_cm?: number | string | null;
+  width_cm?: number | string | null;
+  height_cm?: number | string | null;
+  stock?: number | null;
+  requires_shipping?: boolean | null;
 };
 
 const ls = (en: string | null, ar: string | null): LocalizedString | undefined =>
@@ -65,6 +72,13 @@ export function mapProduct(row: ProductRow): Product {
     position: row.position,
     downloadUrl: row.download_url ?? undefined,
     seoKeywords: row.seo_keywords ?? undefined,
+    sku: row.sku ?? undefined,
+    weightGrams: row.weight_grams ?? undefined,
+    lengthCm: row.length_cm == null ? undefined : Number(row.length_cm),
+    widthCm: row.width_cm == null ? undefined : Number(row.width_cm),
+    heightCm: row.height_cm == null ? undefined : Number(row.height_cm),
+    stock: row.stock ?? undefined,
+    requiresShipping: row.requires_shipping ?? undefined,
   };
 }
 
@@ -108,6 +122,13 @@ export function productToRow(p: Partial<Product>): Record<string, unknown> {
   if (p.position !== undefined) out.position = p.position;
   if (p.downloadUrl !== undefined) out.download_url = p.downloadUrl;
   if (p.seoKeywords !== undefined) out.seo_keywords = p.seoKeywords;
+  if (p.sku !== undefined) out.sku = p.sku;
+  if (p.weightGrams !== undefined) out.weight_grams = p.weightGrams;
+  if (p.lengthCm !== undefined) out.length_cm = p.lengthCm;
+  if (p.widthCm !== undefined) out.width_cm = p.widthCm;
+  if (p.heightCm !== undefined) out.height_cm = p.heightCm;
+  if (p.stock !== undefined) out.stock = p.stock;
+  if (p.requiresShipping !== undefined) out.requires_shipping = p.requiresShipping;
   return out;
 }
 

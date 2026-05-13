@@ -17,17 +17,22 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // ---- CORS: allowlist only ----
 function buildCorsHeaders(req: Request): Record<string, string> {
-  const origin = req.headers.get("origin") ?? "";
+  const origin = (req.headers.get("origin") ?? "").replace(/\/+$/, "");
   const siteUrl = (Deno.env.get("SITE_URL") ?? "").replace(/\/+$/, "");
   const extra = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
     .split(",")
     .map((s) => s.trim().replace(/\/+$/, ""))
     .filter(Boolean);
-  const allowed = new Set([siteUrl, ...extra].filter(Boolean));
+  const allowed = new Set<string>([siteUrl, ...extra].filter(Boolean));
+  // Auto-include the www. counterpart of SITE_URL (and vice versa) so
+  // www. and apex variants both work without env-var gymnastics.
+  for (const e of [siteUrl, ...extra]) {
+    if (!e) continue;
+    if (e.includes("://www.")) allowed.add(e.replace("://www.", "://"));
+    else allowed.add(e.replace("://", "://www."));
+  }
 
-  // Allow null origin for non-browser clients (curl, Stripe CLI tests).
-  // The browser will only honour an origin it sent — so this can't be abused.
-  const allowOrigin = allowed.has(origin.replace(/\/+$/, "")) ? origin : siteUrl;
+  const allowOrigin = allowed.has(origin) ? origin : siteUrl;
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,

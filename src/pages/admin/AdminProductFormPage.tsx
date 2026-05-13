@@ -192,6 +192,82 @@ export function AdminProductFormPage() {
               />
             </div>
           </Card>
+
+          {form.format === "Physical" && (
+            <Card>
+              <h2 className="mb-1 display-serif text-xl">Physical product</h2>
+              <p className="mb-4 text-sm text-ink-muted">
+                Inventory, shipping dimensions and weight. Used at checkout for shipping options.
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="SKU">
+                  <Input
+                    value={form.sku ?? ""}
+                    onChange={(e) => set("sku", e.currentTarget.value)}
+                    placeholder="LIV-SKU-001"
+                  />
+                </Field>
+                <Field label="Stock on hand">
+                  <Input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={form.stock ?? 0}
+                    onChange={(e) => set("stock", Number(e.currentTarget.value))}
+                  />
+                </Field>
+                <Field label="Weight (grams)">
+                  <Input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={form.weightGrams ?? 0}
+                    onChange={(e) => set("weightGrams", Number(e.currentTarget.value))}
+                  />
+                </Field>
+                <Field label="Requires shipping">
+                  <Select
+                    value={form.requiresShipping === false ? "no" : "yes"}
+                    onChange={(e) =>
+                      set("requiresShipping", e.currentTarget.value === "yes")
+                    }
+                  >
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </Select>
+                </Field>
+                <Field label="Length (cm)">
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={form.lengthCm ?? 0}
+                    onChange={(e) => set("lengthCm", Number(e.currentTarget.value))}
+                  />
+                </Field>
+                <Field label="Width (cm)">
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={form.widthCm ?? 0}
+                    onChange={(e) => set("widthCm", Number(e.currentTarget.value))}
+                  />
+                </Field>
+                <div className="sm:col-span-2">
+                  <Field label="Height (cm)">
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={form.heightCm ?? 0}
+                      onChange={(e) => set("heightCm", Number(e.currentTarget.value))}
+                    />
+                  </Field>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
 
         <div className="space-y-6">
@@ -234,12 +310,22 @@ export function AdminProductFormPage() {
               <Field label="Format">
                 <Select
                   value={form.format ?? "PDF"}
-                  onChange={(e) => set("format", e.currentTarget.value)}
+                  onChange={(e) => {
+                    const next = e.currentTarget.value;
+                    setForm((s) => ({
+                      ...s,
+                      format: next,
+                      // Auto-flip shipping requirement when switching to physical
+                      requiresShipping:
+                        next === "Physical" ? true : s.requiresShipping ?? false,
+                    }));
+                  }}
                 >
                   <option>PDF</option>
                   <option>1:1</option>
                   <option>Group</option>
                   <option>Hybrid</option>
+                  <option>Physical</option>
                 </Select>
               </Field>
               <BilingualField

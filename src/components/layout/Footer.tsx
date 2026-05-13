@@ -23,6 +23,7 @@ export function Footer() {
   ];
 
   const company = [
+    { to: "/about", label: t("nav.about") },
     { to: "/my-story", label: t("nav.myStory") },
     { to: "/why-us", label: t("nav.whyUs") },
     { to: "/how-it-works", label: t("nav.howItWorks") },
@@ -148,22 +149,22 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-3">
-            <SocialIcon href="https://www.instagram.com/liv.lowcarb/" label="Instagram">
+            <SocialIcon href="https://www.instagram.com/livfunctional/" label="Instagram">
               <Instagram className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://www.facebook.com/liv.lowcarb/" label="Facebook">
+            <SocialIcon href="https://www.facebook.com/livfunctional/" label="Facebook">
               <Facebook className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://x.com/LivFunctional" label="X">
+            <SocialIcon href="https://x.com/livfunctional" label="X">
               <XGlyph />
             </SocialIcon>
-            <SocialIcon href="https://www.linkedin.com/company/liv-functional-nutrition/" label="LinkedIn">
+            <SocialIcon href="https://www.linkedin.com/company/livfunctional/" label="LinkedIn">
               <Linkedin className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://www.tiktok.com/@liv.lowcarb" label="TikTok">
+            <SocialIcon href="https://www.tiktok.com/@livfunctional" label="TikTok">
               <TikTokGlyph />
             </SocialIcon>
-            <SocialIcon href="https://www.threads.com/@liv.lowcarb" label="Threads">
+            <SocialIcon href="https://www.threads.com/@livfunctional" label="Threads">
               <ThreadsGlyph />
             </SocialIcon>
           </div>

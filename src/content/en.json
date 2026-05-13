@@ -258,6 +258,7 @@
       "form": {
         "name": "Your name",
         "email": "Email",
+        "phone": "Phone number",
         "subject": "Subject",
         "message": "Message",
         "submit": "Send message",

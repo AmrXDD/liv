@@ -30,6 +30,8 @@ export function makeBlock(type: Block["type"]): Block {
       return { id: uid(), type: "button", label: { en: "", ar: "" }, href: "/", variant: "primary", align: "start" };
     case "productGrid":
       return { id: uid(), type: "productGrid", productIds: [], columns: 3 };
+    case "coachingGrid":
+      return { id: uid(), type: "coachingGrid", productIds: [], columns: 3 };
     case "divider":
       return { id: uid(), type: "divider" };
   }
@@ -209,9 +211,93 @@ function BlockBody({ block, onChange }: { block: Block; onChange: (b: Block) => 
       );
     case "productGrid":
       return <ProductGridEditor block={block} onChange={onChange} />;
+    case "coachingGrid":
+      return <CoachingGridEditor block={block} onChange={onChange} />;
     case "divider":
       return <div className="text-xs text-ink-muted">Visual divider — no settings.</div>;
   }
+}
+
+function CoachingGridEditor({
+  block,
+  onChange,
+}: {
+  block: Extract<Block, { type: "coachingGrid" }>;
+  onChange: (b: Block) => void;
+}) {
+  const { data: coaching = [] } = useQuery({
+    queryKey: ["admin-coaching-products"],
+    queryFn: async () => {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("products")
+        .select("*")
+        .eq("category", "coaching")
+        .order("position", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map(mapProduct);
+    },
+  });
+  const selected = new Set(block.productIds ?? []);
+  const toggle = (id: string) => {
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    onChange({ ...block, productIds: Array.from(next) });
+  };
+
+  return (
+    <div className="space-y-4">
+      <BilingualField
+        label="Heading (optional)"
+        valueEn={block.heading?.en ?? ""}
+        valueAr={block.heading?.ar ?? ""}
+        onChange={(heading) => onChange({ ...block, heading })}
+      />
+      <Field label="Columns">
+        <Select
+          value={block.columns ?? 3}
+          onChange={(e) => onChange({ ...block, columns: Number(e.currentTarget.value) as 2 | 3 | 4 })}
+        >
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+          <option value={4}>4</option>
+        </Select>
+      </Field>
+      <div>
+        <div className="mb-2 text-sm font-medium">
+          Programs <span className="font-normal text-ink-muted">— leave all unchecked to show every published program</span>
+        </div>
+        <div className="space-y-1 rounded-2xl border border-ink/10 bg-surface-base p-2">
+          {coaching.length === 0 && (
+            <div className="p-3 text-xs text-ink-muted">No coaching programs yet.</div>
+          )}
+          {coaching.map((p) => (
+            <label
+              key={p.id}
+              className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm hover:bg-bone-100"
+            >
+              <input
+                type="checkbox"
+                checked={selected.has(p.id)}
+                onChange={() => toggle(p.id)}
+                className="h-4 w-4 accent-forest-500"
+              />
+              {p.heroImage ? (
+                <img src={p.heroImage} alt="" className="h-7 w-7 rounded-md object-cover" />
+              ) : (
+                <div className="h-7 w-7 rounded-md bg-coral-100" />
+              )}
+              <div className="flex-1 truncate">
+                <div className="truncate font-medium">{p.title.en}</div>
+                <div className="text-xs text-ink-muted">/{p.slug}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ProductGridEditor({

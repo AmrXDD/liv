@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { useProductsByIds } from "@/lib/queries";
+import { useProducts, useProductsByIds } from "@/lib/queries";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -103,6 +103,8 @@ export function BlockRenderer({ block }: { block: Block }) {
       );
     case "productGrid":
       return <ProductGridBlockRenderer block={block} />;
+    case "coachingGrid":
+      return <CoachingGridBlockRenderer block={block} />;
     default:
       return null;
   }
@@ -137,6 +139,44 @@ function ProductGridBlockRenderer({
             key={p.id}
             to={p.category === "diy" ? `/diy-plans/${p.slug}` : `/coaching/${p.slug}`}
           >
+            <ProductCard product={p} />
+          </Link>
+        ))}
+      </div>
+    </Container>
+  );
+}
+
+function CoachingGridBlockRenderer({
+  block,
+}: {
+  block: Extract<Block, { type: "coachingGrid" }>;
+}) {
+  const lang = useLang();
+  const { data: all = [] } = useProducts("coaching");
+  const filtered =
+    block.productIds && block.productIds.length > 0
+      ? all.filter((p) => block.productIds!.includes(p.id))
+      : all;
+  const cols = block.columns ?? 3;
+  if (filtered.length === 0) return null;
+  return (
+    <Container>
+      {block.heading && (
+        <h2 className="display-serif text-display-md tracking-tightest mb-8 text-balance">
+          {block.heading[lang]}
+        </h2>
+      )}
+      <div
+        className={cn(
+          "grid gap-8",
+          cols === 2 && "md:grid-cols-2",
+          cols === 3 && "md:grid-cols-2 xl:grid-cols-3",
+          cols === 4 && "md:grid-cols-2 xl:grid-cols-4"
+        )}
+      >
+        {filtered.map((p) => (
+          <Link key={p.id} to={`/coaching/${p.slug}`}>
             <ProductCard product={p} />
           </Link>
         ))}

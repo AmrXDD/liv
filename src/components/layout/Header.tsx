@@ -28,6 +28,7 @@ export function Header() {
   }, [location.pathname]);
 
   const aboutItems = [
+    { href: "/about", label: t("nav.about") },
     { href: "/why-us", label: t("nav.whyUs") },
     { href: "/my-story", label: t("nav.myStory") },
     { href: "/contact", label: t("nav.contact") },

@@ -14,6 +14,7 @@ import type { ContactPayload, Locale } from "@/types";
 const schema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
+  phone: z.string().trim().min(6, { message: "Phone number is required" }),
   subject: z.string().optional(),
   message: z.string().min(10),
 });
@@ -36,13 +37,20 @@ export function ContactPage() {
     const payload: ContactPayload = { ...data, locale };
     try {
       if (sb) {
-        const { error } = await sb.from("contacts").insert(payload);
-        if (error) throw error;
+        // Prefer the edge function so Resend can notify the team. If the
+        // function isn't deployed, fall back to a direct table insert.
+        const { error: fnErr } = await sb.functions.invoke("submit-contact", {
+          body: payload,
+        });
+        if (fnErr) {
+          const { error } = await sb.from("contacts").insert(payload);
+          if (error) throw error;
+        }
       }
       setStatus("ok");
       reset();
     } catch (e) {
-      console.error("[contact] insert failed:", e);
+      console.error("[contact] submit failed:", e);
       setStatus("err");
     }
   };
@@ -71,6 +79,16 @@ export function ContactPage() {
               <input
                 type="email"
                 {...register("email")}
+                className="w-full rounded-xl border border-ink/10 bg-surface-base px-4 py-3 text-sm focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20"
+              />
+            </Field>
+            <Field label={t("static.contact.form.phone")} error={errors.phone?.message}>
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                required
+                {...register("phone")}
                 className="w-full rounded-xl border border-ink/10 bg-surface-base px-4 py-3 text-sm focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20"
               />
             </Field>

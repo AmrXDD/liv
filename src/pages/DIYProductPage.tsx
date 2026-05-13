@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
@@ -12,6 +12,7 @@ import { productSchema, buildCanonical } from "@/lib/seo";
 import { getSupabase } from "@/lib/supabase";
 import { Reveal } from "@/components/ui/Reveal";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { useCart } from "@/lib/cart";
 
 export function DIYProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -21,6 +22,8 @@ export function DIYProductPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
   const [unlocked, setUnlocked] = useState(false);
   const { data: product, isLoading } = useProduct(slug);
+  const { addItem } = useCart();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -47,9 +50,10 @@ export function DIYProductPage() {
         });
         if (error) throw error;
       }
-      setStatus("ok");
-      setEmail("");
-      if (product?.downloadUrl) setUnlocked(true);
+      addItem(product, 1);
+      navigate(`/checkout?email=${encodeURIComponent(email)}`, {
+        state: { email },
+      });
     } catch {
       setStatus("err");
     }

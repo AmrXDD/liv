@@ -18,6 +18,7 @@ import { CheckoutPage } from "@/pages/CheckoutPage";
 import { CheckoutSuccessPage } from "@/pages/CheckoutSuccessPage";
 import { CheckoutCancelPage } from "@/pages/CheckoutCancelPage";
 import { ApplyPage } from "@/pages/ApplyPage";
+import { CollectionPage } from "@/pages/CollectionPage";
 
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
@@ -69,6 +70,7 @@ export function App() {
         <Route path="/partners" element={<DynamicPage slug="partners" />} />
         <Route path="/b2b" element={<B2BPage />} />
         <Route path="/recommended" element={<RecommendedProductsPage />} />
+        <Route path="/collections/:slug" element={<CollectionPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
         <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />

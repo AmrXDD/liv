@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, Lock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -15,8 +15,15 @@ export function CheckoutPage() {
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { items, subtotal, currency, updateQty, removeItem } = useCart();
 
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const prefillEmail =
+    (location.state as { email?: string } | null)?.email ??
+    searchParams.get("email") ??
+    "";
+
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(prefillEmail);
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "err">("idle");

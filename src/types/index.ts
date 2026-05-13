@@ -21,7 +21,7 @@ export interface Product {
   duration?: LocalizedString;
   outcomes: LocalizedString[];
   inclusions: LocalizedString[];
-  format?: "PDF" | "1:1" | "Group" | "Hybrid" | string;
+  format?: "PDF" | "1:1" | "Group" | "Hybrid" | "Physical" | string;
   badge?: LocalizedString;
   heroImage?: string;
   images?: string[];
@@ -30,6 +30,14 @@ export interface Product {
   position?: number;
   downloadUrl?: string;
   seoKeywords?: string;
+  // ---- Physical-product attributes (used when format === "Physical") ----
+  sku?: string;
+  weightGrams?: number;
+  lengthCm?: number;
+  widthCm?: number;
+  heightCm?: number;
+  stock?: number;
+  requiresShipping?: boolean;
 }
 
 export interface Collection {
@@ -51,6 +59,7 @@ export type BlockType =
   | "image"
   | "button"
   | "productGrid"
+  | "coachingGrid"
   | "divider";
 
 export interface BaseBlock {
@@ -94,6 +103,14 @@ export interface ProductGridBlock extends BaseBlock {
   heading?: LocalizedString;
 }
 
+export interface CoachingGridBlock extends BaseBlock {
+  type: "coachingGrid";
+  columns?: 2 | 3 | 4;
+  heading?: LocalizedString;
+  /** Optional override — when empty, renders all published coaching products. */
+  productIds?: string[];
+}
+
 export interface DividerBlock extends BaseBlock {
   type: "divider";
 }
@@ -104,6 +121,7 @@ export type Block =
   | ImageBlock
   | ButtonBlock
   | ProductGridBlock
+  | CoachingGridBlock
   | DividerBlock;
 
 export interface Page {
@@ -152,6 +170,7 @@ export interface BookingPayload {
 export interface ContactPayload {
   name: string;
   email: string;
+  phone: string;
   subject?: string;
   message: string;
   locale: Locale;

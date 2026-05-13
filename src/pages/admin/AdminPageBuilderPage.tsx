@@ -39,6 +39,7 @@ const PALETTE: { type: Block["type"]; label: string }[] = [
   { type: "image", label: "Image" },
   { type: "button", label: "Button" },
   { type: "productGrid", label: "Product grid" },
+  { type: "coachingGrid", label: "Coaching widget" },
   { type: "divider", label: "Divider" },
 ];
 
