@@ -54,6 +54,7 @@ export function CoachingPage() {
                     product: p.title[lang],
                     defaultValue: `Apply for ${p.title[lang]}`,
                   });
+              const image = p.heroImage ?? p.images?.[0];
               return (
                 <article
                   key={p.id}
@@ -64,6 +65,24 @@ export function CoachingPage() {
                   )}
                 >
                   <div className="grid gap-8 p-8 md:grid-cols-12 md:p-12">
+                    <Link
+                      to={`/coaching/${p.slug}`}
+                      className="md:col-span-3 block overflow-hidden rounded-2xl bg-bone-100"
+                    >
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={p.title[lang]}
+                          loading="lazy"
+                          className="aspect-[4/5] h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                        />
+                      ) : (
+                        <div className="grid aspect-[4/5] place-items-center display-serif text-6xl text-forest-700/40">
+                          {p.title[lang][0]}
+                        </div>
+                      )}
+                    </Link>
+
                     <div className="md:col-span-4">
                       <Link
                         to={`/coaching/${p.slug}`}
@@ -84,7 +103,7 @@ export function CoachingPage() {
                       <p className="mt-4 text-sm text-ink-muted leading-relaxed">{p.tagline[lang]}</p>
                     </div>
 
-                    <div className="md:col-span-5 grid gap-5 sm:grid-cols-2">
+                    <div className="md:col-span-3 grid gap-5">
                       <div>
                         <div className="text-eyebrow uppercase text-forest-700 mb-2">
                           {t("common.duration")}
@@ -114,7 +133,7 @@ export function CoachingPage() {
                       </div>
                     </div>
 
-                    <div className="md:col-span-3 flex md:items-end md:justify-end">
+                    <div className="md:col-span-2 flex md:items-end md:justify-end">
                       <Link
                         to={ctaHref}
                         className="inline-flex items-center gap-3 rounded-full border border-ink/15 px-5 py-3 text-sm font-medium transition-all duration-500 group-hover:bg-ink group-hover:text-bone-50 group-hover:border-ink"

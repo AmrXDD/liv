@@ -1,10 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
-import { mapProduct } from "@/lib/mappers";
+import { mapProduct, productToRow } from "@/lib/mappers";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/types";
 
 async function fetchAllProducts() {
   const sb = requireSupabase();
@@ -21,6 +22,7 @@ async function fetchAllProducts() {
 
 export function AdminProductsPage() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["admin-products"],
     queryFn: fetchAllProducts,
@@ -37,6 +39,36 @@ export function AdminProductsPage() {
     qc.invalidateQueries({ queryKey: ["admin-products"] });
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["featured-products"] });
+  };
+
+  const onDuplicate = async (p: Product) => {
+    const sb = requireSupabase();
+    // Slugs are unique — find a free "<slug>-copy", "<slug>-copy-2", etc.
+    const taken = new Set(products.map((x) => x.slug));
+    let newSlug = `${p.slug}-copy`;
+    let n = 2;
+    while (taken.has(newSlug)) newSlug = `${p.slug}-copy-${n++}`;
+
+    const row = productToRow({
+      ...p,
+      slug: newSlug,
+      title: { en: `${p.title.en} (Copy)`, ar: `${p.title.ar} (نسخة)` },
+      isPublished: false,
+      position: (p.position ?? 0) + 1,
+    });
+    const { data, error } = await sb
+      .from("products")
+      .insert(row)
+      .select("id")
+      .single();
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    qc.invalidateQueries({ queryKey: ["admin-products"] });
+    qc.invalidateQueries({ queryKey: ["products"] });
+    qc.invalidateQueries({ queryKey: ["featured-products"] });
+    navigate(`/admin/products/${data.id}`);
   };
 
   return (
@@ -108,6 +140,15 @@ export function AdminProductsPage() {
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
+                      <button
+                        type="button"
+                        onClick={() => onDuplicate(p)}
+                        className="grid h-9 w-9 place-items-center rounded-full border border-ink/10 hover:bg-bone-100"
+                        aria-label="Duplicate"
+                        title="Duplicate"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
                       <button
                         type="button"
                         onClick={() => onDelete(p.id)}
