@@ -104,7 +104,7 @@ export function ApplyPage() {
                   <img
                     src={heroImage}
                     alt={productName}
-                    className="aspect-[4/5] w-full object-cover"
+                    className="aspect-[4/5] w-full object-contain"
                   />
                 ) : (
                   <div className="grid aspect-[4/5] place-items-center display-serif text-8xl text-forest-700/30">
@@ -120,7 +120,7 @@ export function ApplyPage() {
                       src={src}
                       alt=""
                       loading="lazy"
-                      className="aspect-square w-full rounded-xl object-cover"
+                      className="aspect-square w-full rounded-xl bg-bone-100 object-contain"
                     />
                   ))}
                 </div>

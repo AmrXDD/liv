@@ -66,7 +66,7 @@ export function CoachingProductPage() {
                       key={src}
                       src={src}
                       alt=""
-                      className="aspect-[4/3] w-full rounded-2xl object-cover"
+                      className="aspect-[4/3] w-full rounded-2xl bg-bone-100 object-contain"
                       loading="lazy"
                     />
                   ))}
