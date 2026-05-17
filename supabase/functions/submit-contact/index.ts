@@ -30,6 +30,7 @@ interface ContactInput {
   subject?: string;
   message: string;
   locale?: string;
+  nutrition_issues?: string[];
 }
 
 Deno.serve(async (req) => {
@@ -55,6 +56,9 @@ Deno.serve(async (req) => {
       subject: input.subject ?? null,
       message: input.message,
       locale: (input.locale ?? "en").startsWith("ar") ? "ar" : "en",
+      nutrition_issues: Array.isArray(input.nutrition_issues)
+        ? input.nutrition_issues
+        : [],
     });
     if (dbErr) throw dbErr;
 

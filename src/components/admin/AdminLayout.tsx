@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Box, FolderOpen, FileText, LogOut, Sparkles, CalendarDays, Wallet, Mail, Newspaper, Award, AtSign } from "lucide-react";
+import { Box, FolderOpen, FileText, LogOut, Sparkles, CalendarDays, Wallet, Mail, Newspaper, Award, AtSign, ListChecks } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ const NAV = [
   { to: "/admin/accreditations", label: "Accreditations", icon: Award },
   { to: "/admin/consultations", label: "Consultations", icon: CalendarDays },
   { to: "/admin/inquiries", label: "Inquiries", icon: Mail },
+  { to: "/admin/nutrition-issues", label: "Nutrition issues", icon: ListChecks },
   { to: "/admin/newsletter", label: "Newsletter", icon: AtSign },
   { to: "/admin/payments", label: "Payments & Orders", icon: Wallet },
 ];

@@ -40,6 +40,7 @@ import { AdminNewsletterPage } from "@/pages/admin/AdminNewsletterPage";
 import { AdminBlogPage } from "@/pages/admin/AdminBlogPage";
 import { AdminBlogFormPage } from "@/pages/admin/AdminBlogFormPage";
 import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
+import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 
 export function App() {
   return (
@@ -112,6 +113,7 @@ export function App() {
         <Route path="blog" element={<AdminBlogPage />} />
         <Route path="blog/:id" element={<AdminBlogFormPage />} />
         <Route path="accreditations" element={<AdminAccreditationsPage />} />
+        <Route path="nutrition-issues" element={<AdminNutritionIssuesPage />} />
       </Route>
     </Routes>
   );

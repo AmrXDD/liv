@@ -205,6 +205,7 @@ create table if not exists contacts (
 alter table contacts add column if not exists phone text;
 update contacts set phone = '' where phone is null;
 alter table contacts alter column phone set not null;
+alter table contacts add column if not exists nutrition_issues text[] not null default '{}';
 create index if not exists contacts_email_idx on contacts(lower(email));
 
 create table if not exists newsletter (

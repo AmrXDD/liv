@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSupabase } from "./supabase";
 import { mapBlogPost, mapCollection, mapPage, mapProduct } from "./mappers";
 import type { BlogPost, Collection, Page, Product, ProductCategory } from "@/types";
+import type { NutritionIssueGroup } from "@/data/nutritionIssues";
 
 const PRODUCT_COLS =
   "id,slug,category,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar,long_en,long_ar,price,currency,duration_en,duration_ar,format,badge_en,badge_ar,hero_image,images,accent,outcomes,inclusions,is_published,position,download_url,seo_keywords";
@@ -231,6 +232,54 @@ export function useBlogPost(slug: string | undefined) {
       return data ? mapBlogPost(data) : null;
     },
     enabled: !!slug,
+  });
+}
+
+// ---------------- NUTRITION ISSUES ----------------
+type IssueGroupRow = {
+  id: string;
+  slug: string;
+  label_en: string;
+  label_ar: string;
+  position: number;
+  nutrition_issue_items: {
+    id: string;
+    slug: string;
+    label_en: string;
+    label_ar: string;
+    position: number;
+  }[];
+};
+
+export function useNutritionIssues() {
+  return useQuery({
+    queryKey: ["nutrition-issues"],
+    queryFn: async (): Promise<NutritionIssueGroup[]> => {
+      const sb = getSupabase();
+      if (!sb) return [];
+      const { data, error } = await sb
+        .from("nutrition_issue_groups")
+        .select(
+          "id,slug,label_en,label_ar,position,nutrition_issue_items(id,slug,label_en,label_ar,position)",
+        )
+        .order("position", { ascending: true });
+      if (error) throw error;
+      return ((data ?? []) as IssueGroupRow[]).map((g) => ({
+        id: g.id,
+        slug: g.slug,
+        label: { en: g.label_en, ar: g.label_ar },
+        position: g.position,
+        items: (g.nutrition_issue_items ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map((i) => ({
+            id: i.id,
+            slug: i.slug,
+            label: { en: i.label_en, ar: i.label_ar },
+            position: i.position,
+          })),
+      }));
+    },
   });
 }
 

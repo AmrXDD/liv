@@ -9,22 +9,34 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
-import { useProduct } from "@/lib/queries";
+import { useProduct, useNutritionIssues } from "@/lib/queries";
 import { getSupabase } from "@/lib/supabase";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { labelForIssueSlug } from "@/data/nutritionIssues";
 
 export function ApplyPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { data: product, isLoading } = useProduct(slug);
+  const { data: issueGroups = [] } = useNutritionIssues();
   const formRef = useRef<HTMLDivElement | null>(null);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [issues, setIssues] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+
+  const toggleIssue = (id: string) => {
+    setIssues((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   if (isLoading) {
     return (
@@ -52,6 +64,15 @@ export function ApplyPage() {
     if (!name || !email || !phone) return;
     setStatus("loading");
     const sb = getSupabase();
+    const selectedIssues = Array.from(issues);
+    // Also pretty-print issues into the message body so they show up in the
+    // admin email + the existing message column without a schema migration on
+    // the email side. The structured array lives in nutrition_issues.
+    const issuesEnglish = selectedIssues.map((s) =>
+      labelForIssueSlug(issueGroups, s, "en"),
+    );
+    const issuesBlock =
+      issuesEnglish.length > 0 ? `Nutrition issues: ${issuesEnglish.join(", ")}` : "";
     const payload = {
       name,
       email,
@@ -59,11 +80,13 @@ export function ApplyPage() {
       subject: `Apply: ${product.title.en}`,
       message: [
         `Program: ${product.title.en} (${product.slug})`,
+        issuesBlock,
         message,
       ]
         .filter(Boolean)
         .join("\n\n"),
       locale: lang,
+      nutrition_issues: selectedIssues,
     };
     try {
       if (sb) {
@@ -80,6 +103,7 @@ export function ApplyPage() {
       setEmail("");
       setPhone("");
       setMessage("");
+      setIssues(new Set());
     } catch (err) {
       console.error("[apply] submit failed:", err);
       setStatus("err");
@@ -290,9 +314,53 @@ export function ApplyPage() {
                   className="w-full rounded-2xl border border-ink/10 bg-surface-base px-4 py-3 text-sm focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20"
                 />
               </div>
+              <div className="rounded-2xl border border-ink/10 bg-surface-base p-5">
+                <div className="text-eyebrow uppercase text-forest-700 mb-1">
+                  {t("apply.issuesTitle", {
+                    defaultValue: "Nutrition issues",
+                  })}
+                </div>
+                <p className="text-xs text-ink-muted mb-5">
+                  {t("apply.issuesHint", {
+                    defaultValue: "Select any that apply — this helps us prep your discovery call.",
+                  })}
+                </p>
+                <div className="space-y-6">
+                  {issueGroups.map((group) => (
+                    <div key={group.id}>
+                      <div className="text-sm font-semibold mb-3">{group.label[lang]}</div>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {group.items.map((item) => {
+                          const checked = issues.has(item.slug);
+                          return (
+                            <label
+                              key={item.id}
+                              className={cn(
+                                "flex cursor-pointer items-start gap-2 rounded-xl border px-3 py-2 text-sm transition-colors",
+                                checked
+                                  ? "border-forest-500 bg-forest-500/5"
+                                  : "border-ink/10 hover:border-ink/30"
+                              )}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleIssue(item.slug)}
+                                className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-ink/30 accent-forest-500"
+                              />
+                              <span className="leading-snug">{item.label[lang]}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div>
                 <label className="text-sm font-medium block mb-2">
-                  {t("apply.notes", { defaultValue: "Anything we should know?" })}
+                  {t("apply.notes", { defaultValue: "Anything else we should know?" })}
                 </label>
                 <textarea
                   rows={5}

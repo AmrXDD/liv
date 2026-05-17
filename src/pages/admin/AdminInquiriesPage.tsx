@@ -1,7 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Mail, CheckCircle2, Circle } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
+import { useNutritionIssues } from "@/lib/queries";
 import { Card, PageHeader } from "@/components/admin/ui";
+import { labelForIssueSlug } from "@/data/nutritionIssues";
 
 interface ContactRow {
   id: string;
@@ -12,6 +14,7 @@ interface ContactRow {
   locale: string;
   handled: boolean;
   created_at: string;
+  nutrition_issues: string[] | null;
 }
 
 async function fetchContacts(): Promise<ContactRow[]> {
@@ -30,6 +33,7 @@ export function AdminInquiriesPage() {
     queryKey: ["admin-contacts"],
     queryFn: fetchContacts,
   });
+  const { data: issueGroups = [] } = useNutritionIssues();
 
   const toggleHandled = async (id: string, handled: boolean) => {
     const sb = requireSupabase();
@@ -138,6 +142,18 @@ export function AdminInquiriesPage() {
                     <td className="px-6 py-4 max-w-xl">
                       {c.subject && (
                         <div className="font-medium text-ink mb-1">{c.subject}</div>
+                      )}
+                      {c.nutrition_issues && c.nutrition_issues.length > 0 && (
+                        <div className="mb-2 flex flex-wrap gap-1.5">
+                          {c.nutrition_issues.map((s) => (
+                            <span
+                              key={s}
+                              className="rounded-full bg-forest-500/10 px-2 py-0.5 text-[11px] font-medium text-forest-700"
+                            >
+                              {labelForIssueSlug(issueGroups, s, "en")}
+                            </span>
+                          ))}
+                        </div>
                       )}
                       <div className="text-xs text-ink-muted whitespace-pre-wrap">
                         {c.message}
