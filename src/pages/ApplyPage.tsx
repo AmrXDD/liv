@@ -39,32 +39,41 @@ export function ApplyPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) return;
+    if (!name || !email || !phone) return;
     setStatus("loading");
     const sb = getSupabase();
+    const payload = {
+      name,
+      email,
+      phone,
+      subject: `Apply: ${product.title.en}`,
+      message: [
+        `Program: ${product.title.en} (${product.slug})`,
+        message,
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      locale: lang,
+    };
     try {
       if (sb) {
-        const { error } = await sb.from("contacts").insert({
-          name,
-          email,
-          subject: `Apply: ${product.title.en}`,
-          message: [
-            phone ? `Phone: ${phone}` : null,
-            `Program: ${product.title.en} (${product.slug})`,
-            message,
-          ]
-            .filter(Boolean)
-            .join("\n\n"),
-          locale: lang,
+        // Prefer the edge function so Resend notifies the team. Fall back to
+        // a direct table insert if the function isn't deployed yet.
+        const { error: fnErr } = await sb.functions.invoke("submit-contact", {
+          body: payload,
         });
-        if (error) throw error;
+        if (fnErr) {
+          const { error } = await sb.from("contacts").insert(payload);
+          if (error) throw error;
+        }
       }
       setStatus("ok");
       setName("");
       setEmail("");
       setPhone("");
       setMessage("");
-    } catch {
+    } catch (err) {
+      console.error("[apply] submit failed:", err);
       setStatus("err");
     }
   };
@@ -140,9 +149,13 @@ export function ApplyPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium block mb-2">
-                    {t("apply.phone", { defaultValue: "Phone (optional)" })}
+                    {t("apply.phone", { defaultValue: "Phone" })}
                   </label>
                   <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full rounded-2xl border border-ink/10 bg-surface-base px-4 py-3 text-sm focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20"

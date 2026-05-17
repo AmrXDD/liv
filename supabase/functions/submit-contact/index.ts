@@ -9,7 +9,13 @@
 //   ADMIN_NOTIFY_EMAIL            (where the notification email is delivered)
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendEmail, contactNotificationEmail, getAdminNotifyEmail } from "../_shared/resend.ts";
+import {
+  sendEmail,
+  sendTemplate,
+  contactNotificationEmail,
+  getAdminNotifyEmail,
+  getTemplateAlias,
+} from "../_shared/resend.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -52,6 +58,7 @@ Deno.serve(async (req) => {
     });
     if (dbErr) throw dbErr;
 
+    // 1. Admin notification (unchanged — internal-only, plain template)
     const adminTo = getAdminNotifyEmail();
     const { subject, html, text } = contactNotificationEmail({
       name: input.name,
@@ -68,6 +75,46 @@ Deno.serve(async (req) => {
       replyTo: input.email,
       tags: [{ name: "type", value: "contact-form" }],
     });
+
+    // 2. Customer-facing auto-reply. Branch on subject:
+    //    "Apply: <Program>" → coaching application confirmation
+    //    everything else   → generic contact-us reply
+    const isApply = input.subject?.startsWith("Apply: ") ?? false;
+    if (isApply) {
+      const applyTemplate = getTemplateAlias("COACHING_APPLICATION_CONFIRMATION");
+      if (applyTemplate) {
+        // ApplyPage builds subject "Apply: <Program>" and the message starts
+        // with "Program: <Program> (<slug>)". Parse them back out for the
+        // template variables.
+        const programTitle = input.subject!.replace(/^Apply:\s*/, "").trim();
+        const slugMatch = input.message.match(/Program:.*\(([^)]+)\)/);
+        const programSlug = slugMatch?.[1] ?? "";
+        await sendTemplate({
+          to: input.email,
+          templateId: applyTemplate,
+          variables: {
+            CUSTOMER_NAME: input.name,
+            PROGRAM_TITLE: programTitle,
+            PROGRAM_SLUG: programSlug,
+          },
+          tags: [{ name: "type", value: "coaching-application-confirmation" }],
+        });
+      }
+    } else {
+      const replyTemplate = getTemplateAlias("CONTACT_US_REPLY");
+      if (replyTemplate) {
+        await sendTemplate({
+          to: input.email,
+          templateId: replyTemplate,
+          variables: {
+            CUSTOMER_NAME: input.name,
+            SUBJECT: input.subject ?? "",
+            MESSAGE_PREVIEW: input.message.slice(0, 500),
+          },
+          tags: [{ name: "type", value: "contact-us-reply" }],
+        });
+      }
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

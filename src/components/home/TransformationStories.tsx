@@ -45,6 +45,12 @@ export function TransformationStories() {
             end: () => `+=${getDistance()}`,
             scrub: 0.6,
             pin: true,
+            // The parent <Section> uses overflow-hidden; the default fixed-
+            // position pin renders outside that stacking context and bleeds
+            // into the section above. "transform" pinning keeps the pinned
+            // element in the normal flow, contained by overflow-hidden.
+            pinType: "transform",
+            pinSpacing: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },

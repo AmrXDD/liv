@@ -4,7 +4,13 @@
 // - Adds the guest as an attendee
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendEmail, bookingConfirmationEmail, getAdminNotifyEmail } from "../_shared/resend.ts";
+import {
+  sendEmail,
+  sendTemplate,
+  bookingConfirmationEmail,
+  getAdminNotifyEmail,
+  getTemplateAlias,
+} from "../_shared/resend.ts";
 
 const TZ = "Asia/Kuwait";
 const DURATION_MIN = 30;
@@ -170,22 +176,39 @@ Deno.serve(async (req) => {
     // Fire-and-forget confirmation email via Resend. Not awaited critical-
     // path style, but we do await to log errors before responding.
     const localeCode = (input.locale ?? "en").startsWith("ar") ? "ar" : "en";
-    const { subject, html, text } = bookingConfirmationEmail({
-      name: input.name,
-      date: input.date,
-      time: input.time,
-      locale: localeCode,
-      htmlLink: created.htmlLink,
-      topic: input.topic,
-    });
-    await sendEmail({
-      to: input.email,
-      subject,
-      html,
-      text,
-      bcc: getAdminNotifyEmail(),
-      tags: [{ name: "type", value: "consultation-confirmation" }],
-    });
+    const bookingTemplate = getTemplateAlias("BOOKING_CONFIRMATION");
+    if (bookingTemplate) {
+      await sendTemplate({
+        to: input.email,
+        templateId: bookingTemplate,
+        variables: {
+          CUSTOMER_NAME: input.name,
+          DATE: input.date,
+          TIME: input.time,
+          TOPIC: input.topic ?? "",
+          CALENDAR_LINK: created.htmlLink ?? "",
+        },
+        bcc: getAdminNotifyEmail(),
+        tags: [{ name: "type", value: "consultation-confirmation" }],
+      });
+    } else {
+      const { subject, html, text } = bookingConfirmationEmail({
+        name: input.name,
+        date: input.date,
+        time: input.time,
+        locale: localeCode,
+        htmlLink: created.htmlLink,
+        topic: input.topic,
+      });
+      await sendEmail({
+        to: input.email,
+        subject,
+        html,
+        text,
+        bcc: getAdminNotifyEmail(),
+        tags: [{ name: "type", value: "consultation-confirmation" }],
+      });
+    }
 
     return new Response(JSON.stringify({
       ok: true,

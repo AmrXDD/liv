@@ -15,7 +15,15 @@
 //   SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendEmail, digitalOrderEmail } from "../_shared/resend.ts";
+import {
+  sendEmail,
+  sendTemplate,
+  digitalOrderEmail,
+  orderConfirmationEmail,
+  adminOrderAlertEmail,
+  getAdminNotifyEmail,
+  getTemplateAlias,
+} from "../_shared/resend.ts";
 
 const DOWNLOAD_TTL_DAYS = 7;
 
@@ -109,7 +117,7 @@ async function fulfillCheckoutSession(
   // Idempotency — if already paid, no-op.
   const { data: existing } = await sb
     .from("orders")
-    .select("id, status, items, locale, email")
+    .select("id, status, items, locale, email, name, total, currency")
     .eq("id", orderId)
     .maybeSingle();
   if (!existing) {
@@ -136,10 +144,57 @@ async function fulfillCheckoutSession(
     product_id: string;
     slug: string;
     category: string;
+    title_en?: string;
+    title_ar?: string;
     price: number;
     currency: string;
     quantity: number;
   }>) ?? [];
+
+  // ---- Customer order-confirmation email (every purchase, any category) ----
+  if (existing.email && items.length > 0) {
+    const locale = existing.locale === "ar" ? "ar" : "en";
+    const summary = items.map((i) => ({
+      title: (locale === "ar" ? i.title_ar : i.title_en) ?? i.slug,
+      quantity: i.quantity,
+      price: i.price,
+    }));
+    const total = Number(existing.total ?? summary.reduce((s, i) => s + i.price * i.quantity, 0));
+    const currency = existing.currency ?? items[0]?.currency ?? "USD";
+    const confirm = orderConfirmationEmail({
+      name: (existing as { name?: string | null }).name ?? session.customer_details?.name ?? null,
+      orderId,
+      items: summary,
+      total,
+      currency,
+      locale,
+    });
+    await sendEmail({
+      to: existing.email,
+      subject: confirm.subject,
+      html: confirm.html,
+      text: confirm.text,
+      tags: [{ name: "type", value: "order-confirmation" }],
+    });
+
+    // Admin alert — fire-and-forget
+    const alert = adminOrderAlertEmail({
+      orderId,
+      customerEmail: existing.email,
+      customerName: (existing as { name?: string | null }).name ?? session.customer_details?.name ?? null,
+      items: summary,
+      total,
+      currency,
+    });
+    await sendEmail({
+      to: getAdminNotifyEmail(),
+      subject: alert.subject,
+      html: alert.html,
+      text: alert.text,
+      tags: [{ name: "type", value: "admin-order-alert" }],
+    });
+  }
+
   const diyItems = items.filter((i) => i.category === "diy");
   if (diyItems.length === 0) return;
 
@@ -174,22 +229,44 @@ async function fulfillCheckoutSession(
     const titleBySlug = new Map(
       (prods ?? []).map((p) => [p.slug as string, (p as { slug: string; title?: { en?: string } | null }).title?.en ?? p.slug]),
     );
+    const diyTemplate = getTemplateAlias("DIGITAL_DOWNLOAD");
     for (const row of rows) {
       if (!row.download_url) continue;
-      const { subject, html, text } = digitalOrderEmail({
-        name: session.customer_details?.name ?? null,
-        productTitle: titleBySlug.get(row.product_slug) ?? row.product_slug,
-        downloadUrl: row.download_url,
-        expiresAt: row.download_expires_at,
-        locale: row.locale === "ar" ? "ar" : "en",
-      });
-      await sendEmail({
-        to: existing.email,
-        subject,
-        html,
-        text,
-        tags: [{ name: "type", value: "digital-order" }],
-      });
+      const productTitle = titleBySlug.get(row.product_slug) ?? row.product_slug;
+      const customerName = session.customer_details?.name ?? null;
+      const locale = row.locale === "ar" ? "ar" : "en";
+
+      if (diyTemplate) {
+        await sendTemplate({
+          to: existing.email,
+          templateId: diyTemplate,
+          variables: {
+            CUSTOMER_NAME: customerName ?? "",
+            PRODUCT_TITLE: productTitle,
+            DOWNLOAD_URL: row.download_url,
+            EXPIRES_AT: new Date(row.download_expires_at).toLocaleDateString(
+              locale === "ar" ? "ar" : "en-GB",
+            ),
+            ORDER_ID: orderId,
+          },
+          tags: [{ name: "type", value: "digital-order" }],
+        });
+      } else {
+        const { subject, html, text } = digitalOrderEmail({
+          name: customerName,
+          productTitle,
+          downloadUrl: row.download_url,
+          expiresAt: row.download_expires_at,
+          locale,
+        });
+        await sendEmail({
+          to: existing.email,
+          subject,
+          html,
+          text,
+          tags: [{ name: "type", value: "digital-order" }],
+        });
+      }
     }
   }
 

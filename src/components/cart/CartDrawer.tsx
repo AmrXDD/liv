@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -9,6 +9,19 @@ export function CartDrawer() {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { isOpen, close, items, subtotal, currency, updateQty, removeItem } = useCart();
+  const { pathname } = useLocation();
+
+  // Cart open state lives in context above <Routes>, so it persists across
+  // navigation. Auto-close only on actual pathname change — not on every
+  // re-render. (close's identity changes when isOpen flips, so we cannot
+  // depend on it directly without auto-closing the drawer we just opened.)
+  const prevPath = useRef(pathname);
+  useEffect(() => {
+    if (prevPath.current !== pathname) {
+      prevPath.current = pathname;
+      close();
+    }
+  }, [pathname, close]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -38,7 +51,6 @@ export function CartDrawer() {
           "flex flex-col",
           isOpen ? "translate-x-0" : "rtl:-translate-x-full ltr:translate-x-full"
         )}
-        style={{ transform: isOpen ? "translateX(0)" : undefined }}
       >
         <div className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
           <div>

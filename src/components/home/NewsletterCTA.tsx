@@ -13,14 +13,23 @@ export function NewsletterCTA() {
     e.preventDefault();
     setStatus("loading");
     const sb = getSupabase();
+    const payload = { email, locale: i18n.language, source: "home" };
     try {
       if (sb) {
-        const { error } = await sb.from("newsletter").insert({ email, locale: i18n.language });
-        if (error) throw error;
+        // Prefer the edge function so Resend can fire the welcome email.
+        // Fall back to a direct insert if the function isn't deployed yet.
+        const { error: fnErr } = await sb.functions.invoke("subscribe-newsletter", {
+          body: payload,
+        });
+        if (fnErr) {
+          const { error } = await sb.from("newsletter").insert(payload);
+          if (error) throw error;
+        }
       }
       setStatus("ok");
       setEmail("");
-    } catch {
+    } catch (err) {
+      console.error("[newsletter] subscribe failed:", err);
       setStatus("err");
     }
   };
