@@ -10,7 +10,6 @@ import { articleSchema, buildCanonical } from "@/lib/seo";
 import { formatDate, cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { useDirection } from "@/hooks/useDirection";
-import { NewsletterCTA } from "@/components/home/NewsletterCTA";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -112,7 +111,6 @@ export function BlogPostPage() {
         </Section>
       )}
 
-      <NewsletterCTA />
     </>
   );
 }

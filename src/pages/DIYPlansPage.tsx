@@ -8,7 +8,6 @@ import { CollectionHero } from "@/components/product/CollectionHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
-import { NewsletterCTA } from "@/components/home/NewsletterCTA";
 import { useProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
@@ -91,7 +90,6 @@ export function DIYPlansPage() {
 
       <Credentials />
       <TestimonialsSlider />
-      <NewsletterCTA />
     </>
   );
 }
