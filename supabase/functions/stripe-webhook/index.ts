@@ -183,13 +183,14 @@ async function fulfillCheckoutSession(
       currency,
       locale,
     });
-    await sendEmail({
+    const customerSend = await sendEmail({
       to: existing.email,
       subject: confirm.subject,
       html: confirm.html,
       text: confirm.text,
       tags: [{ name: "type", value: "order-confirmation" }],
     });
+    console.log("[stripe-webhook] customer email", { to: existing.email, ok: customerSend.ok, id: customerSend.id, error: customerSend.error });
 
     // Admin alert — fire-and-forget
     const alert = adminOrderAlertEmail({
@@ -200,36 +201,31 @@ async function fulfillCheckoutSession(
       total,
       currency,
     });
-    await sendEmail({
+    const adminSend = await sendEmail({
       to: getAdminNotifyEmail(),
       subject: alert.subject,
       html: alert.html,
       text: alert.text,
       tags: [{ name: "type", value: "admin-order-alert" }],
     });
+    console.log("[stripe-webhook] admin email", { to: getAdminNotifyEmail(), ok: adminSend.ok, id: adminSend.id, error: adminSend.error });
+  } else {
+    console.warn("[stripe-webhook] skipped emails", { hasEmail: !!existing.email, itemCount: items.length });
   }
 
-  // Surface a digital_orders row for ANY product that has a download_url
-  // attached (not just `category=diy`). This means the Thank You page can
-  // surface a download button for coaching welcome-packs, ebooks, etc.
-  const digitalItems = items.filter((i) => downloadByProductId.get(i.product_id));
-  if (digitalItems.length === 0) return;
-
-  // Fetch full product rows for title lookups (download URL already in memory).
-  const { data: prods } = await sb
-    .from("products")
-    .select("id, slug, download_url, title")
-    .in("id", digitalItems.map((i) => i.product_id));
-  const downloadBySlug = new Map((prods ?? []).map((p) => [p.slug as string, p.download_url as string | null]));
-
+  // Always insert one digital_orders row per item so the success page can
+  // confirm the order (queries by stripe_session_id). For items that don't
+  // have a download_url attached, the row still lands — the UI shows "Sent
+  // by email" for those. This means the Thank You page works even when the
+  // customer bought a coaching/service item with no file attached.
   const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
-  const rows = digitalItems.map((i) => ({
+  const rows = items.map((i) => ({
     email: existing.email,
     product_slug: i.slug,
     locale: existing.locale ?? "en",
     amount_paid: i.price * i.quantity,
     payment_ref: session.payment_intent ?? null,
-    download_url: downloadBySlug.get(i.slug) ?? null,
+    download_url: downloadByProductId.get(i.product_id) ?? null,
     download_expires_at: expiresAt,
     fulfilled: true,
     order_id: orderId,
