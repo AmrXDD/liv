@@ -156,12 +156,36 @@ async function fulfillCheckoutSession(
   // not just DIY plans).
   const productIds = Array.from(new Set(items.map((i) => i.product_id))).filter(Boolean);
   let downloadByProductId = new Map<string, string | null>();
+  let prodRows: Array<{ id: string; slug: string; download_url: string | null; title?: { en?: string } | null }> = [];
   if (productIds.length > 0) {
-    const { data: prodRows } = await sb
+    const { data } = await sb
       .from("products")
       .select("id, slug, download_url, title")
       .in("id", productIds);
-    downloadByProductId = new Map((prodRows ?? []).map((p) => [p.id as string, (p.download_url as string | null) ?? null]));
+    prodRows = (data ?? []) as typeof prodRows;
+    downloadByProductId = new Map(prodRows.map((p) => [p.id, p.download_url ?? null]));
+  }
+
+  // Insert digital_orders rows FIRST so the Thank You page (which polls by
+  // stripe_session_id) can render the download button immediately, before the
+  // slower Resend email round-trips below. One row per item; download_url
+  // can be null (UI then shows "Sent by email").
+  const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
+  const rows = items.map((i) => ({
+    email: existing.email,
+    product_slug: i.slug,
+    locale: existing.locale ?? "en",
+    amount_paid: i.price * i.quantity,
+    payment_ref: session.payment_intent ?? null,
+    download_url: downloadByProductId.get(i.product_id) ?? null,
+    download_expires_at: expiresAt,
+    fulfilled: true,
+    order_id: orderId,
+    stripe_session_id: sessionId,
+  }));
+  if (rows.length > 0) {
+    const { error: dErr } = await sb.from("digital_orders").insert(rows);
+    if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
   }
 
   // ---- Customer order-confirmation email (every purchase, any category) ----
@@ -213,34 +237,11 @@ async function fulfillCheckoutSession(
     console.warn("[stripe-webhook] skipped emails", { hasEmail: !!existing.email, itemCount: items.length });
   }
 
-  // Always insert one digital_orders row per item so the success page can
-  // confirm the order (queries by stripe_session_id). For items that don't
-  // have a download_url attached, the row still lands — the UI shows "Sent
-  // by email" for those. This means the Thank You page works even when the
-  // customer bought a coaching/service item with no file attached.
-  const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
-  const rows = items.map((i) => ({
-    email: existing.email,
-    product_slug: i.slug,
-    locale: existing.locale ?? "en",
-    amount_paid: i.price * i.quantity,
-    payment_ref: session.payment_intent ?? null,
-    download_url: downloadByProductId.get(i.product_id) ?? null,
-    download_expires_at: expiresAt,
-    fulfilled: true,
-    order_id: orderId,
-    stripe_session_id: sessionId,
-  }));
-  if (rows.length > 0) {
-    const { error: dErr } = await sb.from("digital_orders").insert(rows);
-    if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
-  }
-
   // Email the download link(s) to the customer via Resend (non-blocking on
   // failure — the success page is still the source of truth).
   if (existing.email) {
     const titleBySlug = new Map(
-      (prods ?? []).map((p) => [p.slug as string, (p as { slug: string; title?: { en?: string } | null }).title?.en ?? p.slug]),
+      prodRows.map((p) => [p.slug, p.title?.en ?? p.slug]),
     );
     const diyTemplate = getTemplateAlias("DIGITAL_DOWNLOAD");
     for (const row of rows) {
