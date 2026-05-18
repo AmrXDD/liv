@@ -315,7 +315,22 @@ Deno.serve(async (req) => {
   const rawBody = await req.text();
 
   const ok = await verifyStripeSignature(rawBody, sigHeader, secret);
-  if (!ok) return new Response("Invalid signature", { status: 400 });
+  if (!ok) {
+    // TEMP DIAGNOSTIC — remove after signing secret is confirmed working
+    const trimmedSecret = secret.trim();
+    console.error("[stripe-webhook] signature verification failed", {
+      secretLength: secret.length,
+      secretTrimmedLength: trimmedSecret.length,
+      secretPrefix: secret.slice(0, 8),
+      secretSuffix: secret.slice(-4),
+      hadWhitespace: secret !== trimmedSecret,
+      startsWithWhsec: trimmedSecret.startsWith("whsec_"),
+      sigHeaderPresent: !!sigHeader,
+      sigHeaderSample: sigHeader?.slice(0, 40),
+      bodyLength: rawBody.length,
+    });
+    return new Response("Invalid signature", { status: 400 });
+  }
 
   let event: { type: string; data: { object: StripeSession } };
   try {
