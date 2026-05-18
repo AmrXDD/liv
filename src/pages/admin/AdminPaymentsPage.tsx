@@ -9,9 +9,12 @@ interface OrderItem {
   product_id: string;
   slug: string;
   category: string;
-  title: { en: string; ar: string };
+  title_en: string;
+  title_ar: string;
   price: number;
-  qty: number;
+  currency?: string;
+  quantity: number;
+  hero_image?: string | null;
 }
 
 interface OrderRow {
@@ -26,6 +29,9 @@ interface OrderRow {
   notes: string | null;
   status: string;
   payment_ref: string | null;
+  stripe_payment_intent: string | null;
+  stripe_session_id: string | null;
+  paid_at: string | null;
   locale: string;
   created_at: string;
 }
@@ -41,6 +47,18 @@ interface DigitalOrderRow {
 }
 
 const STATUSES = ["pending", "paid", "fulfilled", "refunded", "cancelled"];
+
+// Build a Stripe dashboard URL from a payment reference. Webhook stores
+// payment_intent IDs (pi_…), but fall back to checkout sessions (cs_…) or
+// charges (ch_…) defensively. Returns null for unknown shapes.
+function stripeUrlFor(ref: string): string | null {
+  const r = ref.trim();
+  if (r.startsWith("pi_")) return `https://dashboard.stripe.com/payments/${r}`;
+  if (r.startsWith("ch_")) return `https://dashboard.stripe.com/payments/${r}`;
+  if (r.startsWith("cs_")) return `https://dashboard.stripe.com/payments?query=${r}`;
+  if (r.startsWith("in_")) return `https://dashboard.stripe.com/invoices/${r}`;
+  return null;
+}
 
 async function fetchOrders(): Promise<OrderRow[]> {
   const sb = requireSupabase();
@@ -174,19 +192,24 @@ export function AdminPaymentsPage() {
                   </div>
 
                   <ul className="mt-4 divide-y divide-ink/5 rounded-xl border border-ink/10">
-                    {o.items.map((item, i) => (
-                      <li key={i} className="flex items-center justify-between gap-4 p-3 text-sm">
-                        <div>
-                          <div className="font-medium">{item.title.en}</div>
-                          <div className="text-xs text-ink-muted">
-                            {item.category} · qty {item.qty}
+                    {(Array.isArray(o.items) ? o.items : []).map((item, i) => {
+                      const title = item.title_en || item.title_ar || item.slug || "Item";
+                      const qty = Number(item.quantity ?? 1);
+                      const price = Number(item.price ?? 0);
+                      return (
+                        <li key={i} className="flex items-center justify-between gap-4 p-3 text-sm">
+                          <div>
+                            <div className="font-medium">{title}</div>
+                            <div className="text-xs text-ink-muted">
+                              {item.category ?? "—"} · qty {qty}
+                            </div>
                           </div>
-                        </div>
-                        <div className="font-medium">
-                          {formatPrice(item.price * item.qty, o.currency)}
-                        </div>
-                      </li>
-                    ))}
+                          <div className="font-medium">
+                            {formatPrice(price * qty, o.currency)}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
 
                   {o.notes && (
@@ -205,6 +228,20 @@ export function AdminPaymentsPage() {
                       }}
                       className="max-w-xs !py-2 !text-xs"
                     />
+                    {(() => {
+                      const ref = o.stripe_payment_intent || o.stripe_session_id || o.payment_ref;
+                      const url = ref ? stripeUrlFor(ref) : null;
+                      return url ? (
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 rounded-full border border-ink/15 px-3 py-1.5 text-xs hover:bg-bone-100"
+                        >
+                          Open in Stripe <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : null;
+                    })()}
                     {o.status === "pending" && (
                       <Btn type="button" variant="primary" size="sm" onClick={() => markPaid(o.id)}>
                         <CheckCircle2 className="h-3.5 w-3.5" /> Mark paid
