@@ -47,6 +47,17 @@ export interface SendEmailInput {
   from?: string;
   bcc?: string | string[];
   tags?: Array<{ name: string; value: string }>;
+  /**
+   * Resend file attachments. Use `path` (HTTPS URL) to let Resend fetch the
+   * file server-side — simplest for our Supabase Storage public URLs. Use
+   * `content` (base64) for inline-generated PDFs.
+   */
+  attachments?: Array<{
+    filename: string;
+    path?: string;
+    content?: string;
+    content_type?: string;
+  }>;
 }
 
 export interface SendEmailResult {
@@ -69,7 +80,7 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
   const defaultFrom = Deno.env.get("RESEND_FROM") ?? DEFAULT_FROM;
   const defaultReply = Deno.env.get("RESEND_REPLY_TO") ?? DEFAULT_REPLY_TO;
 
-  const body = {
+  const body: Record<string, unknown> = {
     from: input.from ?? defaultFrom,
     to: Array.isArray(input.to) ? input.to : [input.to],
     subject: input.subject,
@@ -79,6 +90,9 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
     bcc: input.bcc,
     tags: input.tags,
   };
+  if (input.attachments && input.attachments.length > 0) {
+    body.attachments = input.attachments;
+  }
 
   try {
     const res = await fetch("https://api.resend.com/emails", {

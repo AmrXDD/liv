@@ -207,14 +207,26 @@ async function fulfillCheckoutSession(
       currency,
       locale,
     });
+    // Attach the actual product file(s) so the customer receives the PDF/zip
+    // directly in their inbox (not just a link). Resend fetches each `path`
+    // server-side and inlines it as a real email attachment.
+    const attachments = summary
+      .filter((i) => i.downloadUrl)
+      .map((i) => {
+        const url = i.downloadUrl as string;
+        const filename = (url.split("/").pop() ?? "download").split("?")[0];
+        return { filename, path: url };
+      });
+
     const customerSend = await sendEmail({
       to: existing.email,
       subject: confirm.subject,
       html: confirm.html,
       text: confirm.text,
+      attachments: attachments.length > 0 ? attachments : undefined,
       tags: [{ name: "type", value: "order-confirmation" }],
     });
-    console.log("[stripe-webhook] customer email", { to: existing.email, ok: customerSend.ok, id: customerSend.id, error: customerSend.error });
+    console.log("[stripe-webhook] customer email", { to: existing.email, ok: customerSend.ok, id: customerSend.id, error: customerSend.error, attachments: attachments.length });
 
     // Admin alert — fire-and-forget
     const alert = adminOrderAlertEmail({
