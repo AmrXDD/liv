@@ -19,19 +19,19 @@ export function Footer() {
     { to: "/coaching", label: t("nav.coaching") },
     { to: "/consultations", label: t("nav.consultations") },
     { to: "/blog", label: t("nav.blog") },
-    { to: "/recommended", label: t("nav.recommended") },
+    { to: "/recommended", label: t("nav.affiliate") },
   ];
 
   const company = [
     { to: "/about", label: t("nav.about") },
     { to: "/my-story", label: t("nav.myStory") },
     { to: "/why-us", label: t("nav.whyUs") },
-    { to: "/how-it-works", label: t("nav.howItWorks") },
-    { to: "/b2b", label: t("nav.b2b") },
-    { to: "/contact", label: t("nav.contact") },
+    { to: "/b2b", label: t("nav.groupWorkshops") },
   ];
 
   const support = [
+    { to: "/how-it-works", label: t("nav.howItWorks") },
+    { to: "/contact", label: t("nav.contact") },
     { to: "/faq", label: t("nav.faq") },
     { to: "/privacy", label: t("nav.privacy", { defaultValue: "Privacy" }) },
     { to: "/terms", label: t("nav.terms", { defaultValue: "Terms" }) },

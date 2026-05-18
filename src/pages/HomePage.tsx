@@ -3,12 +3,10 @@ import { organizationSchema, websiteSchema } from "@/lib/seo";
 import { Hero } from "@/components/home/Hero";
 import { MarqueeBand } from "@/components/home/MarqueeBand";
 import { ServicesPillars } from "@/components/home/ServicesPillars";
-import { TransformationStories } from "@/components/home/TransformationStories";
 import { Credentials } from "@/components/home/Credentials";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
-import { NewsletterCTA } from "@/components/home/NewsletterCTA";
 import { ConversionFunnel } from "@/components/home/ConversionFunnel";
 import { useTranslation } from "react-i18next";
 
@@ -31,10 +29,8 @@ export function HomePage() {
       <Credentials />
       <FeaturedProducts />
       <HowItWorks />
-      <TransformationStories />
       <TestimonialsSlider />
       <ConversionFunnel />
-      <NewsletterCTA />
     </>
   );
 }

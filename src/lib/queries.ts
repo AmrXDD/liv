@@ -179,6 +179,72 @@ export interface Accreditation {
   is_published: boolean;
 }
 
+// ---------------- RECOMMENDED PRODUCTS ----------------
+export interface RecommendedProduct {
+  id: string;
+  category_en: string;
+  category_ar: string | null;
+  name_en: string;
+  name_ar: string | null;
+  why_en: string | null;
+  why_ar: string | null;
+  url: string;
+  is_affiliate: boolean;
+  position: number;
+  is_published: boolean;
+}
+
+export function useRecommendedProducts(opts?: { publishedOnly?: boolean }) {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return useQuery({
+    queryKey: ["recommended-products", publishedOnly],
+    queryFn: async (): Promise<RecommendedProduct[]> => {
+      const sb = getSupabase();
+      if (!sb) return [];
+      let q = sb
+        .from("recommended_products")
+        .select("id,category_en,category_ar,name_en,name_ar,why_en,why_ar,url,is_affiliate,position,is_published")
+        .order("position", { ascending: true });
+      if (publishedOnly) q = q.eq("is_published", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return (data ?? []) as RecommendedProduct[];
+    },
+  });
+}
+
+// ---------------- B2B PILLARS ----------------
+export interface B2bPillar {
+  id: string;
+  tag: string;
+  title_en: string;
+  title_ar: string | null;
+  body_en: string | null;
+  body_ar: string | null;
+  link_url: string | null;
+  position: number;
+  is_published: boolean;
+}
+
+export function useB2bPillars(opts?: { publishedOnly?: boolean }) {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return useQuery({
+    queryKey: ["b2b-pillars", publishedOnly],
+    queryFn: async (): Promise<B2bPillar[]> => {
+      const sb = getSupabase();
+      if (!sb) return [];
+      let q = sb
+        .from("b2b_pillars")
+        .select("id,tag,title_en,title_ar,body_en,body_ar,link_url,position,is_published")
+        .order("position", { ascending: true });
+      if (publishedOnly) q = q.eq("is_published", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return (data ?? []) as B2bPillar[];
+    },
+  });
+}
+
 export function useAccreditations(opts?: { publishedOnly?: boolean }) {
   const publishedOnly = opts?.publishedOnly ?? true;
   return useQuery({

@@ -83,11 +83,11 @@ export function BlogPostPage() {
             </div>
           </div>
 
-          <article className="mx-auto mt-12 max-w-2xl prose prose-lg leading-relaxed">
-            <p className="text-lg text-ink leading-loose whitespace-pre-line text-pretty">
-              {post.content[lang]}
-            </p>
-          </article>
+          <article
+            className="mx-auto mt-12 max-w-2xl prose prose-lg leading-relaxed [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600"
+            dir={lang === "ar" ? "rtl" : "ltr"}
+            dangerouslySetInnerHTML={{ __html: post.content[lang] || "" }}
+          />
         </Container>
       </Section>
 

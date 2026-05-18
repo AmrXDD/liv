@@ -12,6 +12,7 @@ import {
   Input,
   Select,
 } from "@/components/admin/ui";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import type { Block, LocalizedString, Product } from "@/types";
 
 function uid() {
@@ -24,6 +25,8 @@ export function makeBlock(type: Block["type"]): Block {
       return { id: uid(), type: "heading", level: 2, text: { en: "", ar: "" }, align: "start" };
     case "text":
       return { id: uid(), type: "text", text: { en: "", ar: "" }, align: "start" };
+    case "richText":
+      return { id: uid(), type: "richText", html: { en: "", ar: "" }, align: "start" };
     case "image":
       return { id: uid(), type: "image", url: "", alt: "", rounded: true };
     case "button":
@@ -133,6 +136,38 @@ function BlockBody({ block, onChange }: { block: Block; onChange: (b: Block) => 
             onChange={(text) => onChange({ ...block, text })}
             textarea
           />
+          <Field label="Align">
+            <Select
+              value={block.align ?? "start"}
+              onChange={(e) => onChange({ ...block, align: e.currentTarget.value as "start" | "center" })}
+            >
+              <option value="start">Start</option>
+              <option value="center">Center</option>
+            </Select>
+          </Field>
+        </div>
+      );
+    case "richText":
+      return (
+        <div className="space-y-4">
+          <div>
+            <div className="mb-2 text-sm font-medium">Body (English) — supports formatting and hyperlinks</div>
+            <RichTextEditor
+              value={block.html.en}
+              onChange={(en) => onChange({ ...block, html: { ...block.html, en } })}
+              dir="ltr"
+              placeholder="Write the English body…"
+            />
+          </div>
+          <div>
+            <div className="mb-2 text-sm font-medium">Body (العربية)</div>
+            <RichTextEditor
+              value={block.html.ar}
+              onChange={(ar) => onChange({ ...block, html: { ...block.html, ar } })}
+              dir="rtl"
+              placeholder="اكتبي النص العربي…"
+            />
+          </div>
           <Field label="Align">
             <Select
               value={block.align ?? "start"}

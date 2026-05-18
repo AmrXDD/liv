@@ -10,6 +10,7 @@ import {
   Btn,
   Card,
   Field,
+  FileUploader,
   ImageUploader,
   Input,
   LocaleListEditor,
@@ -190,6 +191,31 @@ export function AdminProductFormPage() {
                 bucket="product-images"
                 prefix="gallery"
               />
+            </div>
+          </Card>
+
+          <Card>
+            <h2 className="mb-1 display-serif text-xl">Downloadable file</h2>
+            <p className="mb-4 text-sm text-ink-muted">
+              Upload a PDF (or other file) the customer receives after paying. The link is included in the order confirmation email and shown on the Thank You page.
+            </p>
+            <div className="space-y-4">
+              <FileUploader
+                label="Upload file"
+                value={form.downloadUrl}
+                onChange={(url) => set("downloadUrl", url)}
+                bucket="product-downloads"
+                prefix={form.slug || "downloads"}
+                accept=".pdf,.zip,.epub,.mp3,.mp4,.docx"
+                hint="PDF, ZIP, EPUB, MP3, MP4, DOCX up to your Supabase Storage limit."
+              />
+              <Field label="…or paste a download URL">
+                <Input
+                  value={form.downloadUrl ?? ""}
+                  onChange={(e) => set("downloadUrl", e.currentTarget.value || undefined)}
+                  placeholder="https://…"
+                />
+              </Field>
             </div>
           </Card>
 

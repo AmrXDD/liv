@@ -15,6 +15,7 @@ import {
   Select,
   Toggle,
 } from "@/components/admin/ui";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import type { BlogPost, LocalizedString } from "@/types";
 import { slugify } from "@/lib/utils";
 
@@ -150,13 +151,26 @@ export function AdminBlogFormPage() {
             textarea
           />
 
-          <BilingualField
-            label="Content"
-            valueEn={form.content.en}
-            valueAr={form.content.ar}
-            onChange={(ls) => setLs("content", ls)}
-            textarea
-          />
+          <div>
+            <div className="mb-2 text-sm font-medium">Content (English)</div>
+            <RichTextEditor
+              value={form.content.en}
+              onChange={(en) => setLs("content", { ...form.content, en })}
+              dir="ltr"
+              minHeight={280}
+              placeholder="Write the English post body…"
+            />
+          </div>
+          <div>
+            <div className="mb-2 text-sm font-medium">المحتوى (العربية)</div>
+            <RichTextEditor
+              value={form.content.ar}
+              onChange={(ar) => setLs("content", { ...form.content, ar })}
+              dir="rtl"
+              minHeight={280}
+              placeholder="اكتبي محتوى المقال…"
+            />
+          </div>
         </div>
       </Card>
 

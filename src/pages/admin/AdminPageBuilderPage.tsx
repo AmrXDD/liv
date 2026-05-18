@@ -35,7 +35,8 @@ import { slugify } from "@/lib/utils";
 
 const PALETTE: { type: Block["type"]; label: string }[] = [
   { type: "heading", label: "Heading" },
-  { type: "text", label: "Text" },
+  { type: "text", label: "Plain text" },
+  { type: "richText", label: "Rich text (WYSIWYG)" },
   { type: "image", label: "Image" },
   { type: "button", label: "Button" },
   { type: "productGrid", label: "Product grid" },

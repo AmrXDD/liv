@@ -276,7 +276,7 @@ export function bookingConfirmationEmail(opts: {
 export function orderConfirmationEmail(opts: {
   name?: string | null;
   orderId: string;
-  items: Array<{ title: string; quantity: number; price: number }>;
+  items: Array<{ title: string; quantity: number; price: number; downloadUrl?: string | null }>;
   total: number;
   currency: string;
   locale: "en" | "ar";
@@ -299,6 +299,27 @@ export function orderConfirmationEmail(opts: {
       </tr>`,
     )
     .join("");
+
+  const downloadItems = opts.items.filter((i) => i.downloadUrl);
+  const downloadsBlock = downloadItems.length > 0
+    ? `<div style="margin-top:24px;padding:18px;background:#f1f8f3;border:1px solid #cfe3d4;border-radius:14px;">
+        <div style="font-size:13px;font-weight:700;color:${BRAND_PRIMARY};margin-bottom:10px;">
+          ${isAr ? "تنزيلاتك" : "Your downloads"}
+        </div>
+        ${downloadItems.map((i) => `
+          <p style="margin:8px 0;">
+            <a href="${i.downloadUrl}"
+               style="display:inline-block;background:${BRAND_PRIMARY};color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:999px;font-weight:600;font-size:13px;">
+              ${isAr ? "تنزيل" : "Download"} — ${escapeHtml(i.title)}
+            </a>
+          </p>
+        `).join("")}
+        <p style="font-size:11px;color:#7a756c;margin-top:8px;">
+          ${isAr ? "الروابط فعّالة لمدة 7 أيام." : "Links are valid for 7 days."}
+        </p>
+      </div>`
+    : "";
+
   const html = layout(subject, `
     ${lede}
     <table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;">
@@ -306,9 +327,13 @@ export function orderConfirmationEmail(opts: {
       <tr><td style="padding:12px 0;font-weight:700;">${isAr ? "الإجمالي" : "Total"}</td>
           <td style="padding:12px 0;font-weight:700;text-align:end;color:${BRAND_PRIMARY};">${opts.total.toFixed(2)} ${opts.currency}</td></tr>
     </table>
+    ${downloadsBlock}
     <p style="font-size:12px;color:#7a756c;margin-top:20px;">${isAr ? "رقم الطلب" : "Order ID"}: ${escapeHtml(opts.orderId)}</p>
   `);
-  const text = `${greeting}\n\n${isAr ? "تأكيد طلبك" : "Order confirmed"}: ${opts.orderId}\n${isAr ? "الإجمالي" : "Total"}: ${opts.total.toFixed(2)} ${opts.currency}`;
+  const textDownloads = downloadItems.length > 0
+    ? `\n\n${isAr ? "تنزيلاتك" : "Your downloads"}:\n${downloadItems.map((i) => `- ${i.title}: ${i.downloadUrl}`).join("\n")}`
+    : "";
+  const text = `${greeting}\n\n${isAr ? "تأكيد طلبك" : "Order confirmed"}: ${opts.orderId}\n${isAr ? "الإجمالي" : "Total"}: ${opts.total.toFixed(2)} ${opts.currency}${textDownloads}`;
   return { subject, html, text };
 }
 

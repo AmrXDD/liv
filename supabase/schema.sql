@@ -382,7 +382,9 @@ insert into storage.buckets (id, name, public)
 values
   ('product-images',    'product-images',    true),
   ('collection-images', 'collection-images', true),
-  ('page-images',       'page-images',       true)
+  ('page-images',       'page-images',       true),
+  ('blog-images',       'blog-images',       true),
+  ('product-downloads', 'product-downloads', true)
 on conflict (id) do update set public = excluded.public;
 
 -- Storage policies live on storage.objects; RLS is enabled by default.
@@ -393,25 +395,93 @@ drop policy if exists "lf storage admin delete" on storage.objects;
 
 create policy "lf storage public read"
   on storage.objects for select
-  using (bucket_id in ('product-images', 'collection-images', 'page-images'));
+  using (bucket_id in ('product-images', 'collection-images', 'page-images', 'blog-images', 'product-downloads'));
 
 create policy "lf storage admin write"
   on storage.objects for insert
   with check (
-    bucket_id in ('product-images', 'collection-images', 'page-images')
+    bucket_id in ('product-images', 'collection-images', 'page-images', 'blog-images', 'product-downloads')
     and auth.role() = 'authenticated'
   );
 
 create policy "lf storage admin update"
   on storage.objects for update
   using (
-    bucket_id in ('product-images', 'collection-images', 'page-images')
+    bucket_id in ('product-images', 'collection-images', 'page-images', 'blog-images', 'product-downloads')
     and auth.role() = 'authenticated'
   );
 
 create policy "lf storage admin delete"
   on storage.objects for delete
   using (
-    bucket_id in ('product-images', 'collection-images', 'page-images')
+    bucket_id in ('product-images', 'collection-images', 'page-images', 'blog-images', 'product-downloads')
     and auth.role() = 'authenticated'
   );
+
+-- =============================================================
+-- RECOMMENDED PRODUCTS (admin-managed affiliate links)
+-- =============================================================
+create table if not exists recommended_products (
+  id           uuid primary key default gen_random_uuid(),
+  category_en  text not null,
+  category_ar  text,
+  name_en      text not null,
+  name_ar      text,
+  why_en       text,
+  why_ar       text,
+  url          text not null,
+  is_affiliate boolean not null default false,
+  position     int not null default 0,
+  is_published boolean not null default true,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+drop trigger if exists recommended_products_updated_at on recommended_products;
+create trigger recommended_products_updated_at
+  before update on recommended_products
+  for each row execute function lf_set_updated_at();
+
+alter table recommended_products enable row level security;
+drop policy if exists "recommended_products read"  on recommended_products;
+drop policy if exists "recommended_products admin" on recommended_products;
+create policy "recommended_products read"
+  on recommended_products for select
+  using (is_published = true or auth.role() = 'authenticated');
+create policy "recommended_products admin"
+  on recommended_products for all
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');
+
+-- =============================================================
+-- B2B / GROUP & WORKSHOPS PILLARS (admin-managed cards)
+-- =============================================================
+create table if not exists b2b_pillars (
+  id           uuid primary key default gen_random_uuid(),
+  tag          text not null,
+  title_en     text not null,
+  title_ar     text,
+  body_en      text,
+  body_ar      text,
+  link_url     text,
+  position     int not null default 0,
+  is_published boolean not null default true,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+drop trigger if exists b2b_pillars_updated_at on b2b_pillars;
+create trigger b2b_pillars_updated_at
+  before update on b2b_pillars
+  for each row execute function lf_set_updated_at();
+
+alter table b2b_pillars enable row level security;
+drop policy if exists "b2b_pillars read"  on b2b_pillars;
+drop policy if exists "b2b_pillars admin" on b2b_pillars;
+create policy "b2b_pillars read"
+  on b2b_pillars for select
+  using (is_published = true or auth.role() = 'authenticated');
+create policy "b2b_pillars admin"
+  on b2b_pillars for all
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');

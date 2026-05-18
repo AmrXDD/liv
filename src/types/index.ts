@@ -56,6 +56,7 @@ export interface Collection {
 export type BlockType =
   | "heading"
   | "text"
+  | "richText"
   | "image"
   | "button"
   | "productGrid"
@@ -77,6 +78,13 @@ export interface HeadingBlock extends BaseBlock {
 export interface TextBlock extends BaseBlock {
   type: "text";
   text: LocalizedString;
+  align?: "start" | "center";
+}
+
+/** Rich-text (HTML) block — produced by the Tiptap WYSIWYG editor. */
+export interface RichTextBlock extends BaseBlock {
+  type: "richText";
+  html: LocalizedString;
   align?: "start" | "center";
 }
 
@@ -118,6 +126,7 @@ export interface DividerBlock extends BaseBlock {
 export type Block =
   | HeadingBlock
   | TextBlock
+  | RichTextBlock
   | ImageBlock
   | ButtonBlock
   | ProductGridBlock

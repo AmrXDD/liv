@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import { Loader2, Trash2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Bucket } from "@/lib/storage";
-import { uploadImage, uploadImages, deleteByPublicUrl } from "@/lib/storage";
+import { uploadImage, uploadImages, uploadFile, deleteByPublicUrl } from "@/lib/storage";
 
 export function PageHeader({
   title,
@@ -203,6 +203,85 @@ export function ImageUploader({
         </button>
       )}
       <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+    </div>
+  );
+}
+
+// ---- File uploader (PDFs, zips, etc.) ----
+export function FileUploader({
+  value,
+  onChange,
+  bucket,
+  prefix,
+  label = "File",
+  accept = ".pdf,.zip,.epub,.mp3,.mp4",
+  hint,
+}: {
+  value?: string;
+  onChange: (url: string | undefined) => void;
+  bucket: Bucket;
+  prefix?: string;
+  label?: string;
+  accept?: string;
+  hint?: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try {
+      const url = await uploadFile(file, bucket, prefix);
+      onChange(url);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      alert("Upload failed");
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div>
+      <div className="mb-2 text-sm font-medium">{label}</div>
+      {value ? (
+        <div className="flex items-center gap-3 rounded-2xl border border-ink/10 bg-surface-base px-4 py-3">
+          <a
+            href={value}
+            target="_blank"
+            rel="noreferrer"
+            className="flex-1 truncate text-sm text-forest-700 underline-offset-2 hover:underline"
+          >
+            {value.split("/").pop() ?? value}
+          </a>
+          <button
+            type="button"
+            onClick={async () => {
+              await deleteByPublicUrl(value, bucket);
+              onChange(undefined);
+            }}
+            className="grid h-8 w-8 place-items-center rounded-full text-ink-muted hover:bg-coral-100 hover:text-coral-700"
+            aria-label="Remove file"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="flex h-20 w-full max-w-md flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-ink/20 text-sm text-ink-muted hover:border-forest-500 hover:text-forest-700"
+        >
+          {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
+          {busy ? "Uploading…" : "Upload file"}
+        </button>
+      )}
+      <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={onFile} />
+      {hint && <p className="mt-2 text-xs text-ink-muted">{hint}</p>}
     </div>
   );
 }

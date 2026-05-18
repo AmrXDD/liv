@@ -50,6 +50,19 @@ export function BlockRenderer({ block }: { block: Block }) {
           </p>
         </Container>
       );
+    case "richText":
+      return (
+        <Container>
+          <div
+            dir={lang === "ar" ? "rtl" : "ltr"}
+            className={cn(
+              "prose prose-neutral max-w-3xl [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600",
+              block.align === "center" && "mx-auto text-center"
+            )}
+            dangerouslySetInnerHTML={{ __html: block.html[lang] || "" }}
+          />
+        </Container>
+      );
     case "image": {
       const isPortrait = block.id === "founder-portrait";
       return (

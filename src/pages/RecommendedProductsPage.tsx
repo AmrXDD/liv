@@ -6,29 +6,17 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useDirection } from "@/hooks/useDirection";
+import { useRecommendedProducts } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
-interface Item {
-  category: string;
-  name: string;
-  why: string;
-  url: string;
-  affiliate?: boolean;
-}
-
-const items: Item[] = [
-  { category: "Movement", name: "AG1", why: "The one greens powder we trust for travel days when produce isn't an option.", url: "https://drinkag1.com", affiliate: true },
-  { category: "Sleep", name: "Oura Ring", why: "Sleep tracking that respects your data and surfaces meaningful patterns.", url: "https://ouraring.com", affiliate: true },
-  { category: "Light", name: "Bon Charge SAD lamp", why: "Cheap, portable, evidence-based light therapy for grey-month motivation.", url: "https://boncharge.com" },
-  { category: "Kitchen", name: "All-Clad D3 frying pan", why: "Buy once. The skillet most of our recipes assume you have.", url: "https://all-clad.com", affiliate: true },
-  { category: "Recovery", name: "BlackRoll smartball", why: "The one mobility tool that earned a permanent spot in our routine.", url: "https://blackroll.com" },
-  { category: "Reading", name: "Why We Sleep — Matthew Walker", why: "If you read one sleep book, this is the one. Every program graduate gets it.", url: "https://amazon.com" },
-];
-
 export function RecommendedProductsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { isRtl } = useDirection();
   const ref = useScrollReveal({ selector: "[data-rec]", stagger: 0.06, y: 30 });
+  const { data: items = [], isLoading } = useRecommendedProducts();
+
+  const pick = (en: string, ar: string | null) => (lang === "ar" ? (ar?.trim() || en) : en);
 
   return (
     <>
@@ -44,38 +32,50 @@ export function RecommendedProductsPage() {
       />
       <Section variant="default" pad="md">
         <Container>
-          <ul ref={ref as React.RefObject<HTMLUListElement>} className="divide-y divide-ink/10 border-y border-ink/10">
-            {items.map((it) => (
-              <li key={it.name} data-rec>
-                <a
-                  href={it.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group grid grid-cols-12 items-start gap-6 py-8 transition-colors hover:bg-bone-100/60"
-                >
-                  <div className="col-span-2 text-eyebrow uppercase font-mono text-forest-500">
-                    {it.category}
-                  </div>
-                  <div className="col-span-9 md:col-span-7">
-                    <div className="display-serif text-2xl tracking-tight">
-                      {it.name}
-                      {it.affiliate && (
-                        <span className="ms-2 align-middle text-eyebrow uppercase text-coral-500">
-                          affiliate
-                        </span>
+          {isLoading ? (
+            <p className="text-sm text-ink-muted">Loading…</p>
+          ) : items.length === 0 ? (
+            <p className="text-sm text-ink-muted">
+              {lang === "ar" ? "لا توجد توصيات بعد." : "No recommendations yet."}
+            </p>
+          ) : (
+            <ul ref={ref as React.RefObject<HTMLUListElement>} className="divide-y divide-ink/10 border-y border-ink/10">
+              {items.map((it) => (
+                <li key={it.id} data-rec>
+                  <a
+                    href={it.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group grid grid-cols-12 items-start gap-6 py-8 transition-colors hover:bg-bone-100/60"
+                  >
+                    <div className="col-span-2 text-eyebrow uppercase font-mono text-forest-500">
+                      {pick(it.category_en, it.category_ar)}
+                    </div>
+                    <div className="col-span-9 md:col-span-7">
+                      <div className="display-serif text-2xl tracking-tight">
+                        {pick(it.name_en, it.name_ar)}
+                        {it.is_affiliate && (
+                          <span className="ms-2 align-middle text-eyebrow uppercase text-coral-500">
+                            {lang === "ar" ? "تابع" : "affiliate"}
+                          </span>
+                        )}
+                      </div>
+                      {pick(it.why_en ?? "", it.why_ar) && (
+                        <p className="mt-3 text-sm text-ink-muted leading-relaxed max-w-xl">
+                          {pick(it.why_en ?? "", it.why_ar)}
+                        </p>
                       )}
                     </div>
-                    <p className="mt-3 text-sm text-ink-muted leading-relaxed max-w-xl">{it.why}</p>
-                  </div>
-                  <div className="col-span-1 md:col-span-3 flex items-center justify-end">
-                    <span className="grid h-12 w-12 place-items-center rounded-full border border-ink/15 transition-all duration-500 group-hover:bg-ink group-hover:text-bone-50 group-hover:border-ink group-hover:rotate-45">
-                      <ArrowUpRight className={cn("h-4 w-4", isRtl && "flip-rtl")} />
-                    </span>
-                  </div>
-                </a>
-              </li>
-            ))}
-          </ul>
+                    <div className="col-span-1 md:col-span-3 flex items-center justify-end">
+                      <span className="grid h-12 w-12 place-items-center rounded-full border border-ink/15 transition-all duration-500 group-hover:bg-ink group-hover:text-bone-50 group-hover:border-ink group-hover:rotate-45">
+                        <ArrowUpRight className={cn("h-4 w-4", isRtl && "flip-rtl")} />
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </Container>
       </Section>
     </>

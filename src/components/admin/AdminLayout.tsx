@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Box, FolderOpen, FileText, LogOut, Sparkles, CalendarDays, Wallet, Mail, Newspaper, Award, AtSign, ListChecks } from "lucide-react";
+import { Box, FolderOpen, FileText, LogOut, Sparkles, CalendarDays, Wallet, Mail, Newspaper, Award, AtSign, ListChecks, Star, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,8 @@ const NAV = [
   { to: "/admin/collections", label: "Collections", icon: FolderOpen },
   { to: "/admin/pages", label: "Pages", icon: FileText },
   { to: "/admin/blog", label: "Blog", icon: Newspaper },
+  { to: "/admin/recommended", label: "Recommended", icon: Star },
+  { to: "/admin/b2b-pillars", label: "Group & Workshops", icon: Users },
   { to: "/admin/accreditations", label: "Accreditations", icon: Award },
   { to: "/admin/consultations", label: "Consultations", icon: CalendarDays },
   { to: "/admin/inquiries", label: "Inquiries", icon: Mail },

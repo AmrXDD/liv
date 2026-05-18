@@ -41,6 +41,8 @@ import { AdminBlogPage } from "@/pages/admin/AdminBlogPage";
 import { AdminBlogFormPage } from "@/pages/admin/AdminBlogFormPage";
 import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
+import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
+import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
 
 export function App() {
   return (
@@ -114,6 +116,8 @@ export function App() {
         <Route path="blog/:id" element={<AdminBlogFormPage />} />
         <Route path="accreditations" element={<AdminAccreditationsPage />} />
         <Route path="nutrition-issues" element={<AdminNutritionIssuesPage />} />
+        <Route path="recommended" element={<AdminRecommendedProductsPage />} />
+        <Route path="b2b-pillars" element={<AdminB2bPillarsPage />} />
       </Route>
     </Routes>
   );

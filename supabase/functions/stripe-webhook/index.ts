@@ -151,6 +151,19 @@ async function fulfillCheckoutSession(
     quantity: number;
   }>) ?? [];
 
+  // Pre-fetch product download URLs (so the confirmation email + Thank You page
+  // can both surface a download button for any product that has a file attached,
+  // not just DIY plans).
+  const productIds = Array.from(new Set(items.map((i) => i.product_id))).filter(Boolean);
+  let downloadByProductId = new Map<string, string | null>();
+  if (productIds.length > 0) {
+    const { data: prodRows } = await sb
+      .from("products")
+      .select("id, slug, download_url, title")
+      .in("id", productIds);
+    downloadByProductId = new Map((prodRows ?? []).map((p) => [p.id as string, (p.download_url as string | null) ?? null]));
+  }
+
   // ---- Customer order-confirmation email (every purchase, any category) ----
   if (existing.email && items.length > 0) {
     const locale = existing.locale === "ar" ? "ar" : "en";
@@ -158,6 +171,7 @@ async function fulfillCheckoutSession(
       title: (locale === "ar" ? i.title_ar : i.title_en) ?? i.slug,
       quantity: i.quantity,
       price: i.price,
+      downloadUrl: downloadByProductId.get(i.product_id) ?? null,
     }));
     const total = Number(existing.total ?? summary.reduce((s, i) => s + i.price * i.quantity, 0));
     const currency = existing.currency ?? items[0]?.currency ?? "USD";
@@ -195,18 +209,21 @@ async function fulfillCheckoutSession(
     });
   }
 
-  const diyItems = items.filter((i) => i.category === "diy");
-  if (diyItems.length === 0) return;
+  // Surface a digital_orders row for ANY product that has a download_url
+  // attached (not just `category=diy`). This means the Thank You page can
+  // surface a download button for coaching welcome-packs, ebooks, etc.
+  const digitalItems = items.filter((i) => downloadByProductId.get(i.product_id));
+  if (digitalItems.length === 0) return;
 
-  // Fetch download URLs from products table
+  // Fetch full product rows for title lookups (download URL already in memory).
   const { data: prods } = await sb
     .from("products")
     .select("id, slug, download_url, title")
-    .in("id", diyItems.map((i) => i.product_id));
+    .in("id", digitalItems.map((i) => i.product_id));
   const downloadBySlug = new Map((prods ?? []).map((p) => [p.slug as string, p.download_url as string | null]));
 
   const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
-  const rows = diyItems.map((i) => ({
+  const rows = digitalItems.map((i) => ({
     email: existing.email,
     product_slug: i.slug,
     locale: existing.locale ?? "en",
