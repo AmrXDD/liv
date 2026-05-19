@@ -153,17 +153,27 @@ async function fulfillCheckoutSession(
 
   // Pre-fetch product download URLs (so the confirmation email + Thank You page
   // can both surface a download button for any product that has a file attached,
-  // not just DIY plans).
+  // not just DIY plans). NOTE: the products table has split title_en/title_ar
+  // columns — selecting a non-existent "title" column makes PostgREST return an
+  // error and `data` becomes null, which previously caused every digital_orders
+  // row to be inserted with download_url=null (no email attachment, no button).
   const productIds = Array.from(new Set(items.map((i) => i.product_id))).filter(Boolean);
   let downloadByProductId = new Map<string, string | null>();
-  let prodRows: Array<{ id: string; slug: string; download_url: string | null; title?: { en?: string } | null }> = [];
+  let prodRows: Array<{ id: string; slug: string; download_url: string | null; title_en: string | null; title_ar: string | null }> = [];
   if (productIds.length > 0) {
-    const { data } = await sb
+    const { data, error: prodErr } = await sb
       .from("products")
-      .select("id, slug, download_url, title")
+      .select("id, slug, download_url, title_en, title_ar")
       .in("id", productIds);
+    if (prodErr) {
+      console.error("[stripe-webhook] products select failed", prodErr);
+    }
     prodRows = (data ?? []) as typeof prodRows;
     downloadByProductId = new Map(prodRows.map((p) => [p.id, p.download_url ?? null]));
+    console.log("[stripe-webhook] product downloads resolved", {
+      productIds,
+      resolved: Array.from(downloadByProductId.entries()),
+    });
   }
 
   // Insert digital_orders rows FIRST so the Thank You page (which polls by
@@ -186,6 +196,11 @@ async function fulfillCheckoutSession(
   if (rows.length > 0) {
     const { error: dErr } = await sb.from("digital_orders").insert(rows);
     if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
+    console.log("[stripe-webhook] digital_orders inserted", {
+      count: rows.length,
+      withDownload: rows.filter((r) => r.download_url).length,
+      urls: rows.map((r) => r.download_url),
+    });
   }
 
   // ---- Customer order-confirmation email (every purchase, any category) ----
@@ -209,14 +224,24 @@ async function fulfillCheckoutSession(
     });
     // Attach the actual product file(s) so the customer receives the PDF/zip
     // directly in their inbox (not just a link). Resend fetches each `path`
-    // server-side and inlines it as a real email attachment.
+    // server-side and inlines it as a real email attachment. The URL MUST be
+    // absolute (https://…); relative paths like "/downloads/foo.pdf" will be
+    // dropped here because Resend can't reach them.
     const attachments = summary
-      .filter((i) => i.downloadUrl)
+      .filter((i) => typeof i.downloadUrl === "string" && /^https?:\/\//i.test(i.downloadUrl as string))
       .map((i) => {
-        const url = i.downloadUrl as string;
+        const url = (i.downloadUrl as string).trim();
         const filename = (url.split("/").pop() ?? "download").split("?")[0];
         return { filename, path: url };
       });
+    console.log("[stripe-webhook] attachments planned", {
+      totalItems: summary.length,
+      attached: attachments.length,
+      list: attachments,
+      droppedBecauseRelativeOrEmpty: summary
+        .filter((i) => !i.downloadUrl || !/^https?:\/\//i.test(i.downloadUrl as string))
+        .map((i) => ({ title: i.title, url: i.downloadUrl })),
+    });
 
     const customerSend = await sendEmail({
       to: existing.email,
@@ -253,7 +278,7 @@ async function fulfillCheckoutSession(
   // failure — the success page is still the source of truth).
   if (existing.email) {
     const titleBySlug = new Map(
-      prodRows.map((p) => [p.slug, p.title?.en ?? p.slug]),
+      prodRows.map((p) => [p.slug, p.title_en ?? p.title_ar ?? p.slug]),
     );
     const diyTemplate = getTemplateAlias("DIGITAL_DOWNLOAD");
     for (const row of rows) {

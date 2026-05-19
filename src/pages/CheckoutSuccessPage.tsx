@@ -121,29 +121,55 @@ export function CheckoutSuccessPage() {
             )}
 
             {status === "ready" && downloads.length > 0 && (
-              <div className="mt-10 rounded-3xl border border-forest-500/30 bg-forest-50 p-6 text-start">
+              <div className="relative z-10 mt-10 rounded-3xl border border-forest-500/30 bg-forest-50 p-6 text-start">
                 <div className="text-eyebrow uppercase text-forest-700 mb-3">
                   Your digital products
                 </div>
-                <ul className="space-y-3">
-                  {downloads.map((d) => (
-                    <li key={d.id} className="flex items-center justify-between gap-4">
-                      <span className="text-sm font-medium">
-                        {titleBySlug[d.product_slug] ?? d.product_slug}
-                      </span>
-                      {d.download_url ? (
-                        <a
-                          href={d.download_url}
-                          download
-                          className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-4 py-2 text-xs font-semibold text-bone-50 transition-colors hover:bg-forest-700"
-                        >
-                          <Download className="h-3.5 w-3.5" /> Download
-                        </a>
-                      ) : (
-                        <span className="text-xs text-ink-muted">Sent by email</span>
-                      )}
-                    </li>
-                  ))}
+                <ul className="space-y-4">
+                  {downloads.map((d) => {
+                    const url = (d.download_url ?? "").trim();
+                    const isAbsolute = /^https?:\/\//i.test(url);
+                    return (
+                      <li key={d.id} className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-sm font-medium">
+                            {titleBySlug[d.product_slug] ?? d.product_slug}
+                          </span>
+                          {isAbsolute ? (
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => {
+                                // Bypass any ancestor that may swallow the default
+                                // click (custom cursor, Lenis, transition overlay).
+                                // Opening explicitly guarantees the new tab fires.
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const win = window.open(url, "_blank", "noopener,noreferrer");
+                                if (!win) window.location.href = url;
+                              }}
+                              className="relative z-20 inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-forest-600 px-4 py-2 text-xs font-semibold text-bone-50 no-underline transition-colors hover:bg-forest-700"
+                            >
+                              <Download className="h-3.5 w-3.5" /> Download
+                            </a>
+                          ) : (
+                            <span className="text-xs text-ink-muted">Sent by email</span>
+                          )}
+                        </div>
+                        {isAbsolute && (
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="break-all text-[11px] text-forest-700 underline underline-offset-2 hover:text-forest-900"
+                          >
+                            {url}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <p className="mt-4 text-xs text-ink-muted">
                   Links are valid for 7 days. We've also emailed you a copy.
