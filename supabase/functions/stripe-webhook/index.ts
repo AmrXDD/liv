@@ -17,12 +17,9 @@
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   sendEmail,
-  sendTemplate,
-  digitalOrderEmail,
   orderConfirmationEmail,
   adminOrderAlertEmail,
   getAdminNotifyEmail,
-  getTemplateAlias,
 } from "../_shared/resend.ts";
 
 const DOWNLOAD_TTL_DAYS = 7;
@@ -274,52 +271,10 @@ async function fulfillCheckoutSession(
     console.warn("[stripe-webhook] skipped emails", { hasEmail: !!existing.email, itemCount: items.length });
   }
 
-  // Email the download link(s) to the customer via Resend (non-blocking on
-  // failure — the success page is still the source of truth).
-  if (existing.email) {
-    const titleBySlug = new Map(
-      prodRows.map((p) => [p.slug, p.title_en ?? p.title_ar ?? p.slug]),
-    );
-    const diyTemplate = getTemplateAlias("DIGITAL_DOWNLOAD");
-    for (const row of rows) {
-      if (!row.download_url) continue;
-      const productTitle = titleBySlug.get(row.product_slug) ?? row.product_slug;
-      const customerName = session.customer_details?.name ?? null;
-      const locale = row.locale === "ar" ? "ar" : "en";
-
-      if (diyTemplate) {
-        await sendTemplate({
-          to: existing.email,
-          templateId: diyTemplate,
-          variables: {
-            CUSTOMER_NAME: customerName ?? "",
-            PRODUCT_TITLE: productTitle,
-            DOWNLOAD_URL: row.download_url,
-            EXPIRES_AT: new Date(row.download_expires_at).toLocaleDateString(
-              locale === "ar" ? "ar" : "en-GB",
-            ),
-            ORDER_ID: orderId,
-          },
-          tags: [{ name: "type", value: "digital-order" }],
-        });
-      } else {
-        const { subject, html, text } = digitalOrderEmail({
-          name: customerName,
-          productTitle,
-          downloadUrl: row.download_url,
-          expiresAt: row.download_expires_at,
-          locale,
-        });
-        await sendEmail({
-          to: existing.email,
-          subject,
-          html,
-          text,
-          tags: [{ name: "type", value: "digital-order" }],
-        });
-      }
-    }
-  }
+  // (Removed: the secondary "digital download" Resend-template email. The
+  // order-confirmation email above already carries the actual PDF as an
+  // attachment + a Download button per item, so this follow-up was just a
+  // duplicate landing in the customer's inbox.)
 
   // Touch line items via Stripe API to keep an audit trail in logs (best-effort).
   try {
