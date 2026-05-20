@@ -49,7 +49,7 @@ const routes = [
   {
     path: "/consultations",
     title:
-      "Free Discovery Call & Holistic Consultation | Liv Functional",
+      "Book Your Free 30-Minute Discovery Call | Liv Functional",
     description:
       "Book a free 30-minute discovery call or a deep-dive holistic consultation with a functional nutrition practitioner.",
   },

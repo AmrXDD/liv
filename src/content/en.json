@@ -181,7 +181,7 @@
   "consultations": {
     "hero": {
       "eyebrow": "Consultations",
-      "title": "Book your free 45-minute call.",
+      "title": "Book your free 30-minute call.",
       "lede": "Tell us where you are. Walk away with a next step — even if it isn't with us."
     },
     "tabs": {
@@ -209,7 +209,7 @@
     "trust": [
       "100% confidential",
       "No sales pitch",
-      "45 minutes, max"
+      "30 minutes, max"
     ]
   },
   "blog": {
