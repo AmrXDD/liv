@@ -86,13 +86,20 @@ export function RichTextEditor({ value, onChange, placeholder, dir = "ltr", minH
 function Toolbar({ editor }: { editor: Editor }) {
   const setLink = () => {
     const prev = editor.getAttributes("link").href as string | undefined;
-    const url = window.prompt("Hyperlink URL (leave blank to remove)", prev ?? "https://");
-    if (url === null) return;
+    const raw = window.prompt("Hyperlink URL (leave blank to remove)", prev ?? "https://");
+    if (raw === null) return;
+    const url = raw.trim();
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    // Reject unsafe schemes; auto-prefix bare domains so /blog renders <a> safely.
+    if (/^\s*javascript:/i.test(url) || /^\s*data:/i.test(url) || /^\s*vbscript:/i.test(url)) {
+      window.alert("That URL scheme isn't allowed.");
+      return;
+    }
+    const safe = /^(https?:|mailto:|tel:|\/|#)/i.test(url) ? url : `https://${url}`;
+    editor.chain().focus().extendMarkRange("link").setLink({ href: safe }).run();
   };
 
   return (

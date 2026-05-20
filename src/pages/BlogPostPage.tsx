@@ -29,16 +29,24 @@ export function BlogPostPage() {
     .filter((p) => p.id !== post.id && p.category === post.category)
     .slice(0, 3);
 
+  // Language fallbacks: if the current language's field is empty, use the other
+  // one so the post stays openable even when content was only authored in one.
+  const otherLang = lang === "en" ? "ar" : "en";
+  const title = post.title[lang] || post.title[otherLang] || "";
+  const excerpt = post.excerpt[lang] || post.excerpt[otherLang] || "";
+  const body = post.content[lang] || post.content[otherLang] || "";
+  const bodyDir = post.content[lang] ? lang : post.content[otherLang] ? otherLang : lang;
+
   return (
     <>
       <SEO
-        title={post.title[lang]}
-        description={post.excerpt[lang]}
+        title={title}
+        description={excerpt}
         path={`/blog/${post.slug}`}
         type="article"
         schema={articleSchema({
-          title: post.title.en,
-          description: post.excerpt.en,
+          title: post.title.en || post.title.ar,
+          description: post.excerpt.en || post.excerpt.ar,
           datePublished: post.publishedAt,
           author: post.author,
           url: buildCanonical(`/blog/${post.slug}`),
@@ -63,17 +71,19 @@ export function BlogPostPage() {
               <span>{post.readingMinutes} {t("blog.minRead")}</span>
             </div>
 
-            <Reveal as="h1" className="mt-6 display-serif text-display-xl tracking-tightest text-balance">
-              {post.title[lang]}
+            <Reveal as="h1" className="mt-6 display-serif text-display-xl tracking-tightest text-balance break-words">
+              {title}
             </Reveal>
 
-            <Reveal as="p" className="mt-6 text-xl text-ink-muted leading-relaxed">
-              {post.excerpt[lang]}
-            </Reveal>
+            {excerpt && (
+              <Reveal as="p" className="mt-6 text-xl text-ink-muted leading-relaxed break-words">
+                {excerpt}
+              </Reveal>
+            )}
 
             <div className="mt-10 flex items-center gap-4 border-y border-ink/10 py-6">
               <div className="grid h-12 w-12 place-items-center rounded-full bg-forest-500 text-bone-50 font-bold">
-                {post.author[0]}
+                {(post.author || "·")[0]}
               </div>
               <div>
                 <div className="text-eyebrow uppercase text-ink-muted">{t("blog.byAuthor")}</div>
@@ -82,11 +92,17 @@ export function BlogPostPage() {
             </div>
           </div>
 
-          <article
-            className="mx-auto mt-12 max-w-2xl prose prose-lg leading-relaxed [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600"
-            dir={lang === "ar" ? "rtl" : "ltr"}
-            dangerouslySetInnerHTML={{ __html: post.content[lang] || "" }}
-          />
+          {body ? (
+            <article
+              className="mx-auto mt-12 w-full max-w-2xl prose prose-lg leading-relaxed break-words [overflow-wrap:anywhere] [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl [&_iframe]:max-w-full [&_iframe]:w-full [&_video]:max-w-full [&_video]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_code]:break-words [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto"
+              dir={bodyDir === "ar" ? "rtl" : "ltr"}
+              dangerouslySetInnerHTML={{ __html: body }}
+            />
+          ) : (
+            <p className="mx-auto mt-12 max-w-2xl text-center text-ink-muted">
+              {t("blog.empty")}
+            </p>
+          )}
         </Container>
       </Section>
 
