@@ -68,9 +68,9 @@ const routes = [
   {
     path: "/my-story",
     title:
-      "Founder's Story — From Burnout to Functional Wellness | Liv Functional",
+      "Founder's Story — Reham Alsharif & LIV Functional | Liv Functional",
     description:
-      "How Amro Ghamrawy went from burnt-out operator to functional wellness practitioner — and the system that became Liv Functional.",
+      "How Reham Alsharif went from Marketing VP to LADA diagnosis at 44 — and built LIV Functional from that experience.",
   },
   {
     path: "/why-us",
