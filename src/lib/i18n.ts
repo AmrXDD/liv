@@ -55,8 +55,9 @@ i18n
     supportedLngs: SUPPORTED_LANGS as unknown as string[],
     interpolation: { escapeValue: false },
     detection: {
-      order: ["localStorage", "navigator", "htmlTag"],
+      order: ["querystring", "localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"],
+      lookupQuerystring: "lang",
       lookupLocalStorage: "liv-lang",
     },
     react: { useSuspense: false },

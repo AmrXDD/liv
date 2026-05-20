@@ -9,10 +9,16 @@ export interface SeoMeta {
   keywords?: string;
 }
 
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://livfunctional.com";
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://www.livfunctional.com";
 
 export function buildCanonical(path = "/") {
   return new URL(path, SITE_URL).toString();
+}
+
+export function buildLangUrl(path = "/", lang: "en" | "ar" = "en") {
+  const base = new URL(path, SITE_URL);
+  if (lang === "ar") base.searchParams.set("lang", "ar");
+  return base.toString();
 }
 
 export function organizationSchema() {

@@ -1,8 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { useDirection } from "@/hooks/useDirection";
-import { buildCanonical, type SeoMeta } from "@/lib/seo";
+import { buildLangUrl, type SeoMeta } from "@/lib/seo";
 
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://livfunctional.com";
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://www.livfunctional.com";
 const DEFAULT_OG_IMAGE = `${SITE_URL.replace(/\/$/, "")}/liv-logo.png`;
 const TWITTER_HANDLE = "@livfunctional";
 
@@ -10,13 +10,13 @@ export function SEO({ title, description, path = "/", image, type = "website", n
   const { lang } = useDirection();
   const isAr = lang.startsWith("ar");
   const htmlLang = isAr ? "ar" : "en";
-  const url = buildCanonical(path);
+  const enUrl = buildLangUrl(path, "en");
+  const arUrl = buildLangUrl(path, "ar");
+  const url = isAr ? arUrl : enUrl;
   const fullTitle = title.includes("Liv Functional") ? title : `${title} · Liv Functional`;
   const ogImage = image ?? DEFAULT_OG_IMAGE;
   const ogLocale = isAr ? "ar_KW" : "en_US";
   const ogLocaleAlt = isAr ? "en_US" : "ar_KW";
-  const enUrl = buildCanonical(path);
-  const arUrl = buildCanonical(path);
 
   return (
     <Helmet>

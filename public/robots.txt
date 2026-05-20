@@ -5,4 +5,4 @@ Disallow: /admin/
 Disallow: /checkout
 Disallow: /checkout/
 
-Sitemap: https://livfunctional.com/sitemap.xml
+Sitemap: https://www.livfunctional.com/sitemap.xml
