@@ -72,14 +72,16 @@ export function B2BPage() {
           <div className="mt-16 rounded-3xl bg-ink p-10 text-bone-50 md:p-16">
             <div className="grid gap-8 md:grid-cols-12 md:items-end">
               <div className="md:col-span-8">
-                <div className="text-eyebrow uppercase opacity-70 mb-4">Partner inquiries</div>
+                <div className="text-eyebrow uppercase opacity-70 mb-4">
+                  {t("static.b2b.cta.eyebrow")}
+                </div>
                 <h2 className="display-serif text-display-md tracking-tightest">
-                  Let's design a program your team will actually run.
+                  {t("static.b2b.cta.title")}
                 </h2>
               </div>
               <div className="md:col-span-4 md:text-end">
                 <Button to="/contact" variant="secondary" arrow>
-                  Start the conversation
+                  {t("static.b2b.cta.button")}
                 </Button>
               </div>
             </div>

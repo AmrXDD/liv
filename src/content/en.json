@@ -184,6 +184,14 @@
       "title": "Book your free 45-minute call.",
       "lede": "Tell us where you are. Walk away with a next step — even if it isn't with us."
     },
+    "tabs": {
+      "freeEyebrow": "Discovery call",
+      "freeTitle": "Free · 30 minutes",
+      "paidEyebrow": "Holistic consultation",
+      "paidTitle": "135 KWD · 90 minutes"
+    },
+    "openInCal": "Having trouble? Open in Cal.com",
+    "bookFree": "Book the free call",
     "form": {
       "name": "Your name",
       "email": "Email address",
@@ -293,7 +301,12 @@
     "b2b": {
       "title": "B2B collaborations.",
       "lede": "Workshops, retreats, and corporate wellness programs.",
-      "body": "We partner with forward-thinking organizations to deliver bilingual wellness programming for teams that perform under pressure."
+      "body": "We partner with forward-thinking organizations to deliver bilingual wellness programming for teams that perform under pressure.",
+      "cta": {
+        "eyebrow": "Partner inquiries",
+        "title": "We design workshops that fit your corporate culture, event idea, or wellness programs.",
+        "button": "Start the conversation"
+      }
     },
     "recommended": {
       "title": "What we actually use.",

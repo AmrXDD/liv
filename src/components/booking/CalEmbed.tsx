@@ -34,7 +34,7 @@ export function CalEmbed({ initial = "free" }: { initial?: Tab }) {
             {t("consultations.tabs.freeEyebrow", { defaultValue: "Discovery call" })}
           </div>
           <div className="mt-1 font-semibold">
-            {t("consultations.tabs.freeTitle", { defaultValue: "Free · 20 minutes" })}
+            {t("consultations.tabs.freeTitle", { defaultValue: "Free · 30 minutes" })}
           </div>
         </button>
         <button
