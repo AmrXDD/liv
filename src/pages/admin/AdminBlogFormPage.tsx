@@ -78,7 +78,8 @@ export function AdminBlogFormPage() {
     setSaving(true);
     try {
       const sb = requireSupabase();
-      const slug = form.slug?.trim() || slugify(form.title.en || form.title.ar);
+      const candidate = form.slug?.trim() || slugify(form.title.en || form.title.ar);
+      const slug = candidate || `post-${Date.now()}`;
       const row = blogPostToRow({ ...form, slug });
 
       if (isNew) {

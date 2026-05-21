@@ -1,4 +1,4 @@
-import { useParams, Navigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
@@ -21,8 +21,37 @@ export function BlogPostPage() {
   const { data: dbPosts = [] } = useBlogPosts();
 
   const post = dbPost ?? (slug ? findPostBySlug(slug) : undefined);
-  if (!post && !isLoading) return <Navigate to="/blog" replace />;
-  if (!post) return null;
+
+  if (!post) {
+    // Don't bounce to /blog — that confuses users who hard-load or share a
+    // post URL while the DB query is still in flight. Show inline state.
+    return (
+      <Section variant="default" pad="md" className="bg-editorial">
+        <Container>
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 text-sm font-medium text-ink-muted hover:text-ink mb-10"
+          >
+            <ArrowLeft className={cn("h-4 w-4", isRtl && "flip-rtl")} />
+            {t("nav.blog")}
+          </Link>
+          <div className="mx-auto max-w-2xl py-16 text-center">
+            <div className="display-serif text-display-md tracking-tightest">
+              {isLoading ? "…" : t("blog.empty")}
+            </div>
+            {!isLoading && (
+              <Link
+                to="/blog"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bone-50 hover:bg-forest-700"
+              >
+                {t("nav.blog")}
+              </Link>
+            )}
+          </div>
+        </Container>
+      </Section>
+    );
+  }
 
   const allPosts = dbPosts.length > 0 ? dbPosts : fallbackPosts;
   const related = allPosts

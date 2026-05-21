@@ -21,7 +21,9 @@ export function BlogPage() {
   const [active, setActive] = useState<(typeof CATS)[number]>("all");
   const ref = useScrollReveal({ selector: "[data-post]", stagger: 0.1, y: 40 });
   const { data: dbPosts = [] } = useBlogPosts();
-  const posts = dbPosts.length > 0 ? dbPosts : fallbackPosts;
+  const rawPosts = dbPosts.length > 0 ? dbPosts : fallbackPosts;
+  // Drop posts with empty/whitespace slugs — they'd link to /blog/ and bounce.
+  const posts = useMemo(() => rawPosts.filter((p) => p.slug && p.slug.trim()), [rawPosts]);
 
   const filtered = useMemo(() => {
     if (active === "all") return posts;

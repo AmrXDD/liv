@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
-import { posts } from "@/data/posts";
+import { posts as fallbackPosts } from "@/data/posts";
+import { useBlogPosts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useDirection } from "@/hooks/useDirection";
 import { ArrowUpRight } from "lucide-react";
@@ -15,7 +16,9 @@ export function BlogPreview() {
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const ref = useScrollReveal({ selector: "[data-post]", stagger: 0.12, y: 50 });
 
-  const featured = posts.slice(0, 3);
+  const { data: dbPosts = [] } = useBlogPosts();
+  const source = dbPosts.length > 0 ? dbPosts : fallbackPosts;
+  const featured = source.filter((p) => p.slug && p.slug.trim()).slice(0, 3);
 
   return (
     <Section variant="sunken" pad="lg">

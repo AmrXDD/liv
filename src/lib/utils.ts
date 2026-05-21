@@ -36,7 +36,7 @@ export function formatPrice(amount: number, currency = "USD", locale = "en-US") 
 }
 
 export function slugify(text: string) {
-  return text
+  const base = (text ?? "")
     .toString()
     .toLowerCase()
     .normalize("NFKD")
@@ -44,7 +44,12 @@ export function slugify(text: string) {
     .replace(/[^\w\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  // Arabic-only or all-punctuation titles strip to empty above; fall back to a
+  // stable random suffix so the post still gets a routable URL.
+  if (base) return base;
+  return `post-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function chunk<T>(arr: T[], size: number): T[][] {
