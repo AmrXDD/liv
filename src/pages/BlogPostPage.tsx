@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
@@ -10,21 +11,52 @@ import { articleSchema, buildCanonical } from "@/lib/seo";
 import { formatDate, cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { useDirection } from "@/hooks/useDirection";
+import { useCart } from "@/lib/cart";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const { isRtl } = useDirection();
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
+  const { close: closeCart } = useCart();
 
   const { data: dbPost, isLoading } = useBlogPost(slug);
   const { data: dbPosts = [] } = useBlogPosts();
 
+  // Cart drawer is global state above <Routes>. The auto-close-on-path-change
+  // in CartDrawer has missed cases (e.g. opened during the same render that
+  // navigates), so close defensively on every post mount/slug change.
+  useEffect(() => {
+    closeCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
+
   const post = dbPost ?? (slug ? findPostBySlug(slug) : undefined);
 
+  // While the DB query is in flight and we have no static fallback, show a
+  // loading state — don't flash a "not found" message we'll immediately undo.
+  if (!post && isLoading) {
+    return (
+      <Section variant="default" pad="md" className="bg-editorial">
+        <Container>
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 text-sm font-medium text-ink-muted hover:text-ink mb-10"
+          >
+            <ArrowLeft className={cn("h-4 w-4", isRtl && "flip-rtl")} />
+            {t("nav.blog")}
+          </Link>
+          <div className="mx-auto max-w-2xl py-16 text-center">
+            <div className="display-serif text-display-md tracking-tightest text-ink-muted">
+              {t("blog.loading", { defaultValue: "Loading…" })}
+            </div>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
+
   if (!post) {
-    // Don't bounce to /blog — that confuses users who hard-load or share a
-    // post URL while the DB query is still in flight. Show inline state.
     return (
       <Section variant="default" pad="md" className="bg-editorial">
         <Container>
@@ -37,16 +69,14 @@ export function BlogPostPage() {
           </Link>
           <div className="mx-auto max-w-2xl py-16 text-center">
             <div className="display-serif text-display-md tracking-tightest">
-              {isLoading ? "…" : t("blog.empty")}
+              {t("blog.notFound", { defaultValue: "Article not found." })}
             </div>
-            {!isLoading && (
-              <Link
-                to="/blog"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bone-50 hover:bg-forest-700"
-              >
-                {t("nav.blog")}
-              </Link>
-            )}
+            <Link
+              to="/blog"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bone-50 hover:bg-forest-700"
+            >
+              {t("blog.backToBlog", { defaultValue: "Back to all articles" })}
+            </Link>
           </div>
         </Container>
       </Section>

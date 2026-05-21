@@ -229,7 +229,10 @@
       "habits": "Habits",
       "energy": "Energy"
     },
-    "empty": "No articles yet. Subscribe and we'll let you know."
+    "empty": "No articles yet. Subscribe and we'll let you know.",
+    "notFound": "Article not found.",
+    "loading": "Loading…",
+    "backToBlog": "Back to all articles"
   },
   "footer": {
     "tagline": "Functional wellness, real transformation.",
