@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowUpRight } from "lucide-react";
@@ -11,6 +11,7 @@ import { useBlogPosts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn, formatDate } from "@/lib/utils";
 import { useDirection } from "@/hooks/useDirection";
+import { useCart } from "@/lib/cart";
 
 const CATS = ["all", "hormones", "gut", "metabolic", "mindset", "habits", "energy"] as const;
 
@@ -21,6 +22,15 @@ export function BlogPage() {
   const [active, setActive] = useState<(typeof CATS)[number]>("all");
   const ref = useScrollReveal({ selector: "[data-post]", stagger: 0.1, y: 40 });
   const { data: dbPosts = [] } = useBlogPosts();
+  const { close: closeCart } = useCart();
+
+  // Defensive: cart drawer is global state above <Routes>. If a mistap on the
+  // cart icon (which sits next to the mobile menu trigger in <Header>) opens
+  // it during navigation, this kills the symptom for /blog and /blog/<slug>.
+  useEffect(() => {
+    closeCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const rawPosts = dbPosts.length > 0 ? dbPosts : fallbackPosts;
   // Drop posts with empty/whitespace slugs — they'd link to /blog/ and bounce.
   const posts = useMemo(() => rawPosts.filter((p) => p.slug && p.slug.trim()), [rawPosts]);
