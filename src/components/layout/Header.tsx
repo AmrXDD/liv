@@ -64,16 +64,16 @@ export function Header() {
           <Link
             to="/"
             dir="ltr"
-            className="group flex items-center gap-1.5"
+            className="group flex shrink-0 items-center gap-1.5"
             aria-label="Liv Functional"
           >
             <img
               src="/liv-logo.png"
               alt="Liv"
-              className="h-11 w-auto transition-transform duration-700 ease-editorial group-hover:scale-[1.06] group-hover:rotate-[-3deg]"
+              className="h-10 w-auto transition-transform duration-700 ease-editorial group-hover:scale-[1.06] group-hover:rotate-[-3deg] sm:h-11"
             />
             <span
-              className="display-serif text-xl font-semibold tracking-tight leading-none inline-block text-coral-500 transition-all duration-700 ease-editorial group-hover:translate-x-0.5 group-hover:text-forest-600"
+              className="display-serif text-xl font-semibold tracking-tight leading-none hidden min-[420px]:inline-block text-coral-500 transition-all duration-700 ease-editorial group-hover:translate-x-0.5 group-hover:text-forest-600"
             >
               Functional
             </span>
@@ -127,7 +127,7 @@ export function Header() {
             {navItem("/blog", t("nav.blog"))}
           </nav>
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex shrink-0 items-center gap-2 md:gap-3">
             <LanguageSwitcher className="hidden md:inline-flex" />
             <LanguageSwitcher compact className="md:hidden" />
             <CartButton />
