@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Liv Functional — Global tokens & primitives
+   ============================================================ */
+
+@layer base {
+  :root {
+    --color-bg: #fbf9f5;
+    --color-bg-raised: #ffffff;
+    --color-bg-sunken: #f1ede4;
+    --color-fg: #0a1612;
+    --color-fg-muted: #3a4a44;
+    --color-brand: #006c45;
+    --color-brand-deep: #00472f;
+    --color-accent: #ff5757;
+    --color-line: rgba(10, 22, 18, 0.08);
+
+    --radius-pill: 9999px;
+    --shadow-elevation: 0 30px 60px -20px rgba(0, 50, 30, 0.18),
+      0 8px 20px -8px rgba(0, 50, 30, 0.12);
+
+    --easing-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+    --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  /* Arabic typography refinements */
+  html[lang="ar"] {
+    font-feature-settings: "ss01", "ss02";
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: "Cairo", "Inter", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-brand);
+    color: #fff;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Hide scrollbars but keep functionality */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+@layer components {
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-eyebrow uppercase font-semibold text-forest-700;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply block w-8 h-px bg-forest-500;
+  }
+
+  .display-serif {
+    font-family: "Cairo", "Inter", system-ui, sans-serif;
+    font-feature-settings: "ss01";
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-sm tracking-wide
+           transition-all duration-300 ease-editorial relative overflow-hidden;
+    will-change: transform;
+  }
+  .btn-primary {
+    @apply btn bg-forest-500 text-bone-50 hover:bg-forest-600 shadow-glow;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-secondary {
+    @apply btn bg-coral-500 text-bone-50 hover:bg-coral-600 shadow-coral;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/15 text-ink hover:border-ink hover:bg-ink hover:text-bone-50;
+  }
+  .btn-link {
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-forest-700 hover:text-forest-900;
+  }
+
+  .card-lift {
+    @apply transition-transform duration-500 ease-editorial;
+    will-change: transform;
+  }
+  .card-lift:hover { transform: translateY(-6px); }
+
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"));
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .reveal-mask {
+    overflow: hidden;
+    display: inline-block;
+  }
+  .reveal-mask > span {
+    display: inline-block;
+    transform: translateY(120%);
+  }
+
+  /* Marquee */
+  .marquee {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  /* RTL helpers */
+  [dir="rtl"] .flip-rtl { transform: scaleX(-1); }
+}
+
+@layer utilities {
+  .bg-editorial {
+    background-image:
+      radial-gradient(1200px 600px at 20% 0%, rgba(0, 108, 69, 0.10), transparent 60%),
+      radial-gradient(800px 600px at 100% 100%, rgba(255, 87, 87, 0.08), transparent 60%);
+  }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Smooth gradient text */
+  .text-gradient-forest {
+    background: linear-gradient(135deg, #00472f 0%, #006c45 60%, #2d8e60 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-coral {
+    background: linear-gradient(135deg, #ff5757 0%, #ff8e8e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Reduced motion safety */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

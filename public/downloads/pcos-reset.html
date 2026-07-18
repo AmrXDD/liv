@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIV Functional — 60-Day PCOS Insulin Reversal & Metabolic Restoration Protocol</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 16mm 14mm; }
+  :root {
+    --green: #006c45;
+    --red: #ff5757;
+    --bg: #f9f6f1;
+    --dark: #0d0d0d;
+    --tint: #e8f0ec;
+    --mid: #4a4a4a;
+    --rule: #d0dbd5;
+    --line: #c8d8cf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 32px 44px;
+  }
+
+  /* ===== TYPOGRAPHY ===== */
+  h1 { font-size: 42pt; font-weight: 900; color: var(--green); line-height: 1.0; }
+  h2 { font-size: 20pt; font-weight: 700; color: var(--green); border-bottom: 2px solid var(--green); padding-bottom: 6px; margin: 28px 0 10px; }
+  h3 { font-size: 14pt; font-weight: 700; color: var(--dark); margin: 18px 0 6px; }
+  h4 { font-size: 11pt; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 4px; }
+  p { margin-bottom: 10px; }
+  strong { color: var(--dark); font-weight: 700; }
+  em { color: var(--mid); }
+  ul, ol { padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 5px; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 22px 0; }
+
+  /* ===== LOGO ===== */
+  .logo-mark {
+    display: inline-block;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 22pt;
+    line-height: 1;
+  }
+  .logo-liv { color: var(--green); }
+  .logo-functional { color: var(--red); }
+
+  /* ===== COVER ===== */
+  .cover {
+    min-height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--dark);
+    color: white;
+    padding: 70px 60px;
+    margin: -32px -44px 0;
+    page-break-after: always;
+  }
+  .cover-brand { margin-bottom: 0; }
+  .cover-brand .logo-liv { color: #ffffff; }
+  .cover-brand .logo-functional { color: var(--red); }
+  .cover-eyebrow {
+    font-size: 10pt;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 60px 0 16px;
+  }
+  .cover h1 {
+    font-size: 50pt;
+    color: #ffffff;
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+  .cover h1 span { color: var(--red); }
+  .cover-sub {
+    font-size: 14pt;
+    color: rgba(255,255,255,0.72);
+    max-width: 560px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .cover-divider {
+    width: 56px;
+    height: 3px;
+    background: var(--red);
+    margin: 30px 0;
+  }
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .cover-author {
+    font-size: 12pt;
+    font-weight: 700;
+    color: white;
+  }
+  .cover-author small {
+    display: block;
+    font-size: 9pt;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .cover-badge {
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--dark);
+    background: var(--red);
+    padding: 8px 18px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ===== PHASE DIVIDER ===== */
+  .phase-divider {
+    page-break-before: always;
+    background: var(--green);
+    color: white;
+    text-align: center;
+    padding: 90px 50px 60px;
+    margin: 40px -44px 40px;
+  }
+  .phase-divider .phase-tag {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 16px;
+  }
+  .phase-divider h2 {
+    color: white;
+    border: none;
+    font-size: 38pt;
+    font-weight: 900;
+    line-height: 1.0;
+    margin: 0 0 14px;
+  }
+  .phase-divider h2 span { color: var(--red); }
+  .phase-divider .phase-days {
+    font-size: 12pt;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+  }
+  .phase-divider .phase-intent {
+    font-size: 13pt;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    max-width: 480px;
+    margin: 18px auto 0;
+    line-height: 1.5;
+  }
+
+  /* ===== WEEK BLOCK ===== */
+  .week {
+    page-break-before: always;
+    padding-top: 8px;
+  }
+  .week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 3px solid var(--red);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .week-number {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .week-title {
+    font-size: 26pt;
+    font-weight: 900;
+    color: var(--green);
+    margin: 4px 0 2px;
+  }
+  .week-theme {
+    font-size: 12pt;
+    font-weight: 400;
+    color: var(--mid);
+    margin-bottom: 18px;
+  }
+
+  /* ===== CALLOUT BOXES ===== */
+  .callout {
+    border-left: 4px solid var(--green);
+    background: var(--tint);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout-red {
+    border-left-color: var(--red);
+    background: rgba(255,87,87,0.07);
+  }
+  .callout-dark {
+    border-left-color: var(--dark);
+    background: rgba(13,13,13,0.05);
+  }
+  .callout h4 { margin-top: 0; color: var(--green); }
+  .callout-red h4 { color: var(--red); }
+  .callout-dark h4 { color: var(--dark); }
+  .callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+
+  /* ===== TABLES ===== */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 10pt; }
+  th { background: var(--green); color: white; font-weight: 700; padding: 9px 10px; text-align: left; }
+  td { border: 1px solid var(--rule); padding: 8px 10px; vertical-align: top; }
+  tr:nth-child(even) td { background: var(--tint); }
+  .table-red th { background: var(--red); }
+
+  /* ===== WORKBOOK ===== */
+  .workbook {
+    background: white;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--green);
+    padding: 20px 24px;
+    margin: 24px 0;
+    page-break-inside: avoid;
+  }
+  .workbook-red { border-top-color: var(--red); }
+  .workbook h3 {
+    margin-top: 0;
+    color: var(--green);
+    font-size: 13pt;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 14px;
+  }
+  .workbook-red h3 { color: var(--red); }
+  .prompt-list { padding-left: 20px; margin: 8px 0 16px; }
+  .prompt-list li { font-style: italic; color: var(--mid); margin-bottom: 10px; }
+  .write-lines { margin-top: 6px; }
+  .write-line {
+    border-bottom: 1px solid var(--line);
+    height: 24px;
+    margin-bottom: 7px;
+  }
+
+  /* ===== TRACKER GRID ===== */
+  .tracker { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 9.5pt; }
+  .tracker th {
+    background: var(--green);
+    color: white;
+    font-size: 8.5pt;
+    text-align: center;
+    padding: 7px 4px;
+  }
+  .tracker td {
+    border: 1px solid var(--line);
+    height: 26px;
+    background: white;
+    text-align: center;
+  }
+  .tracker td.row-label {
+    background: var(--tint);
+    font-weight: 700;
+    font-size: 8.5pt;
+    text-align: left;
+    padding: 4px 8px;
+    color: var(--green);
+  }
+
+  /* ===== SUPPLEMENT STACK ===== */
+  .supp-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .supp-item {
+    background: white;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--green);
+    padding: 12px 14px;
+    border-radius: 0 0 4px 4px;
+  }
+  .supp-item.red { border-top-color: var(--red); }
+  .supp-name { font-weight: 900; font-size: 11pt; color: var(--dark); margin-bottom: 3px; }
+  .supp-dose { font-weight: 700; font-size: 10pt; color: var(--green); }
+  .supp-item.red .supp-dose { color: var(--red); }
+  .supp-timing { font-size: 9pt; color: var(--mid); margin-top: 3px; }
+  .supp-why { font-size: 9pt; color: var(--mid); margin-top: 5px; border-top: 1px solid var(--rule); padding-top: 5px; }
+
+  /* ===== BIOMARKER TABLE ===== */
+  .marker-optimal { color: var(--green); font-weight: 700; }
+  .marker-flag { color: var(--red); font-weight: 700; }
+
+  /* ===== MISC ===== */
+  .section-intro {
+    font-size: 12pt;
+    color: var(--mid);
+    max-width: 640px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 3px;
+    margin-right: 5px;
+    margin-bottom: 4px;
+  }
+  .tag-green { background: var(--tint); color: var(--green); }
+  .tag-red { background: rgba(255,87,87,0.1); color: var(--red); }
+  .tag-dark { background: rgba(13,13,13,0.08); color: var(--dark); }
+  .pull-quote {
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--green);
+    border-left: 5px solid var(--red);
+    padding: 10px 22px;
+    margin: 22px 0;
+    line-height: 1.35;
+  }
+  .toc-entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--rule);
+    font-size: 10.5pt;
+  }
+  .toc-entry .toc-num { color: var(--red); font-weight: 700; min-width: 36px; }
+  .toc-entry .toc-label { flex: 1; padding: 0 10px; }
+  .toc-entry .toc-phase { font-size: 8.5pt; color: var(--mid); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .footer-note {
+    text-align: center;
+    font-size: 8pt;
+    color: var(--mid);
+    margin-top: 32px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+  .signature {
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--green);
+    margin-top: 12px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 14px 0;
+  }
+  .checkpoint-box {
+    background: var(--dark);
+    color: white;
+    padding: 22px 26px;
+    margin: 20px 0;
+    border-radius: 4px;
+  }
+  .checkpoint-box h3 { color: var(--red); margin-top: 0; }
+  .checkpoint-box li { color: rgba(255,255,255,0.85); }
+
+  @media print {
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    .cover { margin: 0; }
+    .phase-divider { margin: 40px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ============================================================
+     COVER
+     ============================================================ -->
+<section class="cover">
+  <div>
+    <div class="cover-brand">
+      <span class="logo-mark"><span class="logo-liv">Liv</span><span class="logo-functional"> Functional</span></span>
+    </div>
+  </div>
+  <div>
+    <div class="cover-eyebrow">60-Day Clinical Protocol</div>
+    <h1>PCOS &amp; Insulin<br><span>Reversal.</span><br>Metabolic<br>Restoration.</h1>
+    <div class="cover-divider"></div>
+    <p class="cover-sub">Your symptoms are not random. They are the downstream consequence of one hormone running your biology unchecked. This protocol fixes the root, not the list.</p>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-author">
+      Reham
+      <small>T1D · Holistic Nutrition Coach · LIV Functional<br>@liv.lowcarb</small>
+    </div>
+    <div class="cover-badge">DIY Program</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DISCLAIMER
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 20px;">
+  <h2>Before You Begin</h2>
+  <div class="callout callout-red">
+    <h4>⚠ Medical Disclaimer</h4>
+    <p>This protocol is educational. I am not your doctor. I am not a dietitian. I am a certified holistic nutrition coach and a T1D who has tested everything in these pages on my own blood sugar before recommending it to anyone else. Nothing here replaces a diagnosis, a prescription, or a conversation with your physician. If you are on medication — metformin, spironolactone, hormonal contraceptives — do not stop or adjust your medication without medical supervision. Run all supplement additions by your prescribing physician if you are on any medications.</p>
+  </div>
+  <p>What this protocol <strong>is</strong>: a structured, research-informed intervention targeting the metabolic root of PCOS — hyperinsulinemia — through nutrition, movement, supplementation, sleep, and stress regulation. Sixty days is enough time to move the needle on fasting insulin, free testosterone, and inflammatory markers. It is not enough to undo a decade of damage. Manage that expectation going in.</p>
+
+  <h2 style="margin-top: 30px;">What This Protocol Covers</h2>
+  <p class="section-intro">PCOS is not a reproductive problem. It is a metabolic problem with reproductive consequences. The research is clear: 70–80% of women with PCOS have measurable insulin resistance — even those with a "normal" BMI. This is where the protocol starts.</p>
+
+  <div class="two-col">
+    <div class="callout" style="margin: 0;">
+      <h4>What You Will Address</h4>
+      <ul>
+        <li>Chronic hyperinsulinemia</li>
+        <li>Androgen excess (high free testosterone)</li>
+        <li>Systemic inflammation (elevated CRP, IL-6)</li>
+        <li>HPA axis dysregulation (cortisol → DHEA-S)</li>
+        <li>Anovulation driven by LH:FSH imbalance</li>
+        <li>SHBG suppression</li>
+        <li>Gut microbiome disruption</li>
+        <li>Poor mitochondrial efficiency</li>
+      </ul>
+    </div>
+    <div class="callout callout-red" style="margin: 0;">
+      <h4>What This Protocol Is Not For</h4>
+      <ul>
+        <li>Active fertility treatment cycles</li>
+        <li>Women currently on clomiphene or letrozole</li>
+        <li>Eating disorder history without professional support</li>
+        <li>Unmanaged thyroid disease (address thyroid first)</li>
+        <li>Anyone wanting a quick fix or macro counting approach</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW TO USE
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 20px;">
+  <h2>How to Use This Protocol</h2>
+  <p class="section-intro">This is a sequenced intervention. The phases are not interchangeable. Phase 1 creates the metabolic baseline that Phase 2 builds on. Skipping ahead is the most common mistake.</p>
+
+  <table>
+    <tr>
+      <th>Phase</th>
+      <th>Days</th>
+      <th>Primary Target</th>
+      <th>The Work</th>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--green);">Phase 1</strong></td>
+      <td>1–20</td>
+      <td>Blood sugar stabilization</td>
+      <td>Eliminate glucose spikes, establish eating structure, begin foundational supplements</td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--red);">Phase 2</strong></td>
+      <td>21–40</td>
+      <td>Hormonal recalibration</td>
+      <td>Lower androgens, reduce inflammation, support the HPA axis, introduce cycle tracking</td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--green);">Phase 3</strong></td>
+      <td>41–60</td>
+      <td>Metabolic resilience</td>
+      <td>Advanced insulin strategies, stress metabolism, sleep architecture, long-term integration</td>
+    </tr>
+  </table>
+
+  <div class="callout">
+    <h4>CGM Recommendation</h4>
+    <p>If you can access a continuous glucose monitor (CGM) — Libre, Dexcom, or equivalent — use it for at least the first 30 days. PCOS-driven insulin resistance is often invisible on standard fasting glucose. A CGM reveals the glucose spikes and extended recovery periods that a single lab number misses entirely. It is the single highest-leverage data tool available to you.</p>
+  </div>
+
+  <h3>What to Gather Before Day 1</h3>
+  <div class="two-col">
+    <div>
+      <h4>Lab Work (Baseline)</h4>
+      <ul>
+        <li>Fasting insulin (target: &lt;5 µIU/mL)</li>
+        <li>Fasting glucose + HbA1c</li>
+        <li>HOMA-IR (calculated)</li>
+        <li>Free + total testosterone</li>
+        <li>SHBG</li>
+        <li>LH:FSH ratio</li>
+        <li>DHEA-S</li>
+        <li>hs-CRP</li>
+        <li>Vitamin D3 (25-OH)</li>
+        <li>Ferritin, full iron panel</li>
+        <li>Full thyroid panel (TSH, Free T3, Free T4)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools &amp; Supplies</h4>
+      <ul>
+        <li>Food scale (non-negotiable for first 2 weeks)</li>
+        <li>CGM if accessible</li>
+        <li>Blood pressure cuff</li>
+        <li>Glucose meter (backup)</li>
+        <li>This workbook printed or digital</li>
+        <li>Cycle tracking app (Clue, Natural Cycles)</li>
+        <li>Sleep tracker (Oura, Apple Watch)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     THE INSULIN-PCOS MECHANISM
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 20px;">
+  <h2>The Root Cause: Why Insulin Runs PCOS</h2>
+  <p class="section-intro">You cannot treat PCOS symptoms without understanding the mechanism. Most conventional approaches treat the end of the chain — the irregular periods, the acne, the weight — without touching what's driving it upstream.</p>
+
+  <div class="pull-quote">"High insulin is not a side effect of PCOS. In most cases, it is the cause."</div>
+
+  <h3>The Mechanism in Plain Language</h3>
+  <p>When you eat — especially refined carbohydrates and sugar — your pancreas releases insulin to move glucose out of the blood and into cells. In insulin-resistant tissue, cells don't respond properly. The pancreas compensates by releasing <em>more</em> insulin. This chronic high-insulin state — hyperinsulinemia — has cascading consequences specifically for women:</p>
+
+  <ol>
+    <li><strong>Ovarian androgen overproduction.</strong> Insulin directly stimulates the ovarian theca cells to produce more testosterone and androstenedione. This is the primary driver of elevated androgens in PCOS — not a broken ovary.</li>
+    <li><strong>SHBG suppression.</strong> High insulin suppresses the liver's production of sex hormone-binding globulin (SHBG) — the protein that binds free testosterone and renders it inactive. Less SHBG means more free testosterone circulating, driving acne, hirsutism, and hair loss.</li>
+    <li><strong>LH hypersecretion.</strong> Hyperinsulinemia disrupts the hypothalamic-pituitary axis, amplifying LH pulses. An elevated LH:FSH ratio prevents normal follicle maturation — the mechanism behind anovulation and irregular cycles.</li>
+    <li><strong>Systemic inflammation.</strong> Insulin resistance activates inflammatory pathways (NF-κB, IL-6, TNF-α). Chronic low-grade inflammation further impairs insulin receptor function — a self-reinforcing cycle.</li>
+    <li><strong>Adrenal amplification.</strong> High cortisol (from chronic stress, poor sleep, undereating) drives adrenal androgen production independently of the ovaries — explaining why stress makes PCOS symptoms spike.</li>
+  </ol>
+
+  <div class="callout callout-dark">
+    <h4>HOMA-IR: Your Most Important Starting Number</h4>
+    <p>HOMA-IR = (Fasting Insulin × Fasting Glucose) ÷ 405</p>
+    <p><strong>Optimal:</strong> &lt;1.5 | <strong>Insulin Resistant:</strong> &gt;2.0 | <strong>Severe:</strong> &gt;3.0</p>
+    <p>Standard labs will not calculate this for you. Do the math yourself. Most women with PCOS are above 2.0 even when their fasting glucose is "normal."</p>
+  </div>
+
+  <h3>The PCOS Phenotype You're Working With</h3>
+  <p>PCOS is not one condition. It has four recognized phenotypes. The nutrition and supplement approach in this protocol is calibrated for the <strong>metabolic phenotype</strong> (high androgens + insulin resistance ± polycystic ovaries). If you have the lean/normal-weight phenotype, all protocols apply — your insulin resistance is just less visible on standard panels. If you have the inflammatory phenotype (normal androgens, irregular cycles, elevated CRP), Phase 1 and Phase 3 are your highest leverage areas.</p>
+</section>
+
+<!-- ============================================================
+     PHASE 1 DIVIDER
+     ============================================================ -->
+<div class="phase-divider">
+  <div class="phase-tag">Phase One · Days 1–20</div>
+  <h2>Blood Sugar <span>First.</span></h2>
+  <div class="phase-days">20 Days · 3 Weeks</div>
+  <p class="phase-intent">Every intervention in Phases 2 and 3 works better when fasting insulin is lower. This phase does one thing: stop the spike-crash cycle and stabilize your glucose baseline. Nothing else matters yet.</p>
+</div>
+
+<!-- ============================================================
+     WEEK 1
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week One · Days 1–7</span>
+  </div>
+  <div class="week-title">The Elimination</div>
+  <div class="week-theme">Remove what is driving insulin up before adding anything new</div>
+
+  <h3>The Non-Negotiable Remove List</h3>
+  <p>This week is not about perfection. It is about removing the primary insulin drivers so your baseline can reveal itself. These are not debatable for the first 20 days.</p>
+
+  <table>
+    <tr>
+      <th>Remove Completely</th>
+      <th>Why It Matters for PCOS</th>
+    </tr>
+    <tr>
+      <td>All added sugar (including honey, agave, "natural" sweeteners)</td>
+      <td>Fructose specifically drives hepatic insulin resistance and suppresses SHBG production</td>
+    </tr>
+    <tr>
+      <td>Refined grains (bread, pasta, rice, crackers)</td>
+      <td>Rapid glucose spikes → hyperinsulinemia → direct androgen stimulus</td>
+    </tr>
+    <tr>
+      <td>Seed oils (canola, sunflower, soybean, corn oil)</td>
+      <td>High omega-6 content drives prostaglandin-mediated inflammation; amplifies insulin resistance</td>
+    </tr>
+    <tr>
+      <td>Alcohol</td>
+      <td>Impairs liver glucose regulation, disrupts sleep architecture, elevates cortisol</td>
+    </tr>
+    <tr>
+      <td>Dairy milk and flavored yogurts</td>
+      <td>High insulinotropic index regardless of glycemic load; research-linked to IGF-1 elevation in PCOS</td>
+    </tr>
+    <tr>
+      <td>Processed "diet" or "low-fat" foods</td>
+      <td>Contain hidden sugars, maltodextrin, or starches that spike insulin without satiety</td>
+    </tr>
+    <tr>
+      <td>Caffeine after 12pm</td>
+      <td>Cortisol half-life; afternoon caffeine blunts melatonin onset, disrupting overnight insulin sensitivity restoration</td>
+    </tr>
+  </table>
+
+  <h3>The Eating Structure: Week 1</h3>
+  <div class="callout">
+    <h4>Core Rule: Protein + Fat Before Carbohydrate at Every Meal</h4>
+    <p>The order in which you eat macronutrients significantly affects your post-meal glucose response. Eating protein and fat first (even 10 minutes before carbohydrates) reduces the glucose peak by up to 38% in published research. This is the cheapest, most accessible tool in this protocol. Use it at every meal, starting today.</p>
+  </div>
+
+  <h4>Daily Eating Template</h4>
+  <table>
+    <tr>
+      <th>Meal</th>
+      <th>Timing</th>
+      <th>Composition</th>
+    </tr>
+    <tr>
+      <td><strong>Meal 1 (Break Fast)</strong></td>
+      <td>Within 90 min of waking — no later</td>
+      <td>35–40g protein · 15–25g fat · &lt;15g net carbs · No fruit juice, no cereal, no toast</td>
+    </tr>
+    <tr>
+      <td><strong>Meal 2 (Midday)</strong></td>
+      <td>4–6 hours after Meal 1</td>
+      <td>30–40g protein · liberal vegetables · moderate fat · 20–30g net carbs max</td>
+    </tr>
+    <tr>
+      <td><strong>Meal 3 (Evening)</strong></td>
+      <td>3–4 hours before bed</td>
+      <td>30–35g protein · non-starchy vegetables · healthy fat · &lt;20g net carbs</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-red">
+    <h4>⚠ On Intermittent Fasting</h4>
+    <p>Extended fasting (16:8 or longer) is <strong>not</strong> recommended during Phase 1. For women with PCOS — especially those with elevated cortisol, adrenal involvement, or history of restriction — skipping meals raises cortisol, which directly stimulates adrenal androgen production. A structured 12-hour overnight fast (finish dinner by 7pm, break fast by 7am) is sufficient and safe. We revisit this in Phase 3.</p>
+  </div>
+
+  <h3>Movement: Week 1</h3>
+  <ul>
+    <li><strong>Post-meal walks (10–15 minutes) after every meal.</strong> This is not optional. Walking post-meal is the fastest, most evidence-backed tool for blunting the glucose spike by contracting muscle GLUT4 transporters independently of insulin. Start with the evening walk if only doing one.</li>
+    <li>No high-intensity cardio this week. Elevated cortisol from intense cardio will counteract the insulin-stabilizing work. Walk, stretch, swim at conversational pace.</li>
+  </ul>
+
+  <h3>Supplement Stack — Week 1 Foundations</h3>
+  <p>Introduce these in Week 1. Do not add Phase 2 supplements yet.</p>
+  <div class="supp-card">
+    <div class="supp-item">
+      <div class="supp-name">Myo-Inositol</div>
+      <div class="supp-dose">2,000 mg twice daily</div>
+      <div class="supp-timing">With breakfast · With dinner</div>
+      <div class="supp-why">Restores insulin receptor signaling in ovarian tissue; improves FSH sensitivity; directly lowers LH:FSH ratio in meta-analyses. The most evidence-backed supplement in PCOS research.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">D-Chiro-Inositol</div>
+      <div class="supp-dose">50 mg twice daily</div>
+      <div class="supp-timing">With Myo-Inositol (40:1 ratio)</div>
+      <div class="supp-why">Taken with myo-inositol in the physiological 40:1 ratio. DCI alone in high doses worsens oocyte quality — always pair with myo. Many quality supplements contain both in correct ratio.</div>
+    </div>
+    <div class="supp-item">
+      <div class="supp-name">Magnesium Glycinate</div>
+      <div class="supp-dose">300–400 mg</div>
+      <div class="supp-timing">With dinner or 1 hour before bed</div>
+      <div class="supp-why">Magnesium is a cofactor in over 300 enzymatic reactions including insulin receptor phosphorylation. Studies show 80%+ of PCOS women are deficient. Also improves sleep quality and cortisol clearance.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">Vitamin D3 + K2</div>
+      <div class="supp-dose">5,000 IU D3 · 100 mcg K2 MK-7</div>
+      <div class="supp-timing">With largest meal (fat-soluble)</div>
+      <div class="supp-why">Vitamin D deficiency is nearly universal in PCOS and inversely correlated with insulin resistance severity. K2 ensures calcium routing — do not supplement D3 without K2 long-term. Dose based on labs if available.</div>
+    </div>
+    <div class="supp-item">
+      <div class="supp-name">Omega-3 (EPA + DHA)</div>
+      <div class="supp-dose">2–3 g combined EPA/DHA daily</div>
+      <div class="supp-timing">With meals (split dose if GI-sensitive)</div>
+      <div class="supp-why">Reduces VLDL triglycerides, inflammatory cytokines, and free androgen index. High-quality fish oil — look for IFOS-certified brands. Plant-based ALA does not substitute; conversion to EPA/DHA is insufficient in IR states.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">Zinc Bisglycinate</div>
+      <div class="supp-dose">25–30 mg daily</div>
+      <div class="supp-timing">With food (evening preferred)</div>
+      <div class="supp-why">Zinc inhibits 5-alpha-reductase (converts testosterone to DHT — the potent form driving acne and hair loss). Studies show zinc supplementation reduces free testosterone and improves ovulation rates. Take with food to avoid nausea.</div>
+    </div>
+  </div>
+
+  <!-- WORKBOOK WEEK 1 -->
+  <div class="workbook">
+    <h3>📋 Week 1 Workbook</h3>
+    <h4>Starting Measurements (Day 1)</h4>
+    <table>
+      <tr><th>Marker</th><th>Day 1 Value</th><th>Day 20 Value</th><th>Day 60 Value</th></tr>
+      <tr><td>Fasting glucose (mg/dL or mmol/L)</td><td></td><td></td><td></td></tr>
+      <tr><td>Fasting insulin (µIU/mL)</td><td></td><td></td><td></td></tr>
+      <tr><td>HOMA-IR</td><td></td><td></td><td></td></tr>
+      <tr><td>Free testosterone</td><td></td><td></td><td></td></tr>
+      <tr><td>SHBG</td><td></td><td></td><td></td></tr>
+      <tr><td>hs-CRP</td><td></td><td></td><td></td></tr>
+      <tr><td>Vitamin D (25-OH)</td><td></td><td></td><td></td></tr>
+      <tr><td>Weight / waist measurement</td><td></td><td></td><td></td></tr>
+      <tr><td>Last period date</td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>Week 1 Daily Tracker</h4>
+    <table class="tracker">
+      <tr>
+        <th style="text-align:left; width:160px;">Habit</th>
+        <th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>D7</th>
+      </tr>
+      <tr><td class="row-label">Protein at every meal ✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">No sugar / refined carbs</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Post-meal walk (min)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Myo-Inositol AM + PM</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Magnesium (evening)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Omega-3 + D3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Sleep duration (hrs)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Caffeine cutoff met</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>Reflection Prompts — End of Week 1</h4>
+    <ol class="prompt-list">
+      <li>What was the hardest food to remove? What did you reach for instead?</li>
+      <li>Describe your energy at 3pm compared to your baseline before the protocol.</li>
+      <li>Did you notice any difference in hunger patterns with structured meal timing?</li>
+    </ol>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 2
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Two · Days 8–14</span>
+  </div>
+  <div class="week-title">Pattern Recognition</div>
+  <div class="week-theme">Your blood sugar tells you what your labs can't — learn to read it</div>
+
+  <p class="section-intro">You have removed the worst offenders. Now you start observing how your body responds to what remains. This week is about data collection, not restriction.</p>
+
+  <h3>Using Your CGM (or Glucose Meter) This Week</h3>
+  <table>
+    <tr>
+      <th>What to Measure</th>
+      <th>Target Range</th>
+      <th>What It Tells You</th>
+    </tr>
+    <tr>
+      <td>Fasting glucose (on waking)</td>
+      <td>70–90 mg/dL (3.9–5.0 mmol/L)</td>
+      <td>Your insulin sensitivity overnight; elevated fasting glucose = impaired insulin clearance</td>
+    </tr>
+    <tr>
+      <td>1-hour post-meal peak</td>
+      <td>&lt;140 mg/dL (&lt;7.8 mmol/L)</td>
+      <td>How that meal triggered insulin; anything above 140 is a metabolic stress event</td>
+    </tr>
+    <tr>
+      <td>2-hour post-meal</td>
+      <td>Back to baseline (&lt;120 mg/dL)</td>
+      <td>How efficiently you clear glucose; a slow return = significant IR</td>
+    </tr>
+    <tr>
+      <td>Pre-bedtime glucose</td>
+      <td>80–100 mg/dL</td>
+      <td>Going to bed hyperglycemic worsens morning insulin resistance (the dawn phenomenon)</td>
+    </tr>
+  </table>
+
+  <div class="callout">
+    <h4>The PCOS Stress Spike</h4>
+    <p>Check your fasting glucose after a stressful morning even before eating. Women with PCOS often show elevated fasting glucose driven purely by cortisol — the liver dumps glycogen in response to morning cortisol rise (dawn phenomenon, amplified by HPA dysregulation). If your fasting glucose is regularly above 95 without eating, cortisol is a significant variable and Phase 3 becomes critical for you.</p>
+  </div>
+
+  <h3>Nutrition: Week 2 Additions</h3>
+  <p>Maintain Week 1 removals. Add these evidence-backed strategies:</p>
+  <ul>
+    <li><strong>Vinegar before high-carb meals:</strong> 1–2 tsp of raw apple cider vinegar in water 15–20 minutes before any meal containing starchy vegetables or legumes. Acetic acid inhibits alpha-amylase, slowing glucose absorption. Published data shows up to 20–30% reduction in post-meal glucose spike.</li>
+    <li><strong>Resistant starch:</strong> Cooked-and-cooled rice, cooked-and-cooled potatoes, and green plantains are significantly lower glycemic than their fresh-cooked equivalents. If you are including starch, preparation matters.</li>
+    <li><strong>Spearmint tea — 2 cups daily:</strong> Spearmint has demonstrated anti-androgenic activity in clinical trials, reducing free testosterone levels in PCOS without affecting other androgens. Consistent daily use — not occasional. Use as morning and afternoon beverage.</li>
+    <li><strong>Minimum 30g fiber daily:</strong> Soluble fiber (chia seeds, flaxseed, psyllium husk) slows gastric emptying and blunts post-meal glucose. Insoluble fiber (leafy greens, broccoli, celery) feeds estrogen-clearing gut bacteria. Both matter.</li>
+  </ul>
+
+  <h3>Movement: Week 2 — Add Resistance Training</h3>
+  <p>Skeletal muscle is the primary site of insulin-mediated glucose disposal. More muscle = better glucose uptake. This is non-negotiable for long-term insulin sensitivity reversal.</p>
+  <div class="callout">
+    <h4>Resistance Training Protocol</h4>
+    <p><strong>Frequency:</strong> 2–3 sessions this week, 30–40 min each<br>
+    <strong>Format:</strong> Compound movements — squats, deadlifts, rows, presses. No isolation machines as primary work.<br>
+    <strong>Intensity:</strong> Challenging but not to failure. You should be able to complete each set with 1–2 reps left in reserve.<br>
+    <strong>Timing:</strong> Before meals when possible — pre-meal resistance training sensitizes muscle to insulin for 24–48 hours post-session.<br>
+    <strong>Recovery:</strong> 48 hours between sessions. Sleep is where the adaptation happens.</p>
+  </div>
+
+  <div class="workbook">
+    <h3>📋 Week 2 Workbook</h3>
+    <h4>CGM / Glucose Log</h4>
+    <table class="tracker">
+      <tr>
+        <th style="text-align:left; width:160px;">Reading</th>
+        <th>D8</th><th>D9</th><th>D10</th><th>D11</th><th>D12</th><th>D13</th><th>D14</th>
+      </tr>
+      <tr><td class="row-label">Fasting (mg/dL)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">1hr post-Meal 1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">1hr post-Meal 2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Pre-bed (mg/dL)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Resistance training ✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Post-meal walks ✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Spearmint tea (2 cups)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>Identify Your Personal Glucose Triggers</h4>
+    <p style="font-style:italic; color:var(--mid); font-size:10pt;">List the top 3 meals or foods that caused your highest post-meal glucose spike this week. This is your personal data — not a judgment.</p>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+
+    <h4>Week 2 Reflection</h4>
+    <ol class="prompt-list">
+      <li>What surprised you about your glucose response this week?</li>
+      <li>How did your energy and hunger differ on days you did resistance training vs. days you didn't?</li>
+      <li>What symptoms (skin, mood, cravings, cycle-related) did you notice changing — if any?</li>
+    </ol>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 3 / PHASE 1 CLOSE
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Three · Days 15–20</span>
+  </div>
+  <div class="week-title">Foundation Lock-In</div>
+  <div class="week-theme">Consolidate, assess, and prepare for Phase 2</div>
+
+  <h3>Add Berberine — The Phase 1 Closer</h3>
+  <p>Berberine is the supplement with the most robust head-to-head comparison to metformin in insulin resistance research. It activates AMPK (the same pathway as metformin), improving glucose uptake, reducing hepatic glucose output, and lowering fasting insulin. For women who cannot tolerate or access metformin — or who want a non-prescription alternative — berberine is the closest evidence-based proxy available.</p>
+
+  <div class="callout callout-red">
+    <h4>⚠ Berberine — Critical Notes</h4>
+    <ul>
+      <li><strong>Do not take berberine if you are pregnant or trying to conceive immediately</strong> — animal studies show uterotonic effects. Discontinue if actively pursuing conception.</li>
+      <li>If you are currently on metformin, do not add berberine without physician consultation — combined use can cause hypoglycemia.</li>
+      <li>Berberine reduces the absorption of some medications — take 2 hours away from any prescription drugs.</li>
+      <li>Start at 500mg once daily with a meal for 3 days before increasing to the full dose to reduce GI side effects.</li>
+    </ul>
+  </div>
+
+  <div class="supp-card">
+    <div class="supp-item">
+      <div class="supp-name">Berberine HCl</div>
+      <div class="supp-dose">500 mg, 2–3× daily</div>
+      <div class="supp-timing">With each main meal (introduce gradually)</div>
+      <div class="supp-why">AMPK activator. Reduces fasting glucose, lowers HbA1c, improves lipid profile. Multiple meta-analyses demonstrate equivalence to metformin for insulin sensitization in PCOS populations. Use berberine phytosome for higher bioavailability.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">N-Acetyl Cysteine (NAC)</div>
+      <div class="supp-dose">600 mg, 2× daily</div>
+      <div class="supp-timing">Morning and afternoon, with food</div>
+      <div class="supp-why">NAC is the precursor to glutathione — your primary antioxidant. In PCOS, oxidative stress impairs insulin receptor function and drives ovarian androgen production. Studies show NAC reduces free testosterone, improves insulin sensitivity, and supports ovulation — comparable to clomiphene in some fertility trials.</div>
+    </div>
+  </div>
+
+  <div class="checkpoint-box">
+    <h3>Phase 1 Assessment — Day 20</h3>
+    <p style="color:rgba(255,255,255,0.75); margin-bottom: 12px;">Before entering Phase 2, verify you have established these non-negotiables:</p>
+    <ul>
+      <li>Fasting glucose &lt;100 mg/dL on most mornings</li>
+      <li>Post-meal spikes consistently under 140 mg/dL</li>
+      <li>Protein at every meal, no skipped meals</li>
+      <li>Post-meal walks happening at least once daily</li>
+      <li>Resistance training 2–3× per week</li>
+      <li>Full supplement stack from Week 1 in routine</li>
+      <li>Berberine introduced and tolerated</li>
+      <li>Sleep averaging 7+ hours</li>
+    </ul>
+    <p style="color:rgba(255,255,255,0.6); margin-top: 12px; font-size: 9.5pt;">If fewer than 6 of these are true: spend Days 20–25 reinforcing Phase 1 before advancing. Phase 2 interventions work <em>on top of</em> this foundation, not instead of it.</p>
+  </div>
+
+  <div class="workbook">
+    <h3>📋 Phase 1 Close — Day 20 Check-In</h3>
+    <h4>Symptom Shift Log</h4>
+    <table>
+      <tr>
+        <th>Symptom</th>
+        <th>Before Protocol (1–10)</th>
+        <th>Day 20 (1–10)</th>
+        <th>Notes</th>
+      </tr>
+      <tr><td>Energy crashes (afternoon)</td><td></td><td></td><td></td></tr>
+      <tr><td>Sugar / carb cravings</td><td></td><td></td><td></td></tr>
+      <tr><td>Skin (acne severity)</td><td></td><td></td><td></td></tr>
+      <tr><td>Bloating / digestive issues</td><td></td><td></td><td></td></tr>
+      <tr><td>Mood stability</td><td></td><td></td><td></td></tr>
+      <tr><td>Sleep quality</td><td></td><td></td><td></td></tr>
+      <tr><td>Anxiety / irritability</td><td></td><td></td><td></td></tr>
+      <tr><td>Hair shedding</td><td></td><td></td><td></td></tr>
+      <tr><td>Hirsutism (perceived)</td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>What Has Been Hardest About Phase 1?</h4>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    <h4>What Has Surprised You Most?</h4>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PHASE 2 DIVIDER
+     ============================================================ -->
+<div class="phase-divider">
+  <div class="phase-tag">Phase Two · Days 21–40</div>
+  <h2>Hormonal <span>Recalibration.</span></h2>
+  <div class="phase-days">20 Days · 3 Weeks</div>
+  <p class="phase-intent">Lower insulin creates the conditions. Now we work on what it unlocks: reducing androgens, cooling systemic inflammation, and rebuilding the signaling environment your cycle needs.</p>
+</div>
+
+<!-- ============================================================
+     WEEK 4
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Four · Days 21–27</span>
+  </div>
+  <div class="week-title">Inflammation Reset</div>
+  <div class="week-theme">Insulin resistance and inflammation are a closed feedback loop — break it from both ends</div>
+
+  <p class="section-intro">Chronic low-grade inflammation is both a consequence and a driver of insulin resistance in PCOS. Elevated IL-6, TNF-α, and CRP independently impair insulin receptor sensitivity. This week adds anti-inflammatory nutrition and liver support.</p>
+
+  <h3>Anti-Inflammatory Nutrition Upgrade</h3>
+  <table>
+    <tr>
+      <th>Add This Week</th>
+      <th>Mechanism</th>
+      <th>Practical Form</th>
+    </tr>
+    <tr>
+      <td>Turmeric + black pepper</td>
+      <td>Curcumin inhibits NF-κB and COX-2; black pepper (piperine) increases curcumin bioavailability by 2,000%</td>
+      <td>1/2 tsp turmeric + pinch black pepper in cooking daily, or supplement form</td>
+    </tr>
+    <tr>
+      <td>Fatty fish 3–4× weekly</td>
+      <td>EPA/DHA reduce prostaglandin E2, IL-1β, and directly compete with arachidonic acid in inflammatory pathways</td>
+      <td>Salmon, sardines, mackerel, anchovies — wild-caught preferred</td>
+    </tr>
+    <tr>
+      <td>Cruciferous vegetables daily</td>
+      <td>Indole-3-carbinol and DIM support estrogen metabolism and clear excess androgens via liver Phase 2 detoxification</td>
+      <td>Broccoli, cauliflower, Brussels sprouts, kale — lightly steamed preserves most I3C content</td>
+    </tr>
+    <tr>
+      <td>Ground flaxseed (2 tbsp daily)</td>
+      <td>Lignans compete with androgens at receptor sites; soluble fiber feeds SCFA-producing gut bacteria that regulate estrogen clearance</td>
+      <td>Add to smoothies, yogurt, salads — must be ground, not whole, for absorption</td>
+    </tr>
+    <tr>
+      <td>Reduce caffeine to 1 cup before 10am</td>
+      <td>Caffeine elevates cortisol, which drives adrenal DHEA-S and inflammatory arachidonic acid production; also impairs iron absorption and sleep</td>
+      <td>Substitute: spearmint tea, rooibos, ginger-lemon water in afternoons</td>
+    </tr>
+  </table>
+
+  <h3>Gut Health — The Underestimated PCOS Variable</h3>
+  <p>Research published in the last decade has confirmed significant gut microbiome dysbiosis in PCOS populations — reduced Lactobacillus species, elevated endotoxin-producing bacteria (LPS), and impaired short-chain fatty acid (SCFA) production. These directly worsen insulin resistance and increase inflammatory load.</p>
+
+  <div class="callout">
+    <h4>Gut Protocol Additions — Week 4</h4>
+    <ul>
+      <li><strong>Probiotic:</strong> Multi-strain formula containing <em>Lactobacillus acidophilus, L. rhamnosus, Bifidobacterium longum</em>. Take on an empty stomach in the morning. Look for minimum 20 billion CFU with documented strains (not proprietary blends).</li>
+      <li><strong>Prebiotic fiber:</strong> 5–10g psyllium husk in water before the largest meal. Feeds the SCFA-producing bacteria depleted in PCOS.</li>
+      <li><strong>Fermented foods — 1 serving daily:</strong> Plain full-fat kefir (if dairy-tolerant), kimchi, sauerkraut, or water kefir. Start small — 2 tbsp — and increase gradually to avoid bloating.</li>
+    </ul>
+  </div>
+
+  <div class="workbook workbook-red">
+    <h3>📋 Week 4 Workbook — Inflammation Tracking</h3>
+    <h4>Inflammatory Food Log</h4>
+    <p style="font-style:italic; color:var(--mid); font-size:10pt;">Note any foods that seem to trigger bloating, brain fog, skin flares, or joint stiffness within 2–4 hours. This is your personalized inflammatory trigger data.</p>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    <h4>Week 4 Habit Tracker</h4>
+    <table class="tracker">
+      <tr>
+        <th style="text-align:left; width:160px;">Habit</th>
+        <th>D21</th><th>D22</th><th>D23</th><th>D24</th><th>D25</th><th>D26</th><th>D27</th>
+      </tr>
+      <tr><td class="row-label">Cruciferous veg</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Ground flaxseed</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Probiotic (AM)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Spearmint tea ×2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Resistance training</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Sleep ≥7 hrs</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 5
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Five · Days 28–34</span>
+  </div>
+  <div class="week-title">Androgen Regulation</div>
+  <div class="week-theme">Lower free testosterone at the source and at the receptor</div>
+
+  <p class="section-intro">By Week 5, insulin should be trending down and inflammation lower. This creates the environment for targeted androgen-reducing strategies to work. Adding these before Phase 1 is established is largely ineffective — the elevated insulin will override them.</p>
+
+  <h3>Androgen Reduction — The Three Levers</h3>
+  <div class="two-col">
+    <div class="callout" style="margin: 0;">
+      <h4>Lever 1: Reduce Production</h4>
+      <p>Lower insulin (Phase 1 work) reduces ovarian stimulus. NAC and myo-inositol also directly reduce theca cell androgen synthesis. Zinc inhibits the androgen-amplifying enzyme 17β-HSD.</p>
+    </div>
+    <div class="callout callout-red" style="margin: 0;">
+      <h4>Lever 2: Increase Binding</h4>
+      <p>Raise SHBG so more testosterone is bound and inactive. SHBG rises as insulin falls. Cruciferous vegetables, flaxseed, and weight distribution toward muscle all increase SHBG production.</p>
+    </div>
+  </div>
+  <div class="callout callout-dark" style="margin-top: 12px;">
+    <h4>Lever 3: Block Conversion</h4>
+    <p>5-alpha-reductase converts testosterone to DHT — the androgen responsible for scalp hair loss and facial hair. Zinc, saw palmetto (160mg standardized), and green tea extract inhibit 5-alpha-reductase. Spearmint blocks androgen receptors directly. Reishi mushroom shows early evidence for 5-alpha-reductase inhibition.</p>
+  </div>
+
+  <h3>Add to Supplement Stack — Week 5</h3>
+  <div class="supp-card">
+    <div class="supp-item">
+      <div class="supp-name">Saw Palmetto</div>
+      <div class="supp-dose">160 mg standardized extract</div>
+      <div class="supp-timing">With dinner</div>
+      <div class="supp-why">5-alpha-reductase inhibitor. Reduces DHT conversion without blocking testosterone production entirely. Evidence primarily from male pattern baldness research but mechanism applies directly to PCOS-related hirsutism and androgenic alopecia. Takes 8–12 weeks to show hair-related changes.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">Licorice Root Extract</div>
+      <div class="supp-dose">150–300 mg glycyrrhizic acid standardized</div>
+      <div class="supp-timing">With lunch — cycle use: 3 weeks on, 1 week off</div>
+      <div class="supp-why">Clinical trials show licorice root reduces testosterone in women with PCOS by inhibiting 17β-HSD (testosterone synthesis enzyme). Do NOT use if you have hypertension — glycyrrhizin raises blood pressure. Do not use for more than 3 continuous weeks without a break. Use with caution and monitor BP.</div>
+    </div>
+  </div>
+
+  <h3>Cycle Tracking Begins Here</h3>
+  <p>If you are not currently tracking your cycle, start now. You cannot measure hormonal progress without baseline data. Use a paper chart, an app (Clue, Natural Cycles, Tempdrop), or a basal body temperature (BBT) thermometer. Record:</p>
+  <ul>
+    <li>Cycle day (Day 1 = first day of full menstrual flow)</li>
+    <li>BBT daily (morning, before rising, same time each day)</li>
+    <li>Cervical mucus quality (dry, creamy, stretchy/egg-white)</li>
+    <li>Any bleeding, spotting, or cycle-related symptoms</li>
+    <li>Energy and mood by cycle phase</li>
+  </ul>
+
+  <div class="workbook">
+    <h3>📋 Week 5 Workbook — Androgen & Cycle Tracking</h3>
+    <h4>Current Cycle Status</h4>
+    <table>
+      <tr><th>Question</th><th>Your Answer</th></tr>
+      <tr><td>Last period start date</td><td></td></tr>
+      <tr><td>Average cycle length (or "irregular")</td><td></td></tr>
+      <tr><td>Do you detect ovulation signs?</td><td></td></tr>
+      <tr><td>Primary androgen symptoms</td><td></td></tr>
+      <tr><td>Most bothersome symptom to resolve</td><td></td></tr>
+    </table>
+    <h4>Androgen Symptom Rating — Week 5</h4>
+    <table>
+      <tr>
+        <th>Symptom</th>
+        <th>Day 1 Rating (1–10)</th>
+        <th>Week 5 Rating (1–10)</th>
+        <th>Change</th>
+      </tr>
+      <tr><td>Acne (face/back/chest)</td><td></td><td></td><td></td></tr>
+      <tr><td>Facial / body hair growth</td><td></td><td></td><td></td></tr>
+      <tr><td>Scalp hair thinning</td><td></td><td></td><td></td></tr>
+      <tr><td>Oily skin</td><td></td><td></td><td></td></tr>
+      <tr><td>Mood / irritability</td><td></td><td></td><td></td></tr>
+    </table>
+    <h4>Week 5 Reflection</h4>
+    <ol class="prompt-list">
+      <li>Have you noticed any changes in skin, hair, or cycle regularity since Day 1?</li>
+      <li>What is your biggest remaining symptom burden?</li>
+    </ol>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 6 / PHASE 2 CLOSE
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Six · Days 35–40</span>
+  </div>
+  <div class="week-title">Mid-Protocol Assessment</div>
+  <div class="week-theme">Measure, adjust, and prepare for the final phase</div>
+
+  <h3>Retest Labs at Day 40</h3>
+  <p>If you ran baseline labs, this is the time to retest the key markers. Even without labs, your symptom tracking and glucose data provide meaningful signal.</p>
+
+  <table>
+    <tr>
+      <th>Marker</th>
+      <th>Baseline</th>
+      <th>Day 40</th>
+      <th>Target Direction</th>
+    </tr>
+    <tr><td>Fasting insulin</td><td></td><td></td><td class="marker-optimal">↓ Significant drop expected</td></tr>
+    <tr><td>HOMA-IR</td><td></td><td></td><td class="marker-optimal">↓ &lt;2.0 by Day 40 is achievable</td></tr>
+    <tr><td>Free testosterone</td><td></td><td></td><td class="marker-optimal">↓ Typically begins falling by Week 4–5</td></tr>
+    <tr><td>SHBG</td><td></td><td></td><td class="marker-optimal">↑ Should be rising with lower insulin</td></tr>
+    <tr><td>hs-CRP</td><td></td><td></td><td class="marker-optimal">↓ Inflammation reduction from Phase 2 work</td></tr>
+    <tr><td>Fasting glucose</td><td></td><td></td><td class="marker-optimal">↓ Should be reliably under 90 mg/dL</td></tr>
+  </table>
+
+  <div class="callout callout-red">
+    <h4>If Results Are Minimal at Day 40</h4>
+    <p>Check for: Sleep quality issues (address in Phase 3). Hidden glucose spikes from foods you consider "safe." Inadequate protein intake (common underestimation — track for 3 days). Undiagnosed thyroid dysfunction (TSH above 2.5 will blunt insulin sensitivity improvement). Significant ongoing stress load (cortisol overrides most of this protocol). These are not failure points — they are diagnostic signals.</p>
+  </div>
+
+  <div class="workbook workbook-red">
+    <h3>📋 Phase 2 Close — Midpoint Review</h3>
+    <h4>What's Working — Be Specific</h4>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    <h4>What's Not Working or Unclear</h4>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    <h4>Protocol Adjustments I'm Making Going Into Phase 3</h4>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PHASE 3 DIVIDER
+     ============================================================ -->
+<div class="phase-divider">
+  <div class="phase-tag">Phase Three · Days 41–60</div>
+  <h2>Metabolic <span>Resilience.</span></h2>
+  <div class="phase-days">20 Days · 3 Weeks</div>
+  <p class="phase-intent">You are not just reversing damage. You are building a metabolic system that does not repeat it. Phase 3 targets the two variables that most women never address: cortisol's role in androgen production, and the sleep debt that makes every other intervention less effective.</p>
+</div>
+
+<!-- ============================================================
+     WEEK 7
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Seven · Days 41–47</span>
+  </div>
+  <div class="week-title">Advanced Insulin Strategies</div>
+  <div class="week-theme">Layer precision tools onto an already-stable foundation</div>
+
+  <h3>Introduce Time-Restricted Eating (Now)</h3>
+  <p>You have 40 days of stable blood sugar as a foundation. Now time-restricted eating (TRE) can be introduced safely without triggering the cortisol response that made it counterproductive in Phase 1.</p>
+
+  <div class="callout">
+    <h4>Protocol: 14:10 Window</h4>
+    <p><strong>Eating window:</strong> 8am – 6pm (or 9am – 7pm — whichever fits your lifestyle)<br>
+    <strong>Fasting window:</strong> 14 hours overnight<br>
+    <strong>Not a calorie restriction.</strong> You eat the same food volume inside the window.<br>
+    <strong>If you experience significant hunger, dizziness, or increased anxiety:</strong> Your cortisol response is activated — widen the window back to 12 hours and do not force it. TRE works best when it feels natural, not when it's a fight.<br>
+    <strong>Do not use TRE on resistance training days</strong> if your training falls outside the eating window — protein synthesis requires adequate fueling around the session.</p>
+  </div>
+
+  <h3>Cycle-Synced Nutrition</h3>
+  <p>If you are experiencing any cycle regularity (even irregular cycles), your nutritional needs shift across the four phases. Insulin sensitivity is naturally higher in the follicular phase (days 1–14) and lower in the luteal phase (days 15–28 of a regular cycle).</p>
+
+  <table>
+    <tr>
+      <th>Cycle Phase</th>
+      <th>Hormonal Context</th>
+      <th>Nutritional Emphasis</th>
+      <th>Movement Emphasis</th>
+    </tr>
+    <tr>
+      <td><strong>Menstrual</strong> (Day 1–5)</td>
+      <td>Low estrogen, low progesterone, high prostaglandins</td>
+      <td>Iron-rich foods, anti-inflammatory emphasis, adequate calories — do not restrict during menstruation</td>
+      <td>Gentle — walking, yoga, stretching</td>
+    </tr>
+    <tr>
+      <td><strong>Follicular</strong> (Day 6–13)</td>
+      <td>Rising estrogen → peak insulin sensitivity</td>
+      <td>Higher carbohydrate tolerance window; best time for dietary experimentation; fermented foods</td>
+      <td>Higher intensity — HIIT if desired, heavy resistance</td>
+    </tr>
+    <tr>
+      <td><strong>Ovulation</strong> (Day 14–16)</td>
+      <td>Estrogen peak, LH surge</td>
+      <td>Zinc-rich foods support egg quality; cruciferous vegetables for estrogen clearance post-ovulation</td>
+      <td>High output — peak strength, peak endurance</td>
+    </tr>
+    <tr>
+      <td><strong>Luteal</strong> (Day 17–28)</td>
+      <td>Progesterone rises, insulin sensitivity drops 25–30%</td>
+      <td>Lower carbohydrates, higher fat, higher magnesium, B6, zinc; cravings are real — do not ignore them, redirect them</td>
+      <td>Moderate — strength at lower intensity, longer walks, pilates</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-red">
+    <h4>For Women Without Detectable Cycles</h4>
+    <p>If cycles are absent (amenorrhea) or completely irregular, use a 28-day rotating template — treat days 1–14 as follicular and days 15–28 as luteal. This is not biologically precise, but it approximates the metabolic variation that cycle syncing addresses. As your cycle regularizes over months on this protocol, adjust to your actual pattern.</p>
+  </div>
+
+  <div class="workbook">
+    <h3>📋 Week 7 Workbook</h3>
+    <h4>TRE Log</h4>
+    <table class="tracker">
+      <tr>
+        <th style="text-align:left; width:160px;">Day</th>
+        <th>D41</th><th>D42</th><th>D43</th><th>D44</th><th>D45</th><th>D46</th><th>D47</th>
+      </tr>
+      <tr><td class="row-label">First meal time</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Last meal time</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Fasting window (hrs)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Hunger/anxiety (1–5)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Fasting glucose AM</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 8
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Week Eight · Days 48–54</span>
+  </div>
+  <div class="week-title">The Cortisol-PCOS Loop</div>
+  <div class="week-theme">The stress hormone runs a parallel androgen production line — close it</div>
+
+  <div class="pull-quote">"You can eat perfectly and still spike androgens if your cortisol is chronically elevated. Stress is not a mental health problem. It is a metabolic one."</div>
+
+  <h3>How Cortisol Drives PCOS Independently</h3>
+  <p>The adrenal glands produce androgens independently of the ovaries — primarily DHEA-S, which converts to testosterone. Cortisol and DHEA-S are co-produced by the adrenal cortex. Chronic stress (HPA axis hyperactivation) elevates both. This is why women under significant psychological, physical, or metabolic stress see worsening PCOS symptoms regardless of diet — the adrenal pathway is running in parallel.</p>
+
+  <table>
+    <tr>
+      <th>Cortisol Driver</th>
+      <th>PCOS Consequence</th>
+      <th>Intervention</th>
+    </tr>
+    <tr>
+      <td>Inadequate sleep (&lt;7 hours)</td>
+      <td>Morning cortisol spike → elevated fasting glucose and DHEA-S; reduces next-day insulin sensitivity by 20–25%</td>
+      <td>Sleep architecture optimization (below)</td>
+    </tr>
+    <tr>
+      <td>Chronic under-eating / calorie restriction</td>
+      <td>Metabolic starvation signal → cortisol elevation → adrenal androgen production; explains why aggressive calorie cutting worsens PCOS</td>
+      <td>Adequate protein and caloric intake; no extended fasting beyond 16 hours</td>
+    </tr>
+    <tr>
+      <td>Over-exercising / HIIT excess</td>
+      <td>High-intensity exercise raises cortisol acutely; chronic HIIT without adequate recovery keeps it elevated; amplifies inflammatory load</td>
+      <td>2–3 resistance sessions + walking; HIIT maximum 1× weekly, only in follicular phase</td>
+    </tr>
+    <tr>
+      <td>Chronic psychological stress</td>
+      <td>Sustained HPA activation; cortisol-induced inflammation; impaired sleep → compounding IR effect</td>
+      <td>Structured stress regulation protocols (below)</td>
+    </tr>
+    <tr>
+      <td>Blood sugar instability</td>
+      <td>Hypoglycemia is a physiological stressor — cortisol releases to restore glucose; unstable blood sugar = sustained cortisol elevation</td>
+      <td>Phase 1 work addresses this directly; consistent meal timing and protein intake are cortisol-regulating tools</td>
+    </tr>
+  </table>
+
+  <h3>Sleep Architecture — The Non-Negotiable</h3>
+  <p>Insulin sensitivity is restored during deep sleep via growth hormone pulses and cortisol clearance. Women with PCOS show measurably poorer sleep architecture independent of body weight — elevated night-time cortisol, shorter deep sleep phases, and higher rates of sleep apnea (even without obesity).</p>
+
+  <div class="callout">
+    <h4>Sleep Optimization Protocol</h4>
+    <ul>
+      <li><strong>Fixed sleep/wake times:</strong> Within 30 minutes, 7 days a week. Circadian rhythm stability directly impacts cortisol peak timing and insulin sensitivity restoration.</li>
+      <li><strong>Target: 7.5–9 hours in bed.</strong> Not optional. Not a luxury. Non-negotiable for metabolic restoration.</li>
+      <li><strong>Light exposure protocol:</strong> 10+ minutes of natural light within 30 minutes of waking (sets circadian clock); block all screens 90 minutes before bed or use blue-light blocking glasses.</li>
+      <li><strong>Temperature:</strong> Room temperature 16–19°C (60–67°F) for optimal deep sleep.</li>
+      <li><strong>Evening carbohydrate strategy:</strong> A small serving of complex carbohydrates (50–100 calories) at the evening meal supports serotonin → melatonin conversion. Do not eliminate carbohydrates entirely from the evening meal if sleep is poor.</li>
+      <li><strong>Magnesium glycinate (already in your stack)</strong> at 300–400mg 30–60 min before bed supports GABA receptor activity and deep sleep onset.</li>
+    </ul>
+  </div>
+
+  <h3>Add to Supplement Stack — Week 8</h3>
+  <div class="supp-card">
+    <div class="supp-item">
+      <div class="supp-name">Ashwagandha (KSM-66)</div>
+      <div class="supp-dose">300–600 mg</div>
+      <div class="supp-timing">Evening, with dinner</div>
+      <div class="supp-why">Adaptogenic herb with the highest evidence base for cortisol reduction. KSM-66 extract reduces serum cortisol by up to 27% in published trials, improves thyroid markers, and shows improvements in DHEA-S in stressed women. Do not use if you have Hashimoto's thyroiditis without physician guidance — nightshade-adjacent compounds may trigger immune response in susceptible individuals.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">Phosphatidylserine</div>
+      <div class="supp-dose">200–400 mg</div>
+      <div class="supp-timing">With evening meal or 1 hour before bed</div>
+      <div class="supp-why">Phospholipid that blunts post-exercise and post-stress cortisol elevation. Particularly useful for women who exercise intensely or have chronically elevated evening cortisol (confirmed with DUTCH test or 4-point salivary cortisol panel). Supports sleep quality and cognitive function under stress.</div>
+    </div>
+    <div class="supp-item">
+      <div class="supp-name">B6 (Pyridoxal-5-Phosphate, P5P)</div>
+      <div class="supp-dose">50 mg</div>
+      <div class="supp-timing">With dinner</div>
+      <div class="supp-why">P5P is the active form of B6 — required for progesterone synthesis, serotonin conversion, and cortisol regulation. Deficiency amplifies PMS-type symptoms in the luteal phase and impairs insulin metabolism. Avoid high-dose B6 (above 100mg) long-term without lab guidance — peripheral neuropathy risk with excess.</div>
+    </div>
+    <div class="supp-item red">
+      <div class="supp-name">L-Theanine</div>
+      <div class="supp-dose">200 mg</div>
+      <div class="supp-timing">30–60 minutes before bed</div>
+      <div class="supp-why">Non-sedating anxiolytic amino acid from green tea. Promotes alpha-wave brain activity, reduces anxiety without sedation, and improves sleep onset without dependence. Safe for long-term use. Can also be used during the day for stress-driven glucose spikes.</div>
+    </div>
+  </div>
+
+  <h3>Structured Stress Regulation</h3>
+  <p>The goal is not to eliminate stress. It is to reduce the duration of cortisol elevation after a stressor. The following techniques have published evidence for HPA axis downregulation:</p>
+  <ul>
+    <li><strong>Physiological sigh (twice daily):</strong> Double inhale through the nose (filling lungs fully, then sipping in extra air) followed by a long slow exhale through the mouth. One to two repetitions. This is the fastest-acting, most evidence-supported cortisol downregulation tool available without a prescription.</li>
+    <li><strong>4-7-8 breathing before meals:</strong> Activates the parasympathetic nervous system, improving vagal tone. Better vagal tone = improved gut motility and insulin sensitivity during the meal.</li>
+    <li><strong>Deliberate cold exposure (optional):</strong> 30–60 second cold shower at the end of your normal shower. Acute cold stress followed by recovery builds HPA resilience. Do not attempt during menstruation or on days of significant fatigue.</li>
+    <li><strong>Minimum 20 minutes of non-goal-directed outdoor time daily.</strong> Unstructured nature exposure reduces salivary cortisol in controlled studies. Not a walk with a fitness goal — walking without your phone, without a route objective.</li>
+  </ul>
+
+  <div class="workbook">
+    <h3>📋 Week 8 Workbook — Cortisol & Sleep</h3>
+    <h4>Sleep Tracking</h4>
+    <table class="tracker">
+      <tr>
+        <th style="text-align:left; width:160px;">Day</th>
+        <th>D48</th><th>D49</th><th>D50</th><th>D51</th><th>D52</th><th>D53</th><th>D54</th>
+      </tr>
+      <tr><td class="row-label">Bedtime</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Wake time</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Sleep quality (1–5)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Fasting glucose AM</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Stress level (1–5)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Ashwagandha taken</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">Breathing practice</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+    <h4>Stress-Symptom Connection</h4>
+    <ol class="prompt-list">
+      <li>Describe your highest-stress day this week. What were your glucose readings and symptoms that day?</li>
+      <li>What cortisol driver from the table above is most active in your life right now?</li>
+    </ol>
+    <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WEEK 9 / FINAL
+     ============================================================ -->
+<section class="week">
+  <div class="week-header">
+    <span class="week-number">Final Days · Days 55–60</span>
+  </div>
+  <div class="week-title">Integration &amp; What Comes Next</div>
+  <div class="week-theme">The protocol ends. The practice continues.</div>
+
+  <h3>Final Labs — Day 60</h3>
+  <p>Request a repeat of your baseline panel. The changes you are looking for:</p>
+
+  <table>
+    <tr>
+      <th>Marker</th>
+      <th class="marker-optimal">Realistic 60-Day Target</th>
+      <th>What Further Progress Looks Like</th>
+    </tr>
+    <tr>
+      <td>Fasting insulin</td>
+      <td class="marker-optimal">30–50% reduction from baseline</td>
+      <td>Continued decline over 6–12 months with maintained habits</td>
+    </tr>
+    <tr>
+      <td>HOMA-IR</td>
+      <td class="marker-optimal">&lt;2.0 if baseline was &gt;3.0; &lt;1.5 if baseline was 2.0–3.0</td>
+      <td>Optimal: &lt;1.0 — achievable at 6 months</td>
+    </tr>
+    <tr>
+      <td>Free testosterone</td>
+      <td class="marker-optimal">Measurable decrease; may not normalize in 60 days</td>
+      <td>Full normalization typically requires 3–6 months</td>
+    </tr>
+    <tr>
+      <td>SHBG</td>
+      <td class="marker-optimal">Clear upward movement</td>
+      <td>Continues rising for months as insulin falls</td>
+    </tr>
+    <tr>
+      <td>hs-CRP</td>
+      <td class="marker-optimal">&lt;1.0 mg/L</td>
+      <td>Optimal: &lt;0.5 mg/L</td>
+    </tr>
+    <tr>
+      <td>Cycle regularity</td>
+      <td class="marker-optimal">Many women see first ovulation signal within 60–90 days</td>
+      <td>Consistent ovulation typically returns at 3–6 months of maintained protocol</td>
+    </tr>
+  </table>
+
+  <h3>Your Long-Term Protocol Framework</h3>
+  <div class="two-col">
+    <div class="callout" style="margin: 0;">
+      <h4>Keep Indefinitely (Non-Negotiable)</h4>
+      <ul>
+        <li>Protein at every meal</li>
+        <li>Post-meal walks (at least after dinner)</li>
+        <li>Myo-inositol + D-chiro-inositol (maintenance: 2g/day total)</li>
+        <li>Magnesium glycinate</li>
+        <li>Omega-3</li>
+        <li>Resistance training 2–3× weekly</li>
+        <li>Sleep ≥7.5 hours</li>
+        <li>Spearmint tea daily</li>
+      </ul>
+    </div>
+    <div class="callout callout-dark" style="margin: 0;">
+      <h4>Cycle or Reassess Every 3 Months</h4>
+      <ul>
+        <li>Berberine (can reduce to 500mg once daily if HOMA-IR &lt;1.5)</li>
+        <li>Vitamin D (retest and adjust dose)</li>
+        <li>Licorice root (use 3 weeks on, 1 week off cycle)</li>
+        <li>Saw palmetto (reassess need at 6 months based on androgens)</li>
+        <li>NAC (continue 6 months minimum, then assess)</li>
+        <li>Berberine — cycle 8 weeks on, 2 weeks off for long-term use</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>What Will Undermine Everything You've Built</h3>
+  <div class="callout callout-red">
+    <h4>The Relapse Triggers — Know Them In Advance</h4>
+    <ul>
+      <li><strong>Returning to "just a little" sugar or refined carbs as a daily habit.</strong> For women with insulin resistance, maintenance requires maintaining the structure — not perfection, but consistent structure. Occasional exceptions are metabolically tolerable; daily exceptions are not.</li>
+      <li><strong>Extended sleep deprivation (travel, work sprints, newborns).</strong> Even 3–4 nights of poor sleep can measurably reverse insulin sensitivity gains. Acknowledge it, protect sleep as aggressively as possible, and reestablish as quickly as you can.</li>
+      <li><strong>Eliminating all carbohydrates long-term without medical supervision.</strong> Severe carbohydrate restriction long-term in women with HPA axis vulnerability can suppress thyroid function and worsen cortisol dysregulation. This protocol uses low-carb to stabilize, not zero-carb to maintain permanently.</li>
+      <li><strong>Stopping supplements and expecting food alone to maintain the gains.</strong> The supplement stack addresses deficiencies and provides pharmacological support that food cannot fully replicate for most PCOS phenotypes. Maintain the core stack.</li>
+    </ul>
+  </div>
+
+  <div class="workbook workbook-red">
+    <h3>📋 Day 60 Final Review</h3>
+    <h4>Final Symptom Assessment</h4>
+    <table>
+      <tr>
+        <th>Symptom</th>
+        <th>Day 1 (1–10)</th>
+        <th>Day 60 (1–10)</th>
+        <th>Your Notes</th>
+      </tr>
+      <tr><td>Energy / afternoon crash</td><td></td><td></td><td></td></tr>
+      <tr><td>Sugar cravings</td><td></td><td></td><td></td></tr>
+      <tr><td>Acne severity</td><td></td><td></td><td></td></tr>
+      <tr><td>Hirsutism / hair growth</td><td></td><td></td><td></td></tr>
+      <tr><td>Scalp hair loss</td><td></td><td></td><td></td></tr>
+      <tr><td>Cycle regularity</td><td></td><td></td><td></td></tr>
+      <tr><td>Sleep quality</td><td></td><td></td><td></td></tr>
+      <tr><td>Mood / anxiety</td><td></td><td></td><td></td></tr>
+      <tr><td>Bloating / digestion</td><td></td><td></td><td></td></tr>
+      <tr><td>Overall energy level</td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>60-Day Protocol Reflection</h4>
+    <ol class="prompt-list">
+      <li>What is the single most significant change you observed — in labs, symptoms, or how you feel?</li>
+      <li>What was the hardest part of this protocol, and what would you do differently?</li>
+      <li>What are you most committed to maintaining beyond Day 60?</li>
+      <li>What question do you still have that this protocol didn't fully answer?</li>
+    </ol>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SUPPLEMENT MASTER REFERENCE
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 20px;">
+  <h2>Master Supplement Reference</h2>
+  <p class="section-intro">All supplements referenced in this protocol, organized by introduction phase with full rationale and contraindications.</p>
+
+  <table>
+    <tr>
+      <th>Supplement</th>
+      <th>Phase</th>
+      <th>Dose</th>
+      <th>Timing</th>
+      <th>Key Contraindications</th>
+    </tr>
+    <tr>
+      <td><strong>Myo-Inositol</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>2,000 mg ×2 daily</td>
+      <td>AM + PM with meals</td>
+      <td>None known at physiological doses</td>
+    </tr>
+    <tr>
+      <td><strong>D-Chiro-Inositol</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>50 mg ×2 daily</td>
+      <td>With myo-inositol</td>
+      <td>Do not use in high doses without myo ratio</td>
+    </tr>
+    <tr>
+      <td><strong>Magnesium Glycinate</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>300–400 mg</td>
+      <td>Evening / before bed</td>
+      <td>Reduce dose if loose stools occur</td>
+    </tr>
+    <tr>
+      <td><strong>Vitamin D3 + K2</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>5,000 IU D3 / 100 mcg K2</td>
+      <td>With largest meal</td>
+      <td>Adjust dose to labs; hypercalcemia risk with excess</td>
+    </tr>
+    <tr>
+      <td><strong>Omega-3 (EPA/DHA)</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>2–3 g combined</td>
+      <td>With meals</td>
+      <td>Blood thinners — physician consultation required</td>
+    </tr>
+    <tr>
+      <td><strong>Zinc Bisglycinate</strong></td>
+      <td>Phase 1, Week 1</td>
+      <td>25–30 mg</td>
+      <td>With evening meal</td>
+      <td>Take with food; copper depletion with very long-term use</td>
+    </tr>
+    <tr>
+      <td><strong>Berberine HCl</strong></td>
+      <td>Phase 1, Week 3</td>
+      <td>500 mg ×2–3 daily</td>
+      <td>With meals</td>
+      <td>Not with metformin; not in pregnancy; 2hr gap from medications</td>
+    </tr>
+    <tr>
+      <td><strong>NAC</strong></td>
+      <td>Phase 1, Week 3</td>
+      <td>600 mg ×2 daily</td>
+      <td>Morning + afternoon</td>
+      <td>Avoid with nitroglycerin; GI sensitivity — take with food</td>
+    </tr>
+    <tr>
+      <td><strong>Probiotic</strong></td>
+      <td>Phase 2, Week 4</td>
+      <td>≥20 billion CFU multi-strain</td>
+      <td>Empty stomach, AM</td>
+      <td>SIBO risk — consult physician if GI symptoms worsen</td>
+    </tr>
+    <tr>
+      <td><strong>Saw Palmetto</strong></td>
+      <td>Phase 2, Week 5</td>
+      <td>160 mg standardized</td>
+      <td>With dinner</td>
+      <td>Rare: GI upset; theoretical hormonal interactions — discuss with prescribing physician</td>
+    </tr>
+    <tr>
+      <td><strong>Licorice Root</strong></td>
+      <td>Phase 2, Week 5</td>
+      <td>150–300 mg glycyrrhizic acid</td>
+      <td>With lunch; 3 weeks on, 1 off</td>
+      <td>Contraindicated in hypertension, kidney disease, pregnancy, heart failure</td>
+    </tr>
+    <tr>
+      <td><strong>Ashwagandha (KSM-66)</strong></td>
+      <td>Phase 3, Week 8</td>
+      <td>300–600 mg</td>
+      <td>Evening</td>
+      <td>Caution with Hashimoto's; not in pregnancy; avoid with sedative medications</td>
+    </tr>
+    <tr>
+      <td><strong>Phosphatidylserine</strong></td>
+      <td>Phase 3, Week 8</td>
+      <td>200–400 mg</td>
+      <td>Evening with meal</td>
+      <td>Blood thinners — use caution; start at lower dose</td>
+    </tr>
+    <tr>
+      <td><strong>B6 (P5P form)</strong></td>
+      <td>Phase 3, Week 8</td>
+      <td>50 mg</td>
+      <td>With dinner</td>
+      <td>Do not exceed 100mg daily long-term without monitoring</td>
+    </tr>
+    <tr>
+      <td><strong>L-Theanine</strong></td>
+      <td>Phase 3, Week 8</td>
+      <td>200 mg</td>
+      <td>Before bed</td>
+      <td>None known; can combine with magnesium</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     BIOMARKERS REFERENCE
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 20px;">
+  <h2>Biomarkers: What to Track and What the Numbers Mean</h2>
+
+  <table>
+    <tr>
+      <th>Marker</th>
+      <th>Optimal (Functional)</th>
+      <th class="marker-flag">Flag (Investigate)</th>
+      <th>PCOS Relevance</th>
+    </tr>
+    <tr>
+      <td><strong>Fasting insulin</strong></td>
+      <td>&lt;5 µIU/mL</td>
+      <td class="marker-flag">&gt;10 µIU/mL</td>
+      <td>Primary driver of androgen overproduction; most sensitive early indicator</td>
+    </tr>
+    <tr>
+      <td><strong>HOMA-IR</strong></td>
+      <td>&lt;1.5</td>
+      <td class="marker-flag">&gt;2.0</td>
+      <td>Composite insulin resistance score; calculated, not tested directly</td>
+    </tr>
+    <tr>
+      <td><strong>Fasting glucose</strong></td>
+      <td>70–85 mg/dL</td>
+      <td class="marker-flag">&gt;95 mg/dL</td>
+      <td>"Normal" range (under 100) can mask significant insulin resistance</td>
+    </tr>
+    <tr>
+      <td><strong>HbA1c</strong></td>
+      <td>&lt;5.3%</td>
+      <td class="marker-flag">&gt;5.6%</td>
+      <td>3-month glucose average; misses post-meal spikes</td>
+    </tr>
+    <tr>
+      <td><strong>Free testosterone</strong></td>
+      <td>0.3–1.9 ng/dL (lab-dependent)</td>
+      <td class="marker-flag">Above reference range</td>
+      <td>Direct androgen burden; most relevant for acne, hirsutism, hair loss</td>
+    </tr>
+    <tr>
+      <td><strong>SHBG</strong></td>
+      <td>40–120 nmol/L</td>
+      <td class="marker-flag">&lt;30 nmol/L</td>
+      <td>Low SHBG = high free androgen availability regardless of total testosterone</td>
+    </tr>
+    <tr>
+      <td><strong>LH:FSH ratio</strong></td>
+      <td>&lt;2:1</td>
+      <td class="marker-flag">&gt;2:1 (or LH &gt;FSH)</td>
+      <td>Elevated LH relative to FSH impairs follicle maturation and ovulation</td>
+    </tr>
+    <tr>
+      <td><strong>DHEA-S</strong></td>
+      <td>Age-appropriate range</td>
+      <td class="marker-flag">Above upper quartile for age</td>
+      <td>Adrenal androgen marker; elevated = significant adrenal contribution to PCOS</td>
+    </tr>
+    <tr>
+      <td><strong>hs-CRP</strong></td>
+      <td>&lt;0.5 mg/L</td>
+      <td class="marker-flag">&gt;1.0 mg/L</td>
+      <td>Inflammatory burden; amplifies insulin receptor dysfunction</td>
+    </tr>
+    <tr>
+      <td><strong>Vitamin D (25-OH)</strong></td>
+      <td>50–80 ng/mL</td>
+      <td class="marker-flag">&lt;30 ng/mL</td>
+      <td>Deficiency strongly correlated with IR severity and androgen excess in PCOS</td>
+    </tr>
+    <tr>
+      <td><strong>Ferritin</strong></td>
+      <td>50–100 ng/mL</td>
+      <td class="marker-flag">&lt;30 or &gt;150 ng/mL</td>
+      <td>Low ferritin impairs mitochondrial energy metabolism; high ferritin = inflammation marker</td>
+    </tr>
+    <tr>
+      <td><strong>TSH</strong></td>
+      <td>0.5–2.5 mIU/L</td>
+      <td class="marker-flag">&gt;2.5 mIU/L</td>
+      <td>Subclinical hypothyroidism blunts insulin sensitivity improvement; address first if elevated</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     CLOSING
+     ============================================================ -->
+<section style="page-break-before: always; padding-top: 30px; text-align: center; padding-bottom: 50px;">
+  <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg" width="140" style="margin: 0 auto 20px; display: block;">
+    <text x="10" y="82" font-family="Cairo,sans-serif" font-weight="900" font-size="80" fill="#006c45">Liv</text>
+    <ellipse cx="111" cy="11" rx="6" ry="10" transform="rotate(-20 111 11)" fill="#006c45"/>
+  </svg>
+  <div style="font-size: 10pt; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 30px;">LIV Functional</div>
+
+  <p style="font-size: 14pt; color: var(--mid); max-width: 560px; margin: 0 auto 24px; line-height: 1.6;">PCOS does not have to be managed indefinitely. For most women, it is a reversible metabolic state — one that responds directly to the removal of its root driver: chronic hyperinsulinemia.</p>
+
+  <div class="pull-quote" style="text-align: left; max-width: 560px; margin: 0 auto 30px;">"Sixty days is not enough to undo a decade. It is enough to prove your biology can change — and to build the habits that make it permanent."</div>
+
+  <p style="font-size: 11pt; color: var(--mid); max-width: 500px; margin: 0 auto 20px;">If you want personalized support, CGM analysis, or to take this further with one-on-one coaching:</p>
+
+  <div style="margin: 20px auto; display: inline-block; background: var(--green); color: white; padding: 14px 32px; border-radius: 5px; font-size: 12pt; font-weight: 700; letter-spacing: 0.05em;">
+    Book a Root Cause Session · 135 KWD
+  </div>
+
+  <p style="margin-top: 20px; font-size: 10pt; color: var(--mid);">@liv.lowcarb &nbsp;·&nbsp; livfunctional.com</p>
+
+  <div class="signature" style="margin: 30px auto 0;">Reham</div>
+  <p style="font-size: 9pt; color: var(--mid); margin-top: 6px;">T1D · Holistic Nutrition Coach · LIV Functional</p>
+
+  <div class="footer-note">
+    LIV Functional — 60-Day PCOS Insulin Reversal &amp; Metabolic Restoration Protocol<br>
+    Not medical advice. For personal and educational use only. · @liv.lowcarb · livfunctional.com
+  </div>
+</section>
+
+</div>
+</body>
+</html>

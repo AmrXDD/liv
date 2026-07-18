@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Amr/.claude/**)",
+      "Bash(cd \"C:\\\\Users\\\\Amr\\\\Downloads\" && ls -la ui-ux-pro-max-skill-main.zip \"SAMORE WEB DATA-20260715T163458Z-1-001.zip\" 2>&1)"
+    ]
+  }
+}

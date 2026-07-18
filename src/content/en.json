@@ -1,0 +1,343 @@
+{
+  "brand": {
+    "name": "Liv Functional",
+    "tagline": "Functional wellness, real transformation."
+  },
+  "apply": {
+    "eyebrow": "Application",
+    "title": "Apply for {{product}}",
+    "lede": "Tell us a little about you and we'll be in touch within 1 business day to schedule a discovery call.",
+    "cta": "Apply for {{product}}",
+    "submit": "Apply for {{product}}",
+    "phone": "Phone (optional)",
+    "notes": "Anything we should know?",
+    "success": "Thanks — we'll be in touch within 1 business day.",
+    "error": "Couldn't submit. Try again?"
+  },
+  "nav": {
+    "diy": "DIY Plans",
+    "consultations": "Consultations",
+    "coaching": "Coaching",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "myStory": "My Story",
+    "whyUs": "Why Us",
+    "howItWorks": "How It Works",
+    "b2b": "B2B Collaborations",
+    "faq": "FAQs",
+    "recommended": "Recommended Products",
+    "affiliate": "Affiliate",
+    "groupWorkshops": "Group and Workshops",
+    "language": "العربية",
+    "menu": "Menu",
+    "close": "Close",
+    "bookFree": "Book free consultation",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "cta": {
+    "primary": "Book a free 45-min call",
+    "secondary": "Explore programs",
+    "shopPlans": "Shop the plans",
+    "joinNewsletter": "Join the newsletter",
+    "getStarted": "Get started",
+    "learnMore": "Learn more",
+    "downloadNow": "Download now",
+    "bookCall": "Book a call",
+    "viewAll": "View all"
+  },
+  "hero": {
+    "eyebrow": "Functional wellness studio",
+    "titleA": "Real",
+    "titleB": "transformation",
+    "titleC": "rooted in",
+    "titleD": "functional science.",
+    "lede": "Bilingual programs in functional medicine, behaviour change, and metabolic health — designed for women rebuilding their energy, hormones, and confidence.",
+    "metrics": [
+      { "value": "12+", "label": "Years in practice" },
+      { "value": "1.4k", "label": "Clients transformed" },
+      { "value": "97%", "label": "Recommend us" }
+    ]
+  },
+  "marquee": [
+    "Functional medicine",
+    "Hormone balance",
+    "Metabolic reset",
+    "Behavior change",
+    "Bilingual coaching",
+    "Evidence-based",
+    "Sustainable habits"
+  ],
+  "services": {
+    "eyebrow": "Three doors. One transformation.",
+    "title": "Choose how you want to work with us.",
+    "lede": "Whether you start with a self-paced plan or step into 1:1 coaching, every path is built on the same clinical-grade framework.",
+    "items": [
+      {
+        "tag": "01",
+        "title": "DIY plans",
+        "summary": "Downloadable, clinician-built protocols you can run from home.",
+        "outcome": "Move from overwhelm to a structured 30-day reset.",
+        "href": "/diy-plans"
+      },
+      {
+        "tag": "02",
+        "title": "Coaching",
+        "summary": "1:1 and small-group programs with weekly accountability.",
+        "outcome": "Lasting change, not another diet that lasts six weeks.",
+        "href": "/coaching"
+      },
+      {
+        "tag": "03",
+        "title": "Consultations",
+        "summary": "A free 45-minute call to map your next best step.",
+        "outcome": "Walk away with clarity, even if we never work together.",
+        "href": "/consultations"
+      }
+    ]
+  },
+  "stories": {
+    "eyebrow": "Transformations",
+    "title": "What real women say after 90 days.",
+    "lede": "Stories from clients across the GCC, Europe, and North America.",
+    "voices": "Voices that stayed."
+  },
+  "credentials": {
+    "eyebrow": "Trust the framework",
+    "title": "Clinical-grade, behaviour-first.",
+    "items": [
+      { "title": "IFM-trained", "body": "Functional medicine framework rooted in root-cause thinking." },
+      { "title": "Behaviour science", "body": "Habit design grounded in BJ Fogg + Atomic Habits methodology." },
+      { "title": "Metabolic specialty", "body": "Hormone, gut, and metabolic protocols tailored to women 25–55." },
+      { "title": "Bilingual delivery", "body": "Native English and Arabic — no translated leftovers." }
+    ]
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "Four steps from stuck to systemized.",
+    "steps": [
+      { "n": "01", "title": "Free 45-min call", "body": "We listen, we don't sell. You leave with a next step." },
+      { "n": "02", "title": "Choose your path", "body": "DIY plan, coaching program, or hybrid — your pace." },
+      { "n": "03", "title": "Run the protocol", "body": "Weekly check-ins, structured habits, measurable wins." },
+      { "n": "04", "title": "Live functional", "body": "You graduate with skills you keep — not a subscription you forget." }
+    ]
+  },
+  "featuredProducts": {
+    "eyebrow": "Start today",
+    "title": "Featured plans",
+    "lede": "Hand-picked, downloadable protocols.",
+    "viewAll": "View all DIY plans"
+  },
+  "blogPreview": {
+    "eyebrow": "Field notes",
+    "title": "Read the journal",
+    "viewAll": "All articles"
+  },
+  "newsletter": {
+    "eyebrow": "Stay in the loop",
+    "title": "Get the Sunday letter.",
+    "lede": "One letter, every Sunday: a protocol, a study, and a habit to test this week.",
+    "placeholder": "you@email.com",
+    "button": "Subscribe",
+    "success": "Welcome in. Check your inbox.",
+    "error": "Something went wrong. Try again?"
+  },
+  "funnel": {
+    "eyebrow": "Not sure where to start?",
+    "title": "Take the 60-second path-finder.",
+    "lede": "Three questions. A personalized plan. Sent to your inbox.",
+    "button": "Start the path-finder"
+  },
+  "diy": {
+    "hero": {
+      "eyebrow": "DIY plans",
+      "title": "Clinician-built. Self-paced. Yours forever.",
+      "lede": "Downloadable PDF protocols designed to deliver one focused outcome each. Buy once, run forever."
+    },
+    "filters": {
+      "all": "All",
+      "hormones": "Hormones",
+      "gut": "Gut",
+      "metabolic": "Metabolic",
+      "energy": "Energy"
+    }
+  },
+  "coaching": {
+    "hero": {
+      "eyebrow": "1:1 + Group coaching",
+      "title": "Programs that change the trajectory.",
+      "lede": "Four programs, four levels of intensity, one shared mission: real, lasting transformation."
+    },
+    "compare": "Compare programs",
+    "outcomes": "Outcomes",
+    "timeline": "Timeline",
+    "pricing": "Investment",
+    "apply": "Apply now",
+    "agreePrefix": "I agree to the",
+    "agreementLink": "coaching terms",
+    "discoveryNote": "Every program starts with a free 45-minute discovery call."
+  },
+  "consultations": {
+    "hero": {
+      "eyebrow": "Consultations",
+      "title": "Book your free 30-minute call.",
+      "lede": "Tell us where you are. Walk away with a next step — even if it isn't with us."
+    },
+    "tabs": {
+      "freeEyebrow": "Discovery call",
+      "freeTitle": "Free · 30 minutes",
+      "paidEyebrow": "Holistic consultation",
+      "paidTitle": "135 KWD · 90 minutes"
+    },
+    "openInCal": "Having trouble? Open in Cal.com",
+    "bookFree": "Book the free call",
+    "form": {
+      "name": "Your name",
+      "email": "Email address",
+      "phone": "Phone (optional)",
+      "date": "Preferred date",
+      "time": "Preferred time",
+      "topic": "What's the main thing on your mind?",
+      "topicPlaceholder": "e.g. hormones, gut, energy, weight",
+      "message": "Anything else we should know?",
+      "submit": "Confirm my booking",
+      "submitting": "Securing your slot…",
+      "success": "Booked. Check your inbox for the confirmation.",
+      "error": "Couldn't book that slot. Try another time?"
+    },
+    "trust": [
+      "100% confidential",
+      "No sales pitch",
+      "30 minutes, max"
+    ]
+  },
+  "blog": {
+    "hero": {
+      "eyebrow": "Journal",
+      "title": "Field notes from the studio.",
+      "lede": "Protocols, studies, and habits — translated for real life."
+    },
+    "minRead": "min read",
+    "byAuthor": "By",
+    "categories": {
+      "all": "All",
+      "hormones": "Hormones",
+      "gut": "Gut",
+      "metabolic": "Metabolic",
+      "mindset": "Mindset",
+      "habits": "Habits",
+      "energy": "Energy"
+    },
+    "empty": "No articles yet. Subscribe and we'll let you know.",
+    "notFound": "Article not found.",
+    "loading": "Loading…",
+    "backToBlog": "Back to all articles"
+  },
+  "footer": {
+    "tagline": "Functional wellness, real transformation.",
+    "newsletter": "Join our circle",
+    "whatsapp": "Join our WhatsApp circle",
+    "rights": "All rights reserved.",
+    "explore": "Explore",
+    "company": "Company",
+    "support": "Support",
+    "social": "Follow",
+    "made": "Built with Intention"
+  },
+  "static": {
+    "about": {
+      "title": "We're not a wellness brand. We're a transformation studio.",
+      "lede": "Liv Functional was built to close the gap between what science knows about health and what real women can actually do on a Tuesday morning.",
+      "body": "Founded by Amro Ghamrawy, Liv Functional is a bilingual wellness studio rooted in functional medicine, behaviour change, and metabolic health. We work with women across the GCC, Europe, and North America who are tired of one-size-fits-all wellness."
+    },
+    "myStory": {
+      "title": "My story.",
+      "lede": "From burnt-out operator to functional wellness practitioner.",
+      "body": "I spent a decade building businesses while my own health quietly broke. The path back wasn't a 30-day detox — it was a system. Liv Functional is that system, taught back."
+    },
+    "whyUs": {
+      "title": "Why Liv Functional.",
+      "lede": "Three reasons people stay — and refer.",
+      "items": [
+        { "title": "Bilingual native", "body": "We speak the way you live — Arabic and English, no awkward translations." },
+        { "title": "Behaviour first", "body": "Protocols are useless if they don't fit your life. Ours do." },
+        { "title": "Clinical depth", "body": "Functional medicine framework, not Instagram pseudo-science." }
+      ]
+    },
+    "contact": {
+      "title": "Talk to us.",
+      "lede": "We answer every email — usually within 48 hours.",
+      "form": {
+        "name": "Your name",
+        "email": "Email",
+        "phone": "Phone number",
+        "subject": "Subject",
+        "message": "Message",
+        "submit": "Send message",
+        "success": "Got it. We'll be in touch.",
+        "error": "Couldn't send. Try again?"
+      }
+    },
+    "howItWorks": {
+      "title": "How working with us works.",
+      "lede": "Transparent, structured, and built around your life — not ours."
+    },
+    "faq": {
+      "title": "1:1 Discovery Consultation — FAQ",
+      "lede": "Real answers about how the session works and what you'll walk away with.",
+      "items": [
+        { "q": "Is this consultation right for me?", "a": "If you feel like something in your body isn't working the way it should but you don't have clarity on why, this is exactly where to start. This session is ideal if you want real answers and a clear direction, not guesswork." },
+        { "q": "What makes this different from a regular nutrition consultation?", "a": "Most consultations give general advice. This session focuses on identifying root causes, connecting your symptoms to your lifestyle and biology, and giving you a clear, prioritized strategy. You're not leaving with more information; you're leaving with direction." },
+        { "q": "Will I get a meal plan?", "a": "It depends. This is a strategy session, not a full program. You will get clear nutrition guidance and direction, but not a fully customized meal plan. If you need that level of detail, you'll be guided to the right next step." },
+        { "q": "Do I need to have blood work or lab tests?", "a": "No, but if you have them, bring them. If not, we work with your symptoms, lifestyle patterns, and history to identify what's likely happening." },
+        { "q": "How should I prepare for the session?", "a": "You'll receive a pre-session intake form or a screening call to welcome you. During this call we'll ask you certain questions to prepare you for the meeting with Reham. Be honest and detailed; the quality of your answers directly impacts the accuracy of your strategy." },
+        { "q": "What exactly will I walk away with?", "a": "A clear understanding of what's going on in your body, the main factors holding you back, a personalized action plan, and immediate steps you can start the same day." },
+        { "q": "Is one session enough?", "a": "For clarity, yes. For full transformation, no. This session gives you the roadmap. Implementation and deeper work may require ongoing support, depending on your goals." },
+        { "q": "Will this help with weight loss / blood sugar / hormones?", "a": "Yes — if those issues are connected to your lifestyle, nutrition, or metabolic function. This session identifies what's driving those issues and shows you how to start correcting them." },
+        { "q": "What if I've already tried everything?", "a": "You probably haven't tried the right strategy for your body. Most people repeat the same approaches without understanding why they're not working. That's exactly what we fix here." },
+        { "q": "Do you offer refunds?", "a": "No. This is a time-based, personalized service. Once booked, your slot is reserved." },
+        { "q": "How do I book my session?", "a": "Simply click the Book Your Consultation button and choose your time slot." },
+        { "q": "What happens after I book?", "a": "You'll receive a confirmation email, your intake form, and instructions for the session." }
+      ]
+    },
+    "b2b": {
+      "title": "B2B collaborations.",
+      "lede": "Workshops, retreats, and corporate wellness programs.",
+      "body": "We partner with forward-thinking organizations to deliver bilingual wellness programming for teams that perform under pressure.",
+      "cta": {
+        "eyebrow": "Partner inquiries",
+        "title": "We design workshops that fit your corporate culture, event idea, or wellness programs.",
+        "button": "Start the conversation"
+      }
+    },
+    "recommended": {
+      "title": "What we actually use.",
+      "lede": "A short, honest list of products we use ourselves. Some links are affiliate — they don't change the price you pay."
+    },
+    "privacy": {
+      "title": "Privacy policy.",
+      "lede": "We handle your data the way we'd want ours handled."
+    },
+    "terms": {
+      "title": "Terms of service.",
+      "lede": "Plain-language terms for working with Liv Functional."
+    },
+    "notFound": {
+      "title": "Off the path.",
+      "lede": "This page doesn't exist — but we can get you back on track.",
+      "cta": "Back home"
+    }
+  },
+  "common": {
+    "outcomes": "Outcomes",
+    "format": "Format",
+    "duration": "Duration",
+    "investment": "Investment",
+    "includes": "What's inside",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading…",
+    "from": "From"
+  }
+}

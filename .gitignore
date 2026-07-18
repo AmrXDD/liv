@@ -1,0 +1,18 @@
+node_modules
+dist
+dist-ssr
+.env
+.env.local
+.env.*.local
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log
+.cache
+*.tsbuildinfo
+supabase/.temp/
+
+# Stray empty nested git repo — not part of this project
+livfunctional/
