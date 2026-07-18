@@ -11,4 +11,4 @@
  * if the client prefers the original. The old Header/MobileMenu code is kept
  * intact and used when this is false.
  */
-export const DOCK_NAV = true;
+export const DOCK_NAV = false;
