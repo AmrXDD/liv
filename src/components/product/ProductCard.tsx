@@ -35,8 +35,8 @@ export function ProductCard({ product, variant = "default" }: Props) {
   return (
     <article
       className={cn(
-        "group relative isolate overflow-hidden rounded-3xl bg-surface-raised border border-ink/10",
-        "transition-all duration-500 ease-editorial hover:-translate-y-1 hover:shadow-elevation",
+        "card-glow-sides group relative isolate overflow-hidden rounded-3xl bg-surface-raised border border-ink/10",
+        "transition-all duration-500 ease-editorial hover:-translate-y-1",
         variant === "wide" && "md:flex md:items-stretch"
       )}
     >

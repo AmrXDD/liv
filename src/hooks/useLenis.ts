@@ -28,9 +28,19 @@ export function useLenis() {
     gsap.ticker.add(tickerHandler);
     gsap.ticker.lagSmoothing(0);
 
+    // Recalculate ScrollTrigger positions once the layout, fonts and images
+    // have settled — otherwise reveal triggers created too early can keep
+    // below-the-fold sections stuck at opacity:0.
+    const refresh = () => ScrollTrigger.refresh();
+    window.addEventListener("load", refresh);
+    document.fonts?.ready.then(refresh).catch(() => {});
+    const timers = [setTimeout(refresh, 300), setTimeout(refresh, 1200)];
+
     return () => {
       lenis.off("scroll", onScroll);
       gsap.ticker.remove(tickerHandler);
+      window.removeEventListener("load", refresh);
+      timers.forEach(clearTimeout);
       lenis.destroy();
     };
   }, []);

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/utils";
 
 interface Options {
@@ -9,13 +9,21 @@ interface Options {
   duration?: number;
   stagger?: number;
   delay?: number;
+  /** @deprecated kept for API compatibility; use `rootMargin`. */
   start?: string;
   once?: boolean;
+  rootMargin?: string;
 }
 
 /**
- * Reveals direct children (or matching selector) on scroll.
- * Returns a ref to attach to the container.
+ * Reveals matching children on scroll.
+ *
+ * Deliberately does NOT rely on GSAP ScrollTrigger / Lenis to decide *when* to
+ * play — that coupling could leave a section stuck at opacity:0 if a scroll
+ * update was missed. Instead it uses two independent triggers (an
+ * IntersectionObserver AND a passive scroll/resize check); whichever notices
+ * the section enter the viewport first reveals it, exactly once. GSAP still
+ * drives the actual entrance animation. Returns a ref for the container.
  */
 export function useScrollReveal<T extends HTMLElement = HTMLDivElement>({
   selector = "[data-reveal]",
@@ -24,43 +32,81 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>({
   duration = 1,
   stagger = 0.08,
   delay = 0,
-  start = "top 85%",
-  once = true,
+  rootMargin = "0px 0px -10% 0px",
 }: Options = {}) {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
-    registerGsap();
     const node = ref.current;
     if (!node) return;
-    if (prefersReducedMotion()) return;
 
-    const targets = node.querySelectorAll<HTMLElement>(selector);
+    const targets = Array.from(node.querySelectorAll<HTMLElement>(selector));
     if (!targets.length) return;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        targets,
-        { y, opacity, filter: "blur(8px)" },
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration,
-          delay,
-          stagger,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: node,
-            start,
-            toggleActions: once ? "play none none none" : "play none none reverse",
-          },
-        }
-      );
-    }, node);
+    // Respect reduced-motion: show everything immediately, no animation.
+    if (prefersReducedMotion()) {
+      gsap.set(targets, { clearProps: "all" });
+      return;
+    }
 
-    return () => ctx.revert();
-  }, [selector, y, opacity, duration, stagger, delay, start, once]);
+    gsap.set(targets, { y, opacity, filter: "blur(8px)" });
+
+    let done = false;
+
+    const cleanup = () => {
+      io?.disconnect();
+      window.removeEventListener("scroll", onScrollResize);
+      window.removeEventListener("resize", onScrollResize);
+    };
+
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      cleanup();
+      gsap.to(targets, {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration,
+        delay,
+        stagger,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    };
+
+    const inView = () => {
+      const r = node.getBoundingClientRect();
+      return r.top < window.innerHeight * 0.9 && r.bottom > 0;
+    };
+
+    const onScrollResize = () => {
+      if (inView()) reveal();
+    };
+
+    let io: IntersectionObserver | undefined;
+    if (typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) reveal();
+        },
+        { rootMargin, threshold: 0.01 }
+      );
+      io.observe(node);
+    }
+
+    window.addEventListener("scroll", onScrollResize, { passive: true });
+    window.addEventListener("resize", onScrollResize);
+
+    // Reveal immediately if the section is already in view at mount
+    // (above the fold, short pages, or a restored scroll position).
+    const raf = requestAnimationFrame(onScrollResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      cleanup();
+    };
+  }, [selector, y, opacity, duration, stagger, delay, rootMargin]);
 
   return ref;
 }

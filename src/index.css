@@ -100,6 +100,34 @@
   }
   .card-lift:hover { transform: translateY(-6px); }
 
+  /* Card glow — consistent forest/coral aura around cards. */
+  .card-glow {
+    transition: box-shadow 0.5s var(--easing-editorial);
+    box-shadow:
+      0 0 0 1px rgba(0, 108, 69, 0.08),
+      0 12px 44px -14px rgba(0, 108, 69, 0.4),
+      0 6px 26px -10px rgba(255, 87, 87, 0.22);
+  }
+  .card-glow:hover {
+    box-shadow:
+      0 0 0 1px rgba(0, 108, 69, 0.16),
+      0 18px 56px -12px rgba(0, 108, 69, 0.55),
+      0 10px 34px -8px rgba(255, 87, 87, 0.34);
+  }
+
+  /* Side-only glow — light spills from the left/right edges only. */
+  .card-glow-sides {
+    transition: box-shadow 0.5s var(--easing-editorial);
+    box-shadow:
+      -16px 0 34px -16px rgba(0, 108, 69, 0.55),
+      16px 0 34px -16px rgba(255, 87, 87, 0.55);
+  }
+  .card-glow-sides:hover {
+    box-shadow:
+      -20px 0 44px -14px rgba(0, 108, 69, 0.7),
+      20px 0 44px -14px rgba(255, 87, 87, 0.7);
+  }
+
   .grain::before {
     content: "";
     position: absolute;

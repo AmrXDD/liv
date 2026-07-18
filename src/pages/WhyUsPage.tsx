@@ -30,7 +30,7 @@ export function WhyUsPage() {
               <div
                 key={it.title}
                 data-why
-                className="rounded-3xl border border-ink/10 bg-surface-raised p-8 hover:shadow-elevation transition-all duration-500"
+                className="card-glow rounded-3xl border border-ink/10 bg-surface-raised p-8 transition-all duration-500"
               >
                 <div className="font-mono text-eyebrow uppercase text-coral-500">
                   {String(i + 1).padStart(2, "0")}
