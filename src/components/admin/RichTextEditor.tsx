@@ -120,13 +120,15 @@ function Toolbar({ editor, imageBucket }: { editor: Editor; imageBucket: Bucket 
 
   const insertVideo = () => {
     const raw = window.prompt(
-      "Paste a video link (YouTube, Vimeo, or a direct .mp4 URL)",
+      "Paste a video link (YouTube, Vimeo, Instagram, or a direct .mp4 URL)",
       "https://"
     );
     if (raw === null) return;
     const media = resolveMediaUrl(raw);
     if (!media) {
-      window.alert("Couldn't recognise that link. Use a YouTube, Vimeo, or direct video (.mp4) URL.");
+      window.alert(
+        "Couldn't recognise that link. Use a YouTube, Vimeo, Instagram, or direct video (.mp4) URL."
+      );
       return;
     }
     editor.chain().focus().insertContent({ type: "mediaEmbed", attrs: media }).run();
