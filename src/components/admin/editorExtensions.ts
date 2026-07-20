@@ -147,9 +147,10 @@ export function resolveMediaUrl(raw: string): MediaDescriptor | null {
   if (ig) {
     const type = ig[1].toLowerCase() === "reels" ? "reel" : ig[1].toLowerCase();
     const code = ig[2];
-    // Portrait, ~400px wide. Reels/IGTV are taller than square posts; extra
-    // height accounts for Instagram's own header/footer chrome.
-    const aspect = type === "p" ? 128 : 178;
+    // Portrait, ~400px wide. Height accounts for a full 9:16 reel video (≈178%
+    // at this width) PLUS Instagram's own header + action-bar chrome (~90px),
+    // so nothing clips at the bottom. Square/4:5 posts need much less.
+    const aspect = type === "p" ? 140 : 200;
     return { src: `https://www.instagram.com/${type}/${code}/embed/`, mode: "iframe", aspect, width: 400 };
   }
 
