@@ -12,6 +12,7 @@ import { formatDate, cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { useDirection } from "@/hooks/useDirection";
 import { useCart } from "@/lib/cart";
+import { useInstagramEmbeds } from "@/lib/instagramEmbed";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,6 +23,9 @@ export function BlogPostPage() {
 
   const { data: dbPost, isLoading } = useBlogPost(slug);
   const { data: dbPosts = [] } = useBlogPosts();
+
+  // Convert any Instagram blockquotes in the post body into live embeds.
+  useInstagramEmbeds(`${dbPost?.id ?? slug ?? ""}:${lang}`);
 
   // Cart drawer is global state above <Routes>. The auto-close-on-path-change
   // in CartDrawer has missed cases (e.g. opened during the same render that

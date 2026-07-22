@@ -24,14 +24,18 @@ export const InlineImage = Node.create({
   },
 });
 
+const IG_BLOCKQUOTE_STYLE =
+  "background:#FFF;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:1px auto;max-width:540px;min-width:326px;padding:0;width:99.375%;";
+
 /**
- * Embedded media node. Two modes:
- *  - "iframe": responsive embed (YouTube / Vimeo 16:9, or Instagram reels/posts
- *    which are portrait and narrower). `aspect` is the padding-bottom % and
- *    `width` an optional max-width in px. Rendered with inline styles (not
- *    Tailwind classes) so it survives being stored as raw HTML and re-injected
- *    on the public site, where the JIT CSS wouldn't include those utilities.
+ * Embedded media node. Three modes:
+ *  - "iframe": responsive 16:9 embed (YouTube / Vimeo), inline-styled so it
+ *    survives being stored as raw HTML and re-injected on the public site.
  *  - "video": a native <video> element for direct file URLs (.mp4, .webm…).
+ *  - "instagram": Instagram's official blockquote. Instagram forbids raw
+ *    iframes (X-Frame-Options: DENY), so their reels/posts must be rendered via
+ *    embed.js, which turns this blockquote into a correctly-sized embed. See
+ *    lib/instagramEmbed.ts for the script that processes it on the public site.
  */
 export const MediaEmbed = Node.create({
   name: "mediaEmbed",
@@ -44,12 +48,25 @@ export const MediaEmbed = Node.create({
       mode: { default: "iframe" },
       aspect: { default: 56.25 },
       width: { default: null },
+      href: { default: null },
     };
   },
   parseHTML() {
     return [
       {
-        // Round-trip our own wrapper (keeps aspect / max-width across edits).
+        // Instagram official embed markup — must win over StarterKit's blockquote.
+        tag: "blockquote.instagram-media",
+        priority: 100,
+        getAttrs: (el) => {
+          const e = el as HTMLElement;
+          return {
+            mode: "instagram",
+            href: e.getAttribute("data-instgrm-permalink") || e.querySelector("a")?.getAttribute("href") || "",
+          };
+        },
+      },
+      {
+        // Round-trip our own iframe wrapper (keeps aspect / max-width).
         tag: "div[data-embed]",
         getAttrs: (el) => {
           const e = el as HTMLElement;
@@ -69,7 +86,37 @@ export const MediaEmbed = Node.create({
     ];
   },
   renderHTML({ HTMLAttributes }) {
-    const attrs = HTMLAttributes as { src?: string; mode?: string; aspect?: number; width?: number | null };
+    const attrs = HTMLAttributes as {
+      src?: string;
+      mode?: string;
+      aspect?: number;
+      width?: number | null;
+      href?: string;
+    };
+
+    if (attrs.mode === "instagram") {
+      const href = attrs.href ?? attrs.src ?? "";
+      return [
+        "blockquote",
+        {
+          class: "instagram-media",
+          "data-instgrm-permalink": href,
+          "data-instgrm-version": "14",
+          style: IG_BLOCKQUOTE_STYLE,
+        },
+        [
+          "a",
+          {
+            href,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            style: "display:block;padding:16px;color:#3897f0;font-weight:600;text-decoration:none;font-size:14px;",
+          },
+          "View this post on Instagram",
+        ],
+      ];
+    }
+
     const src = attrs.src ?? "";
 
     if (attrs.mode === "video") {
@@ -105,7 +152,6 @@ export const MediaEmbed = Node.create({
           {
             src,
             frameborder: "0",
-            scrolling: "no",
             allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
             allowfullscreen: "true",
             style: "position:absolute;top:0;left:0;width:100%;height:100%;border:0;",
@@ -118,15 +164,17 @@ export const MediaEmbed = Node.create({
 
 export interface MediaDescriptor {
   src: string;
-  mode: "iframe" | "video";
+  mode: "iframe" | "video" | "instagram";
   aspect?: number;
   width?: number | null;
+  href?: string;
 }
 
 /**
  * Convert a user-supplied media URL into an embed descriptor.
- * Supports YouTube, Vimeo, Instagram (reels/posts/tv/igtv) and direct video
- * files. Returns null for unsafe / unrecognised URLs.
+ * Supports YouTube, Vimeo, Instagram (reels/posts/tv, with or without a
+ * username in the path) and direct video files. Returns null for unsafe /
+ * unrecognised URLs.
  */
 export function resolveMediaUrl(raw: string): MediaDescriptor | null {
   const url = raw.trim();
@@ -142,16 +190,12 @@ export function resolveMediaUrl(raw: string): MediaDescriptor | null {
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i)?.[1];
   if (vimeo) return { src: `https://player.vimeo.com/video/${vimeo}`, mode: "iframe" };
 
-  // Instagram (reel / post / tv). Uses the public /embed/ iframe endpoint.
-  const ig = url.match(/instagram\.com\/(p|reel|reels|tv)\/([A-Za-z0-9_-]+)/i);
+  // Instagram (reel / post / tv) — optional "/username/" segment before the type.
+  const ig = url.match(/instagram\.com\/(?:[A-Za-z0-9_.]+\/)?(p|reel|reels|tv)\/([A-Za-z0-9_-]+)/i);
   if (ig) {
     const type = ig[1].toLowerCase() === "reels" ? "reel" : ig[1].toLowerCase();
-    const code = ig[2];
-    // Portrait, ~400px wide. Height accounts for a full 9:16 reel video (≈178%
-    // at this width) PLUS Instagram's own header + action-bar chrome (~90px),
-    // so nothing clips at the bottom. Square/4:5 posts need much less.
-    const aspect = type === "p" ? 140 : 200;
-    return { src: `https://www.instagram.com/${type}/${code}/embed/`, mode: "iframe", aspect, width: 400 };
+    const href = `https://www.instagram.com/${type}/${ig[2]}/`;
+    return { src: href, href, mode: "instagram" };
   }
 
   // Direct video file
