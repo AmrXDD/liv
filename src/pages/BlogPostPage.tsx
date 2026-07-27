@@ -13,6 +13,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { useDirection } from "@/hooks/useDirection";
 import { useCart } from "@/lib/cart";
 import { useInstagramEmbeds } from "@/lib/instagramEmbed";
+import { ConversionFunnel } from "@/components/home/ConversionFunnel";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -168,6 +169,8 @@ export function BlogPostPage() {
           )}
         </Container>
       </Section>
+
+      <ConversionFunnel />
 
       {related.length > 0 && (
         <Section variant="sunken" pad="md">
