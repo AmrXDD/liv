@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>liv-functional — structural graph</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         background: #fbf9f5; color: #0a1612; }
+  @media (prefers-color-scheme: dark) { body { background:#0d1411; color:#e9efe9; } }
+  header { padding: 22px 28px 6px; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+  .sub { margin: 6px 0 0; font-size: 13px; opacity: .7; }
+  .tag { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+         background:#ff575722; color:#bf3434; border-radius:999px; padding:3px 10px; margin-bottom:6px; }
+  .wrap { padding: 8px 20px 40px; }
+  .card { background: rgba(255,255,255,.6); border:1px solid rgba(10,22,18,.08); border-radius:16px; overflow:auto; }
+  @media (prefers-color-scheme: dark){ .card{ background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.1);} }
+  svg { display:block; width:100%; height:auto; min-width:900px; }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; padding:12px 28px; font-size:12px; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:11px; height:11px; border-radius:50%; display:inline-block; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; padding: 18px 28px; }
+  @media (max-width:720px){ .grid{ grid-template-columns:1fr; } }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:6px 8px; border-bottom:1px solid rgba(10,22,18,.08); }
+  @media (prefers-color-scheme: dark){ th,td{ border-color:rgba(255,255,255,.08);} }
+  th { font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6; }
+  td.n { text-align:right; font-variant-numeric: tabular-nums; }
+  h2 { font-size:14px; margin:0 0 8px; }
+  .node-label { font-size:11px; font-weight:600; }
+  .node-size { font-size:9px; opacity:.75; }
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">structural-fallback</div>
+  <h1>liv-functional — architecture graph</h1>
+  <p class="sub">Directory clusters &amp; real import edges (113 source files). Native Graphify unavailable (no Python); built from counted imports. Flow reads left → right: entry → pages → features → primitives → hooks → core lib → data / backend.</p>
+</header>
+
+<div class="legend" id="legend"></div>
+
+<div class="wrap">
+  <div class="card"><svg id="svg" viewBox="0 0 1240 740" role="img" aria-label="Module dependency graph"></svg></div>
+  <div class="grid">
+    <div><h2>Hub modules (fan-in)</h2><table id="hubs"><thead><tr><th>Module</th><th>Imported by</th></tr></thead><tbody></tbody></table></div>
+    <div><h2>Heaviest cluster edges</h2><table id="edges"><thead><tr><th>Dependency</th><th>Imports</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  nodes: [
+    {id:"main",label:"main.tsx",layer:0,size:1,group:"entry"},
+    {id:"App",label:"App.tsx",layer:0,size:1,group:"entry"},
+    {id:"pages",label:"pages",layer:1,size:40,group:"route"},
+    {id:"home",label:"home",layer:2,size:13,group:"feature"},
+    {id:"layout",label:"layout",layer:2,size:6,group:"feature"},
+    {id:"admin",label:"admin",layer:2,size:6,group:"feature"},
+    {id:"cart",label:"cart",layer:2,size:3,group:"feature"},
+    {id:"product",label:"product",layer:2,size:2,group:"feature"},
+    {id:"booking",label:"booking",layer:2,size:2,group:"feature"},
+    {id:"seo",label:"seo",layer:2,size:1,group:"feature"},
+    {id:"blocks",label:"blocks",layer:2,size:1,group:"feature"},
+    {id:"ui",label:"ui",layer:3,size:13,group:"primitive"},
+    {id:"hooks",label:"hooks",layer:4,size:4,group:"hooks"},
+    {id:"lib",label:"lib (core)",layer:5,size:15,group:"core"},
+    {id:"content",label:"content i18n",layer:6,size:2,group:"leaf"},
+    {id:"data",label:"data",layer:6,size:3,group:"leaf"},
+    {id:"types",label:"types",layer:6,size:1,group:"leaf"},
+    {id:"supabase",label:"supabase",layer:6,size:19,group:"backend"}
+  ],
+  edges: [
+    ["App","pages",40],["App","admin",2],["main","lib",2],
+    ["pages","lib",78],["pages","ui",50],["pages","admin",22],["pages","home",20],
+    ["pages","seo",19],["pages","hooks",11],["pages","product",11],["pages","types",6],
+    ["pages","data",4],["pages","blocks",2],["pages","cart",1],["pages","booking",1],
+    ["home","ui",28],["home","lib",18],["home","hooks",10],["home","data",3],
+    ["ui","lib",18],["ui","hooks",3],["layout","ui",10],["layout","lib",7],["layout","cart",4],
+    ["admin","lib",9],["hooks","lib",7],["cart","lib",6],["booking","lib",4],
+    ["product","lib",4],["blocks","lib",2],["blocks","ui",2],
+    ["lib","content",4],["lib","types",3],["lib","data",1],["lib","supabase",43],["data","types",3]
+  ],
+  hubs: [["lib/utils",52],["components/ui/Container",32],["lib/supabase",29],["components/ui/Section",28],
+    ["lib/queries",22],["components/admin/ui",21],["components/seo/SEO",19],["components/ui/Button",18],
+    ["types",17],["lib/gsap",14],["hooks/useDirection",13],["hooks/useScrollReveal",12]]
+};
+const COLORS = { entry:"#6b7280", route:"#006c45", feature:"#2d8e60", primitive:"#a89160",
+  hooks:"#7c3aed", core:"#ff5757", leaf:"#9ca3af", backend:"#0a1612" };
+const LABELS = { entry:"entry", route:"pages", feature:"feature components", primitive:"ui primitives",
+  hooks:"hooks", core:"lib core", leaf:"data / i18n / types", backend:"supabase backend" };
+
+const W=1240, H=740, padX=95, padY=48, maxLayer=6;
+const byId = Object.fromEntries(DATA.nodes.map(n=>[n.id,n]));
+const layers = {};
+DATA.nodes.forEach(n => (layers[n.layer] = layers[n.layer]||[]).push(n));
+const colW = (W - padX*2)/maxLayer;
+Object.entries(layers).forEach(([L,arr])=>{
+  const x = padX + (+L)*colW;
+  const gap = (H - padY*2)/arr.length;
+  arr.forEach((n,i)=>{ n.x = x; n.y = padY + gap*(i+0.5); n.r = Math.max(11, Math.min(44, 8+Math.sqrt(n.size)*5)); });
+});
+
+const NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("svg");
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+// edges
+DATA.edges.forEach(([f,t,w])=>{
+  const a=byId[f], b=byId[t]; if(!a||!b) return;
+  const x1=a.x+a.r, x2=b.x-b.r, mx=(x1+x2)/2;
+  const d=`M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
+  svg.appendChild(el("path",{d,fill:"none",stroke:COLORS[a.group],
+    "stroke-width":Math.max(1,Math.log2(w+1)).toFixed(2),
+    "stroke-opacity":(0.18+Math.min(0.5,w/90)).toFixed(2),"stroke-linecap":"round"}));
+});
+// nodes
+DATA.nodes.forEach(n=>{
+  svg.appendChild(el("circle",{cx:n.x,cy:n.y,r:n.r,fill:COLORS[n.group],
+    "fill-opacity":0.9,stroke:"#ffffff","stroke-width":1.5}));
+  const lbl=el("text",{x:n.x,y:n.y-n.r-6,"text-anchor":"middle",fill:"currentColor"});
+  lbl.setAttribute("class","node-label"); lbl.textContent=n.label; svg.appendChild(lbl);
+  const sz=el("text",{x:n.x,y:n.y+4,"text-anchor":"middle",fill:"#fff"});
+  sz.setAttribute("class","node-size"); sz.textContent=n.size; svg.appendChild(sz);
+});
+
+// legend
+const leg=document.getElementById("legend");
+Object.keys(LABELS).forEach(g=>{
+  const s=document.createElement("span");
+  s.innerHTML=`<i class="dot" style="background:${COLORS[g]}"></i>${LABELS[g]}`;
+  leg.appendChild(s);
+});
+// tables
+const hb=document.querySelector("#hubs tbody");
+DATA.hubs.forEach(([m,c])=>{ const tr=document.createElement("tr");
+  tr.innerHTML=`<td>${m}</td><td class="n">${c}</td>`; hb.appendChild(tr); });
+const eb=document.querySelector("#edges tbody");
+[...DATA.edges].sort((a,b)=>b[2]-a[2]).slice(0,12).forEach(([f,t,w])=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td>${f} → ${t}</td><td class="n">${w}</td>`; eb.appendChild(tr); });
+</script>
+</body>
+</html>
