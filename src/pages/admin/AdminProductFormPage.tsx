@@ -219,7 +219,7 @@ export function AdminProductFormPage() {
             </div>
           </Card>
 
-          {form.format === "Physical" && (
+          {(form.format === "Physical" || form.category === "physical") && (
             <Card>
               <h2 className="mb-1 display-serif text-xl">Physical product</h2>
               <p className="mb-4 text-sm text-ink-muted">
@@ -307,13 +307,25 @@ export function AdminProductFormPage() {
                   placeholder="auto-generated"
                 />
               </Field>
-              <Field label="Category">
+              <Field label="Category" hint="Physical (Shop) products appear on /shop.">
                 <Select
                   value={form.category}
-                  onChange={(e) => set("category", e.currentTarget.value as ProductCategory)}
+                  onChange={(e) => {
+                    const next = e.currentTarget.value as ProductCategory;
+                    setForm((s) => ({
+                      ...s,
+                      category: next,
+                      // Physical → make it a shippable Physical format so the
+                      // inventory/shipping fields show and /shop detects it.
+                      ...(next === "physical"
+                        ? { format: "Physical", requiresShipping: true }
+                        : {}),
+                    }));
+                  }}
                 >
-                  <option value="diy">DIY</option>
+                  <option value="diy">DIY (digital)</option>
                   <option value="coaching">Coaching</option>
+                  <option value="physical">Physical (Shop)</option>
                 </Select>
               </Field>
               <div className="grid grid-cols-2 gap-3">
