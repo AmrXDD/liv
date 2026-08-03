@@ -99,7 +99,7 @@ export function ProductCard({ product, variant = "default" }: Props) {
               {formatPrice(product.price, product.currency)}
             </div>
           </div>
-          {product.category === "diy" ? (
+          {product.category === "diy" || product.category === "physical" ? (
             <button
               type="button"
               onClick={(e) => {

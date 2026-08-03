@@ -23,6 +23,7 @@ export function MobileMenu({ open, onClose }: Props) {
 
   const items = [
     { to: "/diy-plans", label: t("nav.diy") },
+    { to: "/shop", label: t("nav.shop") },
     { to: "/consultations", label: t("nav.consultations") },
     { to: "/coaching", label: t("nav.coaching") },
     { to: "/about", label: t("nav.about") },

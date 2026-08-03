@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { HomePage } from "@/pages/HomePage";
 import { DIYPlansPage } from "@/pages/DIYPlansPage";
 import { DIYProductPage } from "@/pages/DIYProductPage";
+import { ShopPage } from "@/pages/ShopPage";
 import { CoachingPage } from "@/pages/CoachingPage";
 import { CoachingProductPage } from "@/pages/CoachingProductPage";
 import { ConsultationsPage } from "@/pages/ConsultationsPage";
@@ -53,6 +54,9 @@ export function App() {
 
         <Route path="/diy-plans" element={<DIYPlansPage />} />
         <Route path="/diy-plans/:slug" element={<DIYProductPage />} />
+
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/shop/:slug" element={<DIYProductPage />} />
 
         <Route path="/coaching" element={<CoachingPage />} />
         <Route path="/coaching/:slug" element={<CoachingProductPage />} />

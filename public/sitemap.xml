@@ -18,6 +18,14 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/diy-plans" />
   </url>
   <url>
+    <loc>https://www.livfunctional.com/shop</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/shop" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/shop?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/shop" />
+  </url>
+  <url>
     <loc>https://www.livfunctional.com/coaching</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

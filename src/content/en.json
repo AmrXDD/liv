@@ -35,7 +35,19 @@
     "book": "Book",
     "bookFree": "Book free consultation",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "shop": "Shop"
+  },
+  "shop": {
+    "hero": {
+      "eyebrow": "Shop",
+      "title": "The LIV Shop",
+      "lede": "Books, tools, and small-batch products Reham makes and uses — built to support your reset."
+    }
+  },
+  "product": {
+    "buy": "Buy now",
+    "trust": "Clinician-built by Reham Alsharif — every protocol tested before it's shared. 1,400+ clients."
   },
   "cta": {
     "primary": "Book a free 45-min call",

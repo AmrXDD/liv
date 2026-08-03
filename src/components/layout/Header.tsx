@@ -81,6 +81,7 @@ export function Header() {
 
           <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">
             {navItem("/diy-plans", t("nav.diy"))}
+            {navItem("/shop", t("nav.shop"))}
             {navItem("/consultations", t("nav.consultations"))}
             {navItem("/coaching", t("nav.coaching"))}
 
