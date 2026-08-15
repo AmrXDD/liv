@@ -76,6 +76,14 @@ export function ProductCard({ product, variant = "default" }: Props) {
             {product.badge[lang]}
           </div>
         )}
+        {(product.category === "physical" || product.format === "Physical") &&
+          product.stock != null &&
+          product.stock <= 0 && (
+            <div className="absolute top-5 start-5 inline-flex items-center gap-1.5 rounded-full bg-coral-600 px-3 py-1.5 text-eyebrow uppercase text-bone-50 shadow-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-bone-50" />
+              {lang === "ar" ? "نفدت الكمية" : "Sold out"}
+            </div>
+          )}
         <div className="absolute end-5 top-5 grid h-12 w-12 place-items-center rounded-full bg-bone-50/90 backdrop-blur-md text-ink transition-all duration-500 group-hover:bg-ink group-hover:text-bone-50 group-hover:rotate-45">
           <ArrowUpRight className={cn("h-5 w-5", isRtl && "flip-rtl")} strokeWidth={1.75} />
         </div>
@@ -83,8 +91,18 @@ export function ProductCard({ product, variant = "default" }: Props) {
 
       <div className={cn("p-7", variant === "wide" && "md:flex-1 md:p-10")}>
         {product.format && (
-          <div className="text-eyebrow uppercase text-ink-muted mb-3">
-            {product.format} · {product.duration?.[lang]}
+          <div className="text-eyebrow uppercase text-ink-muted mb-3 flex items-center justify-between">
+            <span>
+              {product.format} · {product.duration?.[lang] || (product.category === "physical" ? (lang === "ar" ? "شحن دولي" : "Physical item") : "")}
+            </span>
+            {(product.category === "physical" || product.format === "Physical") &&
+              product.stock != null &&
+              product.stock > 0 &&
+              product.stock <= 5 && (
+                <span className="text-coral-600 font-semibold lowercase">
+                  {lang === "ar" ? `متبقي ${product.stock} فقط` : `only ${product.stock} left`}
+                </span>
+              )}
           </div>
         )}
         <h3 className="display-serif text-2xl tracking-tight">{product.title[lang]}</h3>
@@ -100,27 +118,47 @@ export function ProductCard({ product, variant = "default" }: Props) {
             </div>
           </div>
           {product.category === "diy" || product.category === "physical" ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                addItem(product, 1);
-                setAdded(true);
-                setTimeout(() => setAdded(false), 1400);
-              }}
-              className={cn(
-                "inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-colors",
-                added
-                  ? "bg-forest-500 text-bone-50"
-                  : "bg-ink text-bone-50 hover:bg-coral-600"
-              )}
-            >
-              {added ? <Check className="h-3.5 w-3.5" /> : <ShoppingBag className="h-3.5 w-3.5" />}
-              {added
-                ? t("cart.added", { defaultValue: "Added" })
-                : t("cart.add", { defaultValue: "Add to cart" })}
-            </button>
+            (() => {
+              const isPhysical = product.category === "physical" || product.format === "Physical";
+              const isSoldOut = isPhysical && product.stock != null && product.stock <= 0;
+
+              return (
+                <button
+                  type="button"
+                  disabled={isSoldOut}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isSoldOut) return;
+                    addItem(product, 1);
+                    setAdded(true);
+                    setTimeout(() => setAdded(false), 1400);
+                  }}
+                  className={cn(
+                    "inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-colors",
+                    isSoldOut
+                      ? "cursor-not-allowed bg-ink/20 text-ink-muted"
+                      : added
+                      ? "bg-forest-500 text-bone-50"
+                      : "bg-ink text-bone-50 hover:bg-coral-600"
+                  )}
+                >
+                  {isSoldOut ? (
+                    lang === "ar" ? "غير متوفر" : "Sold out"
+                  ) : added ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      {t("cart.added", { defaultValue: "Added" })}
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="h-3.5 w-3.5" />
+                      {t("cart.add", { defaultValue: "Add to cart" })}
+                    </>
+                  )}
+                </button>
+              );
+            })()
           ) : (
             <Link
               to={`/apply/${product.slug}`}

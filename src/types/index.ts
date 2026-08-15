@@ -189,3 +189,54 @@ export interface NewsletterPayload {
   email: string;
   locale: Locale;
 }
+
+export interface ShippingAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  state?: string;
+  postal_code?: string;
+  country: string;
+}
+
+export interface OrderItem {
+  product_id: string;
+  slug: string;
+  category: ProductCategory | string;
+  title_en?: string;
+  title_ar?: string;
+  price: number;
+  currency: string;
+  quantity: number;
+  hero_image?: string | null;
+  is_physical?: boolean;
+}
+
+export interface Order {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string | null;
+  items: OrderItem[];
+  subtotal: number;
+  total: number;
+  currency: string;
+  notes?: string | null;
+  status: "pending" | "paid" | "fulfilled" | "cancelled" | "refunded" | string;
+  payment_ref?: string | null;
+  stripe_payment_intent?: string | null;
+  stripe_session_id?: string | null;
+  paid_at?: string | null;
+  locale: Locale;
+  shipping_address?: ShippingAddress | null;
+  shipping_line1?: string | null;
+  shipping_line2?: string | null;
+  shipping_city?: string | null;
+  shipping_state?: string | null;
+  shipping_postal_code?: string | null;
+  shipping_country?: string | null;
+  has_physical?: boolean;
+  created_at: string;
+  updated_at?: string;
+}
+

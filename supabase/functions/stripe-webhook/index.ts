@@ -114,7 +114,7 @@ async function fulfillCheckoutSession(
   // Idempotency — if already paid, no-op.
   const { data: existing } = await sb
     .from("orders")
-    .select("id, status, items, locale, email, name, total, currency")
+    .select("id, status, items, locale, email, name, total, currency, shipping_address, has_physical")
     .eq("id", orderId)
     .maybeSingle();
   if (!existing) {
@@ -135,8 +135,6 @@ async function fulfillCheckoutSession(
     .eq("id", orderId);
   if (updErr) throw updErr;
 
-  // Create digital_orders rows for each DIY item so the success page can show
-  // downloads + the customer has a permanent record.
   const items = (existing.items as Array<{
     product_id: string;
     slug: string;
@@ -146,14 +144,30 @@ async function fulfillCheckoutSession(
     price: number;
     currency: string;
     quantity: number;
+    is_physical?: boolean;
   }>) ?? [];
 
+  // Decrement inventory/stock for physical products
+  for (const item of items) {
+    if (item.category === "physical" || item.is_physical) {
+      try {
+        const { error: stockErr } = await sb.rpc("decrement_product_stock", {
+          p_product_id: item.product_id,
+          p_qty: Number(item.quantity || 1),
+        });
+        if (stockErr) {
+          console.error("[stripe-webhook] stock decrement error", stockErr, item.product_id);
+        } else {
+          console.log("[stripe-webhook] decremented stock", item.product_id, item.quantity);
+        }
+      } catch (err) {
+        console.error("[stripe-webhook] stock decrement call failed", err);
+      }
+    }
+  }
+
   // Pre-fetch product download URLs (so the confirmation email + Thank You page
-  // can both surface a download button for any product that has a file attached,
-  // not just DIY plans). NOTE: the products table has split title_en/title_ar
-  // columns — selecting a non-existent "title" column makes PostgREST return an
-  // error and `data` becomes null, which previously caused every digital_orders
-  // row to be inserted with download_url=null (no email attachment, no button).
+  // can both surface a download button for any product that has a file attached).
   const productIds = Array.from(new Set(items.map((i) => i.product_id))).filter(Boolean);
   let downloadByProductId = new Map<string, string | null>();
   let prodRows: Array<{ id: string; slug: string; download_url: string | null; title_en: string | null; title_ar: string | null }> = [];
@@ -167,18 +181,14 @@ async function fulfillCheckoutSession(
     }
     prodRows = (data ?? []) as typeof prodRows;
     downloadByProductId = new Map(prodRows.map((p) => [p.id, p.download_url ?? null]));
-    console.log("[stripe-webhook] product downloads resolved", {
-      productIds,
-      resolved: Array.from(downloadByProductId.entries()),
-    });
   }
 
-  // Insert digital_orders rows FIRST so the Thank You page (which polls by
-  // stripe_session_id) can render the download button immediately, before the
-  // slower Resend email round-trips below. One row per item; download_url
-  // can be null (UI then shows "Sent by email").
+  // Create digital_orders rows for items that have a downloadable file or are DIY
   const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 3600 * 1000).toISOString();
-  const rows = items.map((i) => ({
+  const digitalItems = items.filter(
+    (i) => i.category === "diy" || downloadByProductId.get(i.product_id) != null,
+  );
+  const rows = digitalItems.map((i) => ({
     email: existing.email,
     product_slug: i.slug,
     locale: existing.locale ?? "en",
@@ -193,11 +203,6 @@ async function fulfillCheckoutSession(
   if (rows.length > 0) {
     const { error: dErr } = await sb.from("digital_orders").insert(rows);
     if (dErr) console.error("[stripe-webhook] digital_orders insert failed", dErr);
-    console.log("[stripe-webhook] digital_orders inserted", {
-      count: rows.length,
-      withDownload: rows.filter((r) => r.download_url).length,
-      urls: rows.map((r) => r.download_url),
-    });
   }
 
   // ---- Customer order-confirmation email (every purchase, any category) ----
@@ -218,12 +223,9 @@ async function fulfillCheckoutSession(
       total,
       currency,
       locale,
+      shippingAddress: existing.shipping_address,
     });
-    // Attach the actual product file(s) so the customer receives the PDF/zip
-    // directly in their inbox (not just a link). Resend fetches each `path`
-    // server-side and inlines it as a real email attachment. The URL MUST be
-    // absolute (https://…); relative paths like "/downloads/foo.pdf" will be
-    // dropped here because Resend can't reach them.
+
     const attachments = summary
       .filter((i) => typeof i.downloadUrl === "string" && /^https?:\/\//i.test(i.downloadUrl as string))
       .map((i) => {
@@ -231,14 +233,6 @@ async function fulfillCheckoutSession(
         const filename = (url.split("/").pop() ?? "download").split("?")[0];
         return { filename, path: url };
       });
-    console.log("[stripe-webhook] attachments planned", {
-      totalItems: summary.length,
-      attached: attachments.length,
-      list: attachments,
-      droppedBecauseRelativeOrEmpty: summary
-        .filter((i) => !i.downloadUrl || !/^https?:\/\//i.test(i.downloadUrl as string))
-        .map((i) => ({ title: i.title, url: i.downloadUrl })),
-    });
 
     const customerSend = await sendEmail({
       to: existing.email,
@@ -248,7 +242,7 @@ async function fulfillCheckoutSession(
       attachments: attachments.length > 0 ? attachments : undefined,
       tags: [{ name: "type", value: "order-confirmation" }],
     });
-    console.log("[stripe-webhook] customer email", { to: existing.email, ok: customerSend.ok, id: customerSend.id, error: customerSend.error, attachments: attachments.length });
+    console.log("[stripe-webhook] customer email", { to: existing.email, ok: customerSend.ok, id: customerSend.id });
 
     // Admin alert — fire-and-forget
     const alert = adminOrderAlertEmail({
@@ -258,6 +252,7 @@ async function fulfillCheckoutSession(
       items: summary,
       total,
       currency,
+      shippingAddress: existing.shipping_address,
     });
     const adminSend = await sendEmail({
       to: getAdminNotifyEmail(),
@@ -266,7 +261,7 @@ async function fulfillCheckoutSession(
       text: alert.text,
       tags: [{ name: "type", value: "admin-order-alert" }],
     });
-    console.log("[stripe-webhook] admin email", { to: getAdminNotifyEmail(), ok: adminSend.ok, id: adminSend.id, error: adminSend.error });
+    console.log("[stripe-webhook] admin email", { to: getAdminNotifyEmail(), ok: adminSend.ok, id: adminSend.id });
   } else {
     console.warn("[stripe-webhook] skipped emails", { hasEmail: !!existing.email, itemCount: items.length });
   }

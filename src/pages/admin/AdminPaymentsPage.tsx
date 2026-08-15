@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, Trash2, ExternalLink, Truck } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
 import { Card, PageHeader, Select, Btn, Input } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
+import type { ShippingAddress } from "@/types";
 
 interface OrderItem {
   product_id: string;
@@ -15,6 +16,7 @@ interface OrderItem {
   currency?: string;
   quantity: number;
   hero_image?: string | null;
+  is_physical?: boolean;
 }
 
 interface OrderRow {
@@ -33,6 +35,14 @@ interface OrderRow {
   stripe_session_id: string | null;
   paid_at: string | null;
   locale: string;
+  shipping_address?: ShippingAddress | null;
+  shipping_line1?: string | null;
+  shipping_line2?: string | null;
+  shipping_city?: string | null;
+  shipping_state?: string | null;
+  shipping_postal_code?: string | null;
+  shipping_country?: string | null;
+  has_physical?: boolean;
   created_at: string;
 }
 
@@ -131,7 +141,7 @@ export function AdminPaymentsPage() {
     <>
       <PageHeader
         title="Payments & Orders"
-        description="All cart checkouts plus DIY email-gated downloads."
+        description="All cart checkouts, physical shipments, plus DIY downloads."
       />
 
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -162,61 +172,107 @@ export function AdminPaymentsPage() {
           )}
           {orders.length > 0 && (
             <div className="divide-y divide-ink/5">
-              {orders.map((o) => (
-                <div key={o.id} className="p-6 hover:bg-bone-100/30">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-ink-muted">
-                        #{o.id.slice(0, 8)} · {new Date(o.created_at).toLocaleString()}
-                      </div>
-                      <div className="mt-1 font-semibold">{o.name}</div>
-                      <div className="text-sm text-ink-muted">{o.email}</div>
-                      {o.phone && <div className="text-sm text-ink-muted">{o.phone}</div>}
-                    </div>
-                    <div className="text-end">
-                      <div className="display-serif text-2xl text-forest-700">
-                        {formatPrice(Number(o.total ?? 0), o.currency)}
-                      </div>
-                      <Select
-                        value={o.status}
-                        onChange={(e) => updateStatus(o.id, e.currentTarget.value)}
-                        className="!py-1.5 !px-3 !text-xs !rounded-full w-auto mt-1"
-                      >
-                        {STATUSES.map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
+              {orders.map((o) => {
+                const isPhysicalOrder =
+                  o.has_physical ||
+                  o.shipping_address != null ||
+                  o.shipping_line1 != null ||
+                  (Array.isArray(o.items) &&
+                    o.items.some((i) => i.category === "physical" || i.is_physical));
 
-                  <ul className="mt-4 divide-y divide-ink/5 rounded-xl border border-ink/10">
-                    {(Array.isArray(o.items) ? o.items : []).map((item, i) => {
-                      const title = item.title_en || item.title_ar || item.slug || "Item";
-                      const qty = Number(item.quantity ?? 1);
-                      const price = Number(item.price ?? 0);
-                      return (
-                        <li key={i} className="flex items-center justify-between gap-4 p-3 text-sm">
+                return (
+                  <div key={o.id} className="p-6 hover:bg-bone-100/30">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs uppercase tracking-wider text-ink-muted">
+                            #{o.id.slice(0, 8)} · {new Date(o.created_at).toLocaleString()}
+                          </span>
+                          {isPhysicalOrder && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-coral-100 px-2 py-0.5 text-[11px] font-semibold text-coral-700">
+                              <Truck className="h-3 w-3" /> Physical Delivery
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1 font-semibold">{o.name}</div>
+                        <div className="text-sm text-ink-muted">{o.email}</div>
+                        {o.phone && <div className="text-sm text-ink-muted">{o.phone}</div>}
+                      </div>
+                      <div className="text-end">
+                        <div className="display-serif text-2xl text-forest-700">
+                          {formatPrice(Number(o.total ?? 0), o.currency)}
+                        </div>
+                        <Select
+                          value={o.status}
+                          onChange={(e) => updateStatus(o.id, e.currentTarget.value)}
+                          className="!py-1.5 !px-3 !text-xs !rounded-full w-auto mt-1"
+                        >
+                          {STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Shipping Address Display */}
+                    {(o.shipping_address || o.shipping_line1) && (
+                      <div className="mt-4 rounded-xl border border-coral-200 bg-coral-50/50 p-4 text-xs text-ink">
+                        <div className="flex items-center gap-1.5 font-semibold text-coral-800 mb-1.5">
+                          <Truck className="h-4 w-4" /> Shipping Address
+                        </div>
+                        <div className="space-y-0.5 text-ink-muted">
+                          <div className="font-medium text-ink">
+                            {o.shipping_address?.line1 || o.shipping_line1}
+                          </div>
+                          {(o.shipping_address?.line2 || o.shipping_line2) && (
+                            <div>{o.shipping_address?.line2 || o.shipping_line2}</div>
+                          )}
                           <div>
-                            <div className="font-medium">{title}</div>
-                            <div className="text-xs text-ink-muted">
-                              {item.category ?? "—"} · qty {qty}
-                            </div>
+                            {[
+                              o.shipping_address?.city || o.shipping_city,
+                              o.shipping_address?.state || o.shipping_state,
+                              o.shipping_address?.postal_code || o.shipping_postal_code,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
                           </div>
-                          <div className="font-medium">
-                            {formatPrice(price * qty, o.currency)}
+                          <div className="font-semibold text-ink">
+                            {o.shipping_address?.country || o.shipping_country}
                           </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                        </div>
+                      </div>
+                    )}
 
-                  {o.notes && (
-                    <div className="mt-3 rounded-xl bg-bone-100 px-4 py-3 text-xs text-ink-muted">
-                      <strong>Note:</strong> {o.notes}
-                    </div>
-                  )}
+                    <ul className="mt-4 divide-y divide-ink/5 rounded-xl border border-ink/10">
+                      {(Array.isArray(o.items) ? o.items : []).map((item, i) => {
+                        const title = item.title_en || item.title_ar || item.slug || "Item";
+                        const qty = Number(item.quantity ?? 1);
+                        const price = Number(item.price ?? 0);
+                        const cat = item.category ?? "diy";
+
+                        return (
+                          <li key={i} className="flex items-center justify-between gap-4 p-3 text-sm">
+                            <div>
+                              <div className="font-medium">{title}</div>
+                              <div className="text-xs text-ink-muted">
+                                <span className="capitalize">{cat}</span> · qty {qty}
+                              </div>
+                            </div>
+                            <div className="font-medium">
+                              {formatPrice(price * qty, o.currency)}
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+
+                    {o.notes && (
+                      <div className="mt-3 rounded-xl bg-bone-100 px-4 py-3 text-xs text-ink-muted">
+                        <strong>Note:</strong> {o.notes}
+                      </div>
+                    )}
 
                   <div className="mt-4 flex flex-wrap items-center gap-3">
                     <Input
@@ -257,11 +313,12 @@ export function AdminPaymentsPage() {
                     </Btn>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </Card>
+    )}
 
       {tab === "digital" && (
         <Card className="p-0 overflow-hidden">

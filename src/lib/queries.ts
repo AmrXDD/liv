@@ -5,7 +5,7 @@ import type { BlogPost, Collection, Page, Product, ProductCategory } from "@/typ
 import type { NutritionIssueGroup } from "@/data/nutritionIssues";
 
 const PRODUCT_COLS =
-  "id,slug,category,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar,long_en,long_ar,price,currency,duration_en,duration_ar,format,badge_en,badge_ar,hero_image,images,accent,outcomes,inclusions,is_published,position,download_url,seo_keywords";
+  "id,slug,category,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar,long_en,long_ar,price,currency,duration_en,duration_ar,format,badge_en,badge_ar,hero_image,images,accent,outcomes,inclusions,is_published,position,download_url,seo_keywords,sku,weight_grams,length_cm,width_cm,height_cm,stock,requires_shipping";
 
 const COLLECTION_COLS =
   "id,slug,title_en,title_ar,description_en,description_ar,cover_image,accent,is_published,position";

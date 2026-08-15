@@ -60,6 +60,15 @@ function toMinorUnits(amount: number, currency: string): number {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+interface IncomingAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  state?: string;
+  postal_code?: string;
+  country: string;
+}
+
 interface IncomingItem {
   product_id: string;
   qty: number;
@@ -72,6 +81,7 @@ interface IncomingPayload {
   phone?: string;
   notes?: string;
   locale?: "en" | "ar";
+  shipping_address?: IncomingAddress;
 }
 
 Deno.serve(async (req) => {
@@ -129,30 +139,62 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // 1. Server-side price + product validation
+    // 1. Server-side price + product validation & stock check
     const ids = Array.from(new Set(payload.items.map((i) => i.product_id)));
     const { data: products, error: prodErr } = await sb
       .from("products")
-      .select("id, slug, category, title_en, title_ar, price, currency, is_published, hero_image, download_url")
+      .select("id, slug, category, title_en, title_ar, price, currency, is_published, hero_image, download_url, stock, requires_shipping, format")
       .in("id", ids);
     if (prodErr) throw prodErr;
     if (!products?.length) return jsonError("Products not found", 400, cors);
 
     const byId = new Map(products.map((p) => [p.id as string, p]));
 
-    // Only DIY products go through this checkout. Coaching/consultations use /apply.
+    // DIY digital products and Physical products are sold via cart. Coaching/consultations use /apply.
     const validated = payload.items.map((item) => {
       const p = byId.get(item.product_id);
       if (!p) throw new Error(`Unknown product: ${item.product_id}`);
       if (p.is_published === false) throw new Error(`Product not available: ${p.slug}`);
-      if (p.category !== "diy") throw new Error(`Only DIY products are sold via cart: ${p.slug}`);
+      if (p.category !== "diy" && p.category !== "physical") {
+        throw new Error(`Only DIY plans and Shop products are sold via cart: ${p.slug}`);
+      }
+      const isPhysical = p.category === "physical" || p.format === "Physical" || p.requires_shipping === true;
       const qty = Math.max(1, Math.min(99, Math.floor(item.qty || 1)));
+
+      // Inventory / Stock check for physical products
+      if (isPhysical && p.stock !== null && p.stock !== undefined) {
+        if (p.stock <= 0) {
+          throw new Error(`"${p.title_en || p.slug}" is currently out of stock.`);
+        }
+        if (qty > p.stock) {
+          throw new Error(`Only ${p.stock} unit(s) available for "${p.title_en || p.slug}".`);
+        }
+      }
+
       return {
         product: p,
         qty,
         line_total: Number(p.price) * qty,
+        is_physical: isPhysical,
       };
     });
+
+    const hasPhysical = validated.some((v) => v.is_physical);
+    const shippingAddress = payload.shipping_address;
+    if (hasPhysical) {
+      if (
+        !shippingAddress ||
+        !shippingAddress.line1?.trim() ||
+        !shippingAddress.city?.trim() ||
+        !shippingAddress.country?.trim()
+      ) {
+        return jsonError(
+          "Shipping address (Street address, City, and Country) is required for physical products.",
+          400,
+          cors,
+        );
+      }
+    }
 
     const currency = (validated[0]?.product.currency ?? "USD").toLowerCase();
     if (validated.some((v) => (v.product.currency ?? "USD").toLowerCase() !== currency)) {
@@ -160,7 +202,7 @@ Deno.serve(async (req) => {
     }
     const subtotal = validated.reduce((s, v) => s + v.line_total, 0);
 
-    // 2. Insert pending order — store the *server-validated* line items.
+    // 2. Insert pending order — store the *server-validated* line items and address.
     const orderRow = {
       email,
       name,
@@ -175,6 +217,7 @@ Deno.serve(async (req) => {
         currency: v.product.currency,
         quantity: v.qty,
         hero_image: v.product.hero_image,
+        is_physical: v.is_physical,
       })),
       subtotal,
       total: subtotal,
@@ -182,6 +225,14 @@ Deno.serve(async (req) => {
       notes,
       status: "pending",
       locale,
+      shipping_address: shippingAddress ?? null,
+      shipping_line1: shippingAddress?.line1?.trim() ?? null,
+      shipping_line2: shippingAddress?.line2?.trim() ?? null,
+      shipping_city: shippingAddress?.city?.trim() ?? null,
+      shipping_state: shippingAddress?.state?.trim() ?? null,
+      shipping_postal_code: shippingAddress?.postal_code?.trim() ?? null,
+      shipping_country: shippingAddress?.country?.trim() ?? null,
+      has_physical: hasPhysical,
     };
 
     const { data: order, error: orderErr } = await sb
@@ -201,6 +252,30 @@ Deno.serve(async (req) => {
     form.append("payment_intent_data[metadata][order_id]", order.id as string);
     form.append("metadata[order_id]", order.id as string);
     form.append("metadata[locale]", locale);
+    form.append("metadata[has_physical]", hasPhysical ? "true" : "false");
+
+    if (hasPhysical && shippingAddress) {
+      form.append("payment_intent_data[shipping][name]", name);
+      form.append("payment_intent_data[shipping][address][line1]", shippingAddress.line1.trim());
+      if (shippingAddress.line2?.trim()) {
+        form.append("payment_intent_data[shipping][address][line2]", shippingAddress.line2.trim());
+      }
+      form.append("payment_intent_data[shipping][address][city]", shippingAddress.city.trim());
+      if (shippingAddress.state?.trim()) {
+        form.append("payment_intent_data[shipping][address][state]", shippingAddress.state.trim());
+      }
+      if (shippingAddress.postal_code?.trim()) {
+        form.append("payment_intent_data[shipping][address][postal_code]", shippingAddress.postal_code.trim());
+      }
+      // Stripe expects 2-letter ISO country code if provided, otherwise leave empty or pass cleaned string
+      const cCode = shippingAddress.country.trim();
+      if (cCode.length === 2) {
+        form.append("payment_intent_data[shipping][address][country]", cCode.toUpperCase());
+      }
+      if (phone) {
+        form.append("payment_intent_data[shipping][phone]", phone);
+      }
+    }
 
     validated.forEach((v, i) => {
       const titleEn = (v.product.title_en as string) || v.product.slug;
@@ -217,6 +292,7 @@ Deno.serve(async (req) => {
       }
       form.append(`line_items[${i}][price_data][product_data][metadata][slug]`, v.product.slug as string);
       form.append(`line_items[${i}][price_data][product_data][metadata][product_id]`, v.product.id as string);
+      form.append(`line_items[${i}][price_data][product_data][metadata][category]`, v.product.category as string);
     });
 
     const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
@@ -231,7 +307,7 @@ Deno.serve(async (req) => {
 
     const session = await stripeRes.json();
     if (!stripeRes.ok) {
-      // Mark order as failed so it doesn't sit pending forever.
+      // Mark order as cancelled so it doesn't sit pending forever.
       await sb.from("orders").update({ status: "cancelled" }).eq("id", order.id);
       console.error("[create-checkout-session] stripe error", session);
       return jsonError(session?.error?.message ?? "Stripe session failed", 502, cors);

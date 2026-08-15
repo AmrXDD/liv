@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -42,14 +42,25 @@ const blank: Product = {
   accent: "forest",
   isPublished: true,
   position: 0,
+  stock: 0,
+  requiresShipping: false,
 };
 
 export function AdminProductFormPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const catParam = searchParams.get("category") as ProductCategory | null;
   const isNew = !id || id === "new";
   const nav = useNavigate();
   const qc = useQueryClient();
-  const [form, setForm] = useState<Product>(blank);
+  const [form, setForm] = useState<Product>(() => ({
+    ...blank,
+    ...(catParam === "physical"
+      ? { category: "physical", format: "Physical", requiresShipping: true }
+      : catParam
+      ? { category: catParam }
+      : {}),
+  }));
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 

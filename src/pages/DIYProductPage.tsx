@@ -157,11 +157,18 @@ export function DIYProductPage() {
 
                 {lowStock && (
                   <div className="mt-3 text-sm font-medium text-coral-600">
-                    {t("product.lowStock", { count: product.stock, defaultValue: `Only ${product.stock} left` })}
+                    {lang === "ar"
+                      ? `متبقي ${product.stock} فقط في المخزون`
+                      : `Only ${product.stock} left in stock`}
+                  </div>
+                )}
+                {soldOut && (
+                  <div className="mt-3 text-sm font-medium text-coral-600">
+                    {lang === "ar" ? "نفدت الكمية حالياً" : "Currently out of stock"}
                   </div>
                 )}
 
-                <div className="mt-6">
+                <div className="mt-6 flex flex-col gap-3">
                   <Button
                     variant="primary"
                     size="lg"
@@ -170,8 +177,20 @@ export function DIYProductPage() {
                     onClick={buyNow}
                     disabled={soldOut}
                   >
-                    {soldOut ? t("product.soldOut", { defaultValue: "Sold out" }) : t("product.buy")}
+                    {soldOut
+                      ? (lang === "ar" ? "نفدت الكمية" : "Sold out")
+                      : (lang === "ar" ? "شراء الآن" : "Buy now")}
                   </Button>
+                  {!soldOut && (
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      className="w-full"
+                      onClick={() => addItem(product, 1)}
+                    >
+                      {lang === "ar" ? "إضافة إلى السلة" : "Add to cart"}
+                    </Button>
+                  )}
                 </div>
 
                 {/* Trust snippet, right next to the buy box */}

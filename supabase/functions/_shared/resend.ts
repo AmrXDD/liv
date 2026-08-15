@@ -287,6 +287,43 @@ export function bookingConfirmationEmail(opts: {
   return { subject, html, text };
 }
 
+export interface AddressPayload {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  country?: string;
+}
+
+function formatAddressHtml(addr: AddressPayload | null | undefined, isAr: boolean): string {
+  if (!addr || !addr.line1) return "";
+  const parts = [
+    addr.line1,
+    addr.line2,
+    [addr.city, addr.state, addr.postal_code].filter(Boolean).join(", "),
+    addr.country,
+  ].filter(Boolean);
+
+  return `<div style="margin-top:20px;padding:16px;background:#f9f9f9;border:1px solid #e5e5e5;border-radius:12px;font-size:13px;">
+    <div style="font-weight:700;color:${BRAND_PRIMARY};margin-bottom:6px;">
+      ${isAr ? "عنوان الشحن والتوصيل" : "Shipping address"}
+    </div>
+    ${parts.map((p) => `<div>${escapeHtml(p as string)}</div>`).join("")}
+  </div>`;
+}
+
+function formatAddressText(addr: AddressPayload | null | undefined, isAr: boolean): string {
+  if (!addr || !addr.line1) return "";
+  const parts = [
+    addr.line1,
+    addr.line2,
+    [addr.city, addr.state, addr.postal_code].filter(Boolean).join(", "),
+    addr.country,
+  ].filter(Boolean);
+  return `\n\n${isAr ? "عنوان الشحن" : "Shipping address"}:\n${parts.join("\n")}`;
+}
+
 export function orderConfirmationEmail(opts: {
   name?: string | null;
   orderId: string;
@@ -294,6 +331,7 @@ export function orderConfirmationEmail(opts: {
   total: number;
   currency: string;
   locale: "en" | "ar";
+  shippingAddress?: AddressPayload | null;
 }): { subject: string; html: string; text: string } {
   const isAr = opts.locale === "ar";
   const subject = isAr
@@ -334,6 +372,9 @@ export function orderConfirmationEmail(opts: {
       </div>`
     : "";
 
+  const shippingHtml = formatAddressHtml(opts.shippingAddress, isAr);
+  const shippingText = formatAddressText(opts.shippingAddress, isAr);
+
   const html = layout(subject, `
     ${lede}
     <table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;">
@@ -342,12 +383,13 @@ export function orderConfirmationEmail(opts: {
           <td style="padding:12px 0;font-weight:700;text-align:end;color:${BRAND_PRIMARY};">${opts.total.toFixed(2)} ${opts.currency}</td></tr>
     </table>
     ${downloadsBlock}
+    ${shippingHtml}
     <p style="font-size:12px;color:#7a756c;margin-top:20px;">${isAr ? "رقم الطلب" : "Order ID"}: ${escapeHtml(opts.orderId)}</p>
   `);
   const textDownloads = downloadItems.length > 0
     ? `\n\n${isAr ? "تنزيلاتك" : "Your downloads"}:\n${downloadItems.map((i) => `- ${i.title}: ${i.downloadUrl}`).join("\n")}`
     : "";
-  const text = `${greeting}\n\n${isAr ? "تأكيد طلبك" : "Order confirmed"}: ${opts.orderId}\n${isAr ? "الإجمالي" : "Total"}: ${opts.total.toFixed(2)} ${opts.currency}${textDownloads}`;
+  const text = `${greeting}\n\n${isAr ? "تأكيد طلبك" : "Order confirmed"}: ${opts.orderId}\n${isAr ? "الإجمالي" : "Total"}: ${opts.total.toFixed(2)} ${opts.currency}${textDownloads}${shippingText}`;
   return { subject, html, text };
 }
 
@@ -358,19 +400,24 @@ export function adminOrderAlertEmail(opts: {
   items: Array<{ title: string; quantity: number; price: number }>;
   total: number;
   currency: string;
+  shippingAddress?: AddressPayload | null;
 }): { subject: string; html: string; text: string } {
   const subject = `💰 New order: ${opts.total.toFixed(2)} ${opts.currency} — ${opts.customerEmail}`;
   const rows = opts.items
     .map((i) => `<tr><td>${escapeHtml(i.title)} × ${i.quantity}</td><td style="text-align:end;">${(i.price * i.quantity).toFixed(2)} ${opts.currency}</td></tr>`)
     .join("");
+  const shippingHtml = formatAddressHtml(opts.shippingAddress, false);
+  const shippingText = formatAddressText(opts.shippingAddress, false);
+
   const html = layout(subject, `
     <p><strong>${escapeHtml(opts.customerName ?? opts.customerEmail)}</strong> just placed an order.</p>
     <table style="width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;">${rows}
       <tr><td style="padding-top:8px;font-weight:700;">Total</td><td style="text-align:end;font-weight:700;color:${BRAND_PRIMARY};">${opts.total.toFixed(2)} ${opts.currency}</td></tr>
     </table>
+    ${shippingHtml}
     <p style="font-size:12px;color:#7a756c;margin-top:16px;">Order ${escapeHtml(opts.orderId)} · <a href="mailto:${opts.customerEmail}" style="color:${BRAND_PRIMARY};">${escapeHtml(opts.customerEmail)}</a></p>
   `);
-  const text = `New order ${opts.orderId} from ${opts.customerEmail}: ${opts.total.toFixed(2)} ${opts.currency}`;
+  const text = `New order ${opts.orderId} from ${opts.customerEmail}: ${opts.total.toFixed(2)} ${opts.currency}${shippingText}`;
   return { subject, html, text };
 }
 

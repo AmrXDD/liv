@@ -79,8 +79,12 @@ create policy "orders admin"
   on orders for all
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
--- NOTE: there is intentionally NO anon select/insert policy on orders.
--- The browser never reads orders directly; only digital_orders rows.
+
+-- Allow customer to read their own order summary on success page via stripe_session_id
+drop policy if exists "orders read by session" on orders;
+create policy "orders read by session"
+  on orders for select
+  using (stripe_session_id is not null);
 
 -- ---------- CONTACTS / BOOKINGS / NEWSLETTER (small hardening) ----------
 -- Keep anon insert (forms still work) but prevent anon SELECT explicitly

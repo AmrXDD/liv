@@ -92,68 +92,99 @@ export function CartDrawer() {
             </div>
           ) : (
             <ul className="space-y-4">
-              {items.map((item) => (
-                <li
-                  key={item.productId}
-                  className="flex gap-4 rounded-2xl border border-ink/10 bg-surface-raised p-3"
-                >
-                  <div className="grid h-20 w-20 flex-shrink-0 place-items-center overflow-hidden rounded-xl bg-bone-100">
-                    {item.image ? (
-                      <img src={item.image} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="display-serif text-2xl text-forest-700">
-                        {item.title[lang][0]}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-1 flex-col">
-                    <div className="flex items-start justify-between gap-2">
-                      <Link
-                        to={`/${item.category === "diy" ? "diy-plans" : "coaching"}/${item.slug}`}
-                        onClick={close}
-                        className="text-sm font-semibold leading-snug hover:text-coral-600"
-                      >
-                        {item.title[lang]}
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.productId)}
-                        aria-label="Remove"
-                        className="text-ink-muted hover:text-coral-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+              {items.map((item) => {
+                const isPhysical = item.category === "physical" || item.requiresShipping;
+                const linkPath = isPhysical
+                  ? `/shop/${item.slug}`
+                  : item.category === "diy"
+                  ? `/diy-plans/${item.slug}`
+                  : `/coaching/${item.slug}`;
+                const categoryLabel = isPhysical
+                  ? (lang === "ar" ? "منتج ملموس" : "Physical product")
+                  : item.category === "diy"
+                  ? (lang === "ar" ? "خطة رقمية" : "DIY plan")
+                  : (lang === "ar" ? "برنامج تدريبي" : "Coaching");
+                const maxReached = item.stock != null && item.qty >= item.stock;
+                const isOutOfStock = item.stock != null && item.stock <= 0;
+
+                return (
+                  <li
+                    key={item.productId}
+                    className="flex gap-4 rounded-2xl border border-ink/10 bg-surface-raised p-3"
+                  >
+                    <div className="grid h-20 w-20 flex-shrink-0 place-items-center overflow-hidden rounded-xl bg-bone-100">
+                      {item.image ? (
+                        <img src={item.image} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="display-serif text-2xl text-forest-700">
+                          {item.title[lang]?.[0] ?? "P"}
+                        </span>
+                      )}
                     </div>
-                    <div className="text-xs text-ink-muted">
-                      {item.category === "diy" ? "DIY plan" : "Coaching"}
-                    </div>
-                    <div className="mt-auto flex items-center justify-between pt-2">
-                      <div className="inline-flex items-center rounded-full border border-ink/10">
+                    <div className="flex flex-1 flex-col">
+                      <div className="flex items-start justify-between gap-2">
+                        <Link
+                          to={linkPath}
+                          onClick={close}
+                          className="text-sm font-semibold leading-snug hover:text-coral-600"
+                        >
+                          {item.title[lang]}
+                        </Link>
                         <button
                           type="button"
-                          onClick={() => updateQty(item.productId, item.qty - 1)}
-                          className="grid h-8 w-8 place-items-center hover:text-coral-600"
-                          aria-label="Decrease"
+                          onClick={() => removeItem(item.productId)}
+                          aria-label="Remove"
+                          className="text-ink-muted hover:text-coral-600"
                         >
-                          <Minus className="h-3 w-3" />
-                        </button>
-                        <span className="w-6 text-center text-sm font-medium">{item.qty}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQty(item.productId, item.qty + 1)}
-                          className="grid h-8 w-8 place-items-center hover:text-coral-600"
-                          aria-label="Increase"
-                        >
-                          <Plus className="h-3 w-3" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
-                      <div className="text-sm font-semibold text-forest-700">
-                        {formatPrice(item.price * item.qty, item.currency)}
+                      <div className="flex items-center gap-2 text-xs text-ink-muted mt-0.5">
+                        <span>{categoryLabel}</span>
+                        {item.stock != null && item.stock > 0 && item.stock <= 5 && (
+                          <span className="font-medium text-coral-600">
+                            ({lang === "ar" ? `متبقي ${item.stock} فقط` : `Only ${item.stock} left`})
+                          </span>
+                        )}
+                        {isOutOfStock && (
+                          <span className="font-medium text-coral-600">
+                            ({lang === "ar" ? "نفدت الكمية" : "Out of stock"})
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-auto flex items-center justify-between pt-2">
+                        <div className="inline-flex items-center rounded-full border border-ink/10">
+                          <button
+                            type="button"
+                            onClick={() => updateQty(item.productId, item.qty - 1)}
+                            className="grid h-8 w-8 place-items-center hover:text-coral-600"
+                            aria-label="Decrease"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
+                          <span className="w-6 text-center text-sm font-medium">{item.qty}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQty(item.productId, item.qty + 1)}
+                            disabled={maxReached}
+                            className={cn(
+                              "grid h-8 w-8 place-items-center transition-opacity",
+                              maxReached ? "cursor-not-allowed opacity-30" : "hover:text-coral-600"
+                            )}
+                            aria-label="Increase"
+                            title={maxReached ? "Maximum stock reached" : "Increase quantity"}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <div className="text-sm font-semibold text-forest-700">
+                          {formatPrice(item.price * item.qty, item.currency)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

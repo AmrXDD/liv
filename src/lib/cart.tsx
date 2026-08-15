@@ -18,6 +18,8 @@ export interface CartItem {
   currency: string;
   image?: string;
   qty: number;
+  stock?: number;
+  requiresShipping?: boolean;
 }
 
 interface CartContextValue {
@@ -26,6 +28,7 @@ interface CartContextValue {
   subtotal: number;
   currency: string;
   isOpen: boolean;
+  hasPhysical: boolean;
   open: () => void;
   close: () => void;
   toggle: () => void;
@@ -64,11 +67,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = useCallback((product: Product, qty = 1) => {
+    if (product.stock != null && product.stock <= 0) {
+      return;
+    }
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id);
+      const isPhysical =
+        product.category === "physical" ||
+        product.format === "Physical" ||
+        product.requiresShipping === true;
+      const maxStock = product.stock != null ? product.stock : 99;
+
       if (existing) {
         return prev.map((i) =>
-          i.productId === product.id ? { ...i, qty: i.qty + qty } : i
+          i.productId === product.id
+            ? { ...i, qty: Math.min(i.qty + qty, maxStock), stock: product.stock }
+            : i
         );
       }
       return [
@@ -81,7 +95,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           price: product.price,
           currency: product.currency,
           image: product.heroImage ?? product.images?.[0],
-          qty,
+          qty: Math.min(qty, maxStock),
+          stock: product.stock,
+          requiresShipping: isPhysical,
         },
       ];
     });
@@ -96,7 +112,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) =>
       qty <= 0
         ? prev.filter((i) => i.productId !== productId)
-        : prev.map((i) => (i.productId === productId ? { ...i, qty } : i))
+        : prev.map((i) => {
+            if (i.productId !== productId) return i;
+            const max = i.stock != null ? i.stock : 99;
+            return { ...i, qty: Math.min(qty, max) };
+          })
     );
   }, []);
 
@@ -106,12 +126,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const count = items.reduce((sum, i) => sum + i.qty, 0);
     const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
     const currency = items[0]?.currency ?? "USD";
+    const hasPhysical = items.some(
+      (i) => i.category === "physical" || i.requiresShipping
+    );
     return {
       items,
       count,
       subtotal,
       currency,
       isOpen,
+      hasPhysical,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
       toggle: () => setIsOpen((o) => !o),

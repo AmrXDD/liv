@@ -231,14 +231,49 @@ create table if not exists orders (
   status       text not null default 'pending', -- pending, paid, fulfilled, cancelled, refunded
   payment_ref  text,
   locale       lf_locale not null default 'en',
+  shipping_address jsonb default null,
+  shipping_line1 text,
+  shipping_line2 text,
+  shipping_city text,
+  shipping_state text,
+  shipping_postal_code text,
+  shipping_country text,
+  has_physical boolean not null default false,
   created_at   timestamptz not null default now(),
   updated_at   timestamptz not null default now()
 );
+alter table orders add column if not exists shipping_address jsonb default null;
+alter table orders add column if not exists shipping_line1 text;
+alter table orders add column if not exists shipping_line2 text;
+alter table orders add column if not exists shipping_city text;
+alter table orders add column if not exists shipping_state text;
+alter table orders add column if not exists shipping_postal_code text;
+alter table orders add column if not exists shipping_country text;
+alter table orders add column if not exists has_physical boolean not null default false;
 create index if not exists orders_email_idx  on orders(lower(email));
 create index if not exists orders_status_idx on orders(status, created_at desc);
 drop trigger if exists trg_orders_updated on orders;
 create trigger trg_orders_updated before update on orders
   for each row execute function lf_set_updated_at();
+
+-- Function to decrement product stock on purchase
+create or replace function public.decrement_product_stock(
+  p_product_id uuid,
+  p_qty integer
+)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update public.products
+  set
+    stock = greatest(0, coalesce(stock, 0) - greatest(1, p_qty)),
+    updated_at = now()
+  where id = p_product_id
+    and (stock is not null);
+end;
+$$;
 
 create table if not exists digital_orders (
   id            uuid primary key default gen_random_uuid(),
