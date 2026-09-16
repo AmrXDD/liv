@@ -61,7 +61,7 @@ export function productShowcaseItems(
 /** Square stage with a gold hairline ring, slow dashed orbit, soft light and sparkles. */
 export function HeroFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("relative mx-auto aspect-square w-full max-w-[480px] lg:me-0", className)}>
+    <div className={cn("relative mx-auto aspect-square w-full max-w-[480px] [container-type:inline-size] lg:me-0", className)}>
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
         <div className="absolute aspect-square w-[96%] rounded-full border border-bone-400/50" />
         <div className="absolute aspect-square w-[78%] rounded-full border border-dashed border-forest-500/25 motion-safe:animate-[spin_90s_linear_infinite]" />
@@ -77,7 +77,7 @@ export function HeroFrame({ children, className }: { children: ReactNode; classN
 
 /**
  * Two images fanned like objects on a table plus a glass card for the
- * featured one. `book` = 2:3 covers with a spine shade; `tile` = square photos/graphics.
+ * featured one. `book` = 2:3 covers with a spine shade; `tile` = images at their own shape.
  */
 export function HeroShowcase({
   items,
@@ -94,15 +94,33 @@ export function HeroShowcase({
   const [featured, second] = items;
   if (!isLoading && !featured) return null;
 
-  const aspect = shape === "book" ? "aspect-[2/3]" : "aspect-square";
-  const radius = shape === "book" ? "rounded-[10px]" : "rounded-[1.1rem]";
+  const isBook = shape === "book";
+  const radius = isBook ? "rounded-[10px]" : "rounded-[1.1rem]";
+  // Books fan side by side at a fixed 2:3. Tiles keep each image's own shape
+  // (plan graphics are full of text, so never crop them) and step diagonally —
+  // back one top-left, front one lower-right — so both headlines stay readable.
+  const layout = isBook
+    ? {
+        back: "left-[10%] top-[15%] w-[44%]",
+        backTilt: "-rotate-[8deg] group-hover:-rotate-[5deg]",
+        front: second ? "right-[10%] top-[9%] w-[46%]" : "left-[27%] top-[9%] w-[46%]",
+        frontTilt: second ? "rotate-[5deg] group-hover:rotate-[2deg]" : "",
+        skeleton: "aspect-[2/3]",
+      }
+    : {
+        back: "left-[3%] top-[7%] w-[54%]",
+        backTilt: "-rotate-[6deg] group-hover:-rotate-[3deg]",
+        front: second ? "right-[3%] top-[27%] w-[54%]" : "left-[20%] top-[14%] w-[60%]",
+        frontTilt: second ? "rotate-[4deg] group-hover:rotate-[2deg]" : "",
+        skeleton: "aspect-[5/4]",
+      };
 
   return (
     <HeroFrame>
       {isLoading ? (
         <>
-          <div className={cn("absolute left-[12%] top-[15%] w-[44%] -rotate-[8deg] animate-pulse bg-bone-200", aspect, radius)} />
-          <div className={cn("absolute right-[12%] top-[9%] w-[46%] rotate-[5deg] animate-pulse bg-bone-300/70", aspect, radius)} />
+          <div className={cn("absolute -rotate-[6deg] animate-pulse bg-bone-200", layout.back, layout.skeleton, radius)} />
+          <div className={cn("absolute rotate-[4deg] animate-pulse bg-bone-300/70", layout.front, layout.skeleton, radius)} />
         </>
       ) : (
         <>
@@ -110,35 +128,24 @@ export function HeroShowcase({
             <Link
               to={second.href}
               aria-label={second.title}
-              className="group absolute left-[10%] top-[15%] w-[44%] motion-safe:animate-floaty [animation-delay:-3s]"
+              className={cn("group absolute motion-safe:animate-floaty [animation-delay:-3s]", layout.back)}
             >
-              <Tile
-                item={second}
-                className={cn(aspect, radius, "-rotate-[8deg] group-hover:-translate-y-2 group-hover:-rotate-[5deg]")}
-                spine={shape === "book"}
-              />
+              <Tile item={second} book={isBook} className={cn(radius, layout.backTilt, "group-hover:-translate-y-2")} />
             </Link>
           )}
           <Link
             to={featured.href}
             aria-label={featured.title}
-            className={cn(
-              "group absolute top-[9%] w-[46%] motion-safe:animate-floaty",
-              second ? "right-[10%]" : "left-[27%]"
-            )}
+            className={cn("group absolute motion-safe:animate-floaty", layout.front)}
           >
-            <Tile
-              item={featured}
-              className={cn(aspect, radius, "group-hover:-translate-y-2", second && "rotate-[5deg] group-hover:rotate-[2deg]")}
-              spine={shape === "book"}
-            />
+            <Tile item={featured} book={isBook} className={cn(radius, layout.frontTilt, "group-hover:-translate-y-2")} />
           </Link>
           <GlassLinkCard
             to={featured.href}
             label={featured.label || fallbackLabel}
             title={featured.title}
             meta={featured.meta}
-            className="absolute bottom-[4%] start-0 w-[78%]"
+            className="absolute bottom-[2%] start-0 z-10 w-[74%]"
           />
         </>
       )}
@@ -146,17 +153,22 @@ export function HeroShowcase({
   );
 }
 
-function Tile({ item, className, spine }: { item: ShowcaseItem; className?: string; spine: boolean }) {
+function Tile({ item, className, book }: { item: ShowcaseItem; className?: string; book: boolean }) {
   return (
     <div
       className={cn(
         "relative overflow-hidden bg-bone-100 ring-1 ring-black/5 transition-transform duration-700 ease-editorial",
         liftShadow,
+        book ? "aspect-[2/3]" : "w-fit max-w-full",
         className
       )}
     >
-      <img src={item.image} alt={item.title} className="absolute inset-0 h-full w-full object-cover" />
-      {spine && (
+      <img
+        src={item.image}
+        alt={item.title}
+        className={book ? "absolute inset-0 h-full w-full object-cover" : "block h-auto max-h-[56cqw] w-auto max-w-full"}
+      />
+      {book && (
         <div className="absolute inset-y-0 left-0 w-[9%] bg-gradient-to-r from-black/30 via-white/15 to-transparent" />
       )}
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/20" />
