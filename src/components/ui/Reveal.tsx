@@ -77,9 +77,10 @@ export function MaskLines({
     const ctx = gsap.context(() => {
       gsap.fromTo(
         node.querySelectorAll(".mask-inner"),
-        { yPercent: 110 },
+        { yPercent: 110, y: 0 },
         {
           yPercent: 0,
+          y: 0,
           duration: 1.1,
           ease: "power3.out",
           stagger: 0.08,

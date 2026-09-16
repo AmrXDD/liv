@@ -271,6 +271,9 @@
 
   /* Reduced motion safety */
   @media (prefers-reduced-motion: reduce) {
+    /* Masked headline words start hidden and only GSAP reveals them. */
+    .coll-word > span,
+    .mask-inner { transform: none !important; }
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;

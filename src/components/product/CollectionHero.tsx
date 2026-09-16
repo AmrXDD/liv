@@ -9,9 +9,13 @@ interface Props {
   lede: string;
   accent?: "forest" | "coral";
   side?: ReactNode;
+  /** Optional row under the lede (CTAs, trust points). */
+  actions?: ReactNode;
+  /** Give the side column more room (e.g. a product visual instead of a card). */
+  wideSide?: boolean;
 }
 
-export function CollectionHero({ eyebrow, title, lede, accent = "forest", side }: Props) {
+export function CollectionHero({ eyebrow, title, lede, accent = "forest", side, actions, wideSide = false }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -25,16 +29,25 @@ export function CollectionHero({ eyebrow, title, lede, accent = "forest", side }
         { y: 0, opacity: 1, duration: 0.7, delay: 0.2 }
       );
       const words = ref.current!.querySelectorAll<HTMLSpanElement>(".coll-word > span");
+      // Pin y to 0: otherwise GSAP reads the translate-y-[110%] class as a px
+      // offset and the words finish still hidden below their mask.
       gsap.fromTo(
         words,
-        { yPercent: 110 },
-        { yPercent: 0, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.3 }
+        { yPercent: 110, y: 0 },
+        { yPercent: 0, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.3 }
       );
       gsap.fromTo(
         "[data-coll-lede]",
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, delay: 0.85 }
       );
+      if (ref.current!.querySelector("[data-coll-actions]")) {
+        gsap.fromTo(
+          "[data-coll-actions]",
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, delay: 1.05 }
+        );
+      }
     }, ref);
     return () => ctx.revert();
   }, []);
@@ -53,7 +66,7 @@ export function CollectionHero({ eyebrow, title, lede, accent = "forest", side }
       </div>
       <Container className="relative">
         <div ref={ref} className="grid gap-10 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
+          <div className={wideSide ? "lg:col-span-7" : "lg:col-span-8"}>
             <div data-coll-eyebrow className="eyebrow mb-6">{eyebrow}</div>
             <h1 className="display-serif text-display-xl tracking-tightest text-balance">
               {title.split(" ").map((w, i) => (
@@ -65,8 +78,13 @@ export function CollectionHero({ eyebrow, title, lede, accent = "forest", side }
             <p data-coll-lede className="mt-8 max-w-2xl text-lg text-ink-muted leading-relaxed">
               {lede}
             </p>
+            {actions && (
+              <div data-coll-actions className="mt-10">
+                {actions}
+              </div>
+            )}
           </div>
-          {side && <div className="lg:col-span-4">{side}</div>}
+          {side && <div className={wideSide ? "lg:col-span-5" : "lg:col-span-4"}>{side}</div>}
         </div>
       </Container>
     </section>

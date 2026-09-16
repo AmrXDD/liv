@@ -42,7 +42,16 @@
     "hero": {
       "eyebrow": "Shop",
       "title": "The LIV Shop",
-      "lede": "Books, tools, and small-batch products Reham makes and uses — built to support your reset."
+      "lede": "Books, tools, and small-batch products Reham makes and uses — built to support your reset.",
+      "cta": "Browse the collection",
+      "featured": "Featured",
+      "from": "From",
+      "view": "View",
+      "trust": {
+        "author": "Written by Reham",
+        "checkout": "Secure checkout",
+        "shipping": "International shipping"
+      }
     }
   },
   "product": {

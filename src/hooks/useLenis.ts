@@ -4,6 +4,23 @@ import { ScrollTrigger, registerGsap } from "@/lib/gsap";
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "@/lib/utils";
 
+let activeLenis: Lenis | null = null;
+
+/**
+ * Smoothly scroll to an element. Goes through Lenis when it is running
+ * (native smooth scrolling gets cancelled by it), otherwise uses the browser.
+ */
+export function smoothScrollTo(target: HTMLElement | string, offset = 0) {
+  const el = typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
+  if (!el) return;
+  if (activeLenis) {
+    activeLenis.scrollTo(el, { offset });
+    return;
+  }
+  const y = el.getBoundingClientRect().top + window.scrollY + offset;
+  window.scrollTo({ top: y, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
+
 /**
  * Smooth-scroll wired to GSAP ScrollTrigger.
  * Mounts once at app root.
@@ -18,6 +35,7 @@ export function useLenis() {
       easing: (t: number) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
     });
+    activeLenis = lenis;
 
     function onScroll() {
       ScrollTrigger.update();
@@ -42,6 +60,7 @@ export function useLenis() {
       window.removeEventListener("load", refresh);
       timers.forEach(clearTimeout);
       lenis.destroy();
+      if (activeLenis === lenis) activeLenis = null;
     };
   }, []);
 }
