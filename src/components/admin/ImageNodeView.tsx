@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
-import { AlignCenter, AlignLeft, AlignRight, Trash2 } from "lucide-react";
-import type { ImageAlign } from "./editorExtensions";
+import { AlignCenter, AlignLeft, AlignRight, Link as LinkIcon, Trash2 } from "lucide-react";
+import { normalizeLinkUrl, type ImageAlign } from "./editorExtensions";
 
 const SIZES = [
   { label: "S", title: "Small (25%)", value: 25 },
@@ -17,15 +17,16 @@ const ALIGNS: { value: ImageAlign; title: string; icon: typeof AlignLeft }[] = [
 ];
 
 /**
- * Editor view for images: click an image to get size presets, alignment, alt
- * text and delete, or drag the corner handle to resize freely.
+ * Editor view for images: click an image to get size presets, alignment, link,
+ * alt text and delete, or drag the corner handle to resize freely.
  */
 export function ImageNodeView({ node, selected, updateAttributes, deleteNode, editor }: NodeViewProps) {
-  const { src, alt, width, align } = node.attrs as {
+  const { src, alt, width, align, href } = node.attrs as {
     src: string;
     alt: string;
     width: number | null;
     align: ImageAlign | null;
+    href: string | null;
   };
   const frameRef = useRef<HTMLDivElement>(null);
   const [dragWidth, setDragWidth] = useState<number | null>(null);
@@ -75,6 +76,15 @@ export function ImageNodeView({ node, selected, updateAttributes, deleteNode, ed
     if (next !== null) updateAttributes({ alt: next.trim() });
   };
 
+  const editLink = () => {
+    const raw = window.prompt("Link this image to (leave blank to remove the link)", href ?? "https://");
+    if (raw === null) return;
+    if (!raw.trim()) return updateAttributes({ href: null });
+    const safe = normalizeLinkUrl(raw);
+    if (safe === null) window.alert("That URL scheme isn't allowed.");
+    else updateAttributes({ href: safe });
+  };
+
   return (
     <NodeViewWrapper className="relative my-6">
       <div
@@ -111,6 +121,12 @@ export function ImageNodeView({ node, selected, updateAttributes, deleteNode, ed
                 (effectiveAlign === "right" ? "-left-2 cursor-nesw-resize" : "-right-2 cursor-nwse-resize")
               }
             />
+            {href && !dragWidth && (
+              <div className="pointer-events-none absolute left-2 top-2 flex max-w-[80%] items-center gap-1 truncate rounded-md bg-ink/80 px-2 py-0.5 text-xs font-semibold text-bone-50">
+                <LinkIcon className="h-3 w-3 shrink-0" />
+                <span className="truncate">{href}</span>
+              </div>
+            )}
             {dragWidth && (
               <div className="pointer-events-none absolute left-1/2 top-2 -translate-x-1/2 rounded-md bg-ink/80 px-2 py-0.5 text-xs font-semibold text-bone-50">
                 {dragWidth}%
@@ -141,6 +157,9 @@ export function ImageNodeView({ node, selected, updateAttributes, deleteNode, ed
             </ControlBtn>
           ))}
           <div className="mx-1 h-5 w-px bg-ink/10" />
+          <ControlBtn title={href ? `Link: ${href}` : "Add link"} active={!!href} onClick={editLink}>
+            <LinkIcon className="h-3.5 w-3.5" />
+          </ControlBtn>
           <ControlBtn title="Alt text" active={false} onClick={editAlt}>
             Alt
           </ControlBtn>
@@ -153,7 +172,7 @@ export function ImageNodeView({ node, selected, updateAttributes, deleteNode, ed
   );
 }
 
-function ControlBtn({
+export function ControlBtn({
   title,
   active,
   onClick,

@@ -278,3 +278,51 @@
     }
   }
 }
+
+/* ------------------------------------------------------------
+   CTA buttons inserted from the WYSIWYG editor. Kept outside
+   @layer so Tailwind never purges the variant classes (they only
+   appear in saved post HTML) and they win over the article's
+   link utilities.
+   ------------------------------------------------------------ */
+.rich-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.85em 1.9em;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+.rich-button.rich-button-primary,
+.rich-button.rich-button-primary:hover {
+  background: #006c45;
+  color: #fbf9f5;
+  text-decoration: none;
+}
+.rich-button.rich-button-primary:hover { background: #005a3a; }
+.rich-button.rich-button-secondary,
+.rich-button.rich-button-secondary:hover {
+  background: #ff5757;
+  color: #fbf9f5;
+  text-decoration: none;
+}
+.rich-button.rich-button-secondary:hover { background: #e64646; }
+.rich-button.rich-button-outline,
+.rich-button.rich-button-outline:hover {
+  border-color: #006c45;
+  color: #006c45;
+  text-decoration: none;
+}
+.rich-button.rich-button-outline:hover {
+  background: #006c45;
+  color: #fbf9f5;
+}
+a.rich-button:hover { transform: translateY(-1px); }
+.rich-content [data-button] { margin: 1.75em 0; }
+/* Linked images shouldn't pick up the underline styling of text links. */
+.rich-content a[data-image-link] { display: block; text-decoration: none; }

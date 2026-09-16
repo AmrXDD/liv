@@ -18,6 +18,7 @@ import {
   Link as LinkIcon,
   Image as ImageIcon,
   Film,
+  MousePointerClick,
   Loader2,
   RemoveFormatting,
   Undo2,
@@ -25,9 +26,11 @@ import {
 } from "lucide-react";
 import {
   BlockFormatting,
+  CtaButton,
   InlineImage,
   LINE_HEIGHTS,
   MediaEmbed,
+  normalizeLinkUrl,
   resolveMediaUrl,
   type TextAlign,
 } from "./editorExtensions";
@@ -73,6 +76,7 @@ export function RichTextEditor({
       BlockFormatting,
       InlineImage,
       MediaEmbed,
+      CtaButton,
     ],
     content: value || "",
     editorProps: {
@@ -190,13 +194,25 @@ function Toolbar({ editor, imageBucket }: { editor: Editor; imageBucket: Bucket 
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
-    // Reject unsafe schemes; auto-prefix bare domains so /blog renders <a> safely.
-    if (/^\s*javascript:/i.test(url) || /^\s*data:/i.test(url) || /^\s*vbscript:/i.test(url)) {
+    const safe = normalizeLinkUrl(url);
+    if (safe === null) {
       window.alert("That URL scheme isn't allowed.");
       return;
     }
-    const safe = /^(https?:|mailto:|tel:|\/|#)/i.test(url) ? url : `https://${url}`;
     editor.chain().focus().extendMarkRange("link").setLink({ href: safe }).run();
+  };
+
+  const insertButton = () => {
+    const text = window.prompt("Button text", "Buy the book →");
+    if (text === null || !text.trim()) return;
+    const raw = window.prompt("Where should the button go? (e.g. https://… or /shop)", "https://");
+    if (raw === null) return;
+    const href = raw.trim() && raw.trim() !== "https://" ? normalizeLinkUrl(raw) : "";
+    if (href === null) {
+      window.alert("That URL scheme isn't allowed.");
+      return;
+    }
+    editor.chain().focus().insertContent({ type: "ctaButton", attrs: { text: text.trim(), href } }).run();
   };
 
   const setBlock = (block: string) => {
@@ -275,6 +291,9 @@ function Toolbar({ editor, imageBucket }: { editor: Editor; imageBucket: Bucket 
       </ToolbarBtn>
       <ToolbarBtn onClick={insertVideo} aria="Insert video">
         <Film className="h-3.5 w-3.5" />
+      </ToolbarBtn>
+      <ToolbarBtn onClick={insertButton} aria="Insert button (with link)">
+        <MousePointerClick className="h-3.5 w-3.5" />
       </ToolbarBtn>
       <input
         ref={fileInput}

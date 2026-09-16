@@ -1,8 +1,24 @@
 import { Extension, Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { ImageNodeView } from "./ImageNodeView";
+import { ButtonNodeView } from "./ButtonNodeView";
 
 export type ImageAlign = "left" | "center" | "right";
+
+/**
+ * Validate a user-typed link. Returns the URL to store, or null for unsafe
+ * schemes. Bare domains get https:// so they don't resolve as relative paths.
+ */
+export function normalizeLinkUrl(raw: string): string | null {
+  const url = raw.trim();
+  if (/^(javascript|data|vbscript):/i.test(url)) return null;
+  return /^(https?:|mailto:|tel:|\/|#)/i.test(url) ? url : `https://${url}`;
+}
+
+/** Link attributes: same-site paths open in the same tab, everything else in a new one. */
+function linkAttrs(href: string): Record<string, string> {
+  return /^[/#]/.test(href) ? { href } : { href, target: "_blank", rel: "noopener noreferrer" };
+}
 
 /** Inline styles for a sized / aligned image in the saved HTML. */
 function imageStyle(width: number | null, align: ImageAlign | null): string {
@@ -46,15 +62,21 @@ export const InlineImage = Node.create({
         },
         renderHTML: () => ({}),
       },
+      // Optional link: the image is saved wrapped in <a>.
+      href: {
+        default: null,
+        parseHTML: (el) => el.closest("a")?.getAttribute("href") || null,
+        renderHTML: () => ({}),
+      },
     };
   },
   parseHTML() {
     return [{ tag: "img[src]" }];
   },
   renderHTML({ node, HTMLAttributes }) {
-    const { width, align } = node.attrs as { width: number | null; align: ImageAlign | null };
+    const { width, align, href } = node.attrs as { width: number | null; align: ImageAlign | null; href: string | null };
     const style = imageStyle(width, align);
-    return [
+    const img = [
       "img",
       mergeAttributes(HTMLAttributes, {
         loading: "lazy",
@@ -62,7 +84,8 @@ export const InlineImage = Node.create({
         ...(align ? { "data-align": align } : {}),
         ...(style ? { style } : {}),
       }),
-    ];
+    ] as const;
+    return href ? ["a", { ...linkAttrs(href), "data-image-link": "" }, img] : img;
   },
   addNodeView() {
     return ReactNodeViewRenderer(ImageNodeView);
@@ -131,6 +154,62 @@ export const BlockFormatting = Extension.create({
         ({ commands }) =>
           FORMATTED_BLOCKS.map((type) => commands.updateAttributes(type, { lineHeight })).some(Boolean),
     };
+  },
+});
+
+export type ButtonVariant = "primary" | "secondary" | "outline";
+
+/**
+ * Call-to-action button (e.g. "Buy the book →"): real text with a link, so
+ * it's crisp, translatable and clickable. Styled by `.rich-button` in index.css.
+ */
+export const CtaButton = Node.create({
+  name: "ctaButton",
+  group: "block",
+  atom: true,
+  draggable: true,
+  addAttributes() {
+    return {
+      text: { default: "" },
+      href: { default: "" },
+      variant: { default: "primary" },
+      align: { default: "center" },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "div[data-button]",
+        getAttrs: (el) => {
+          const e = el as HTMLElement;
+          const a = e.querySelector("a");
+          const variant = e.getAttribute("data-variant");
+          const align = e.getAttribute("data-align");
+          return {
+            text: a?.textContent ?? "",
+            href: a?.getAttribute("href") ?? "",
+            variant: variant === "secondary" || variant === "outline" ? variant : "primary",
+            align: align === "left" || align === "right" ? align : "center",
+          };
+        },
+      },
+    ];
+  },
+  renderHTML({ node }) {
+    const { text, href, variant, align } = node.attrs as {
+      text: string;
+      href: string;
+      variant: ButtonVariant;
+      align: ImageAlign;
+    };
+    return [
+      "div",
+      { "data-button": "", "data-variant": variant, "data-align": align, style: `text-align:${align}` },
+      ["a", { ...linkAttrs(href || "#"), class: `rich-button rich-button-${variant}` }, text],
+    ];
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ButtonNodeView);
   },
 });
 
