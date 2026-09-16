@@ -58,3 +58,14 @@ export async function deleteByPublicUrl(url: string, bucket: Bucket): Promise<vo
     // ignore
   }
 }
+
+/**
+ * Resized variant of a Supabase public image via the image transformation
+ * endpoint. Non-Supabase URLs are returned unchanged.
+ */
+export function resizedImageUrl(url: string, width: number, quality = 75): string {
+  const marker = "/storage/v1/object/public/";
+  if (!url.includes(marker)) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url.replace(marker, "/storage/v1/render/image/public/")}${sep}width=${width}&quality=${quality}`;
+}

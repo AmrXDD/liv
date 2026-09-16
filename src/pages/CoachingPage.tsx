@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Check, HeartHandshake, Languages, UserRound } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions, HeroShowcase, productShowcaseItems } from "@/components/product/HeroShowcase";
 import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { ConversionFunnel } from "@/components/home/ConversionFunnel";
@@ -34,9 +35,27 @@ export function CoachingPage() {
         title={t("coaching.hero.title")}
         lede={t("coaching.hero.lede")}
         accent="coral"
+        wideSide
+        side={
+          <HeroShowcase
+            isLoading={isLoading}
+            items={productShowcaseItems(products, lang, t("heroExtras.from"))}
+            fallbackLabel={t("heroExtras.featured")}
+          />
+        }
+        actions={
+          <HeroActions
+            cta={{ label: t("heroExtras.coaching.cta"), icon: ArrowDown, scrollTo: "coaching-programs" }}
+            points={[
+              { icon: UserRound, label: t("heroExtras.coaching.guided") },
+              { icon: Languages, label: t("heroExtras.coaching.bilingual") },
+              { icon: HeartHandshake, label: t("heroExtras.coaching.personal") },
+            ]}
+          />
+        }
       />
 
-      <Section variant="default" pad="md">
+      <Section id="coaching-programs" variant="default" pad="md">
         <Container>
           <div ref={ref as React.RefObject<HTMLDivElement>} className="space-y-6">
             {isLoading && <div className="text-sm text-ink-muted">Loading…</div>}

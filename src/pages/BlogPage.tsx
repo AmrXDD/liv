@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, BookOpen, Languages, PenLine } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions, HeroShowcase, type ShowcaseItem } from "@/components/product/HeroShowcase";
 import { posts as fallbackPosts } from "@/data/posts";
 import { useBlogPosts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -21,7 +22,7 @@ export function BlogPage() {
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const [active, setActive] = useState<(typeof CATS)[number]>("all");
   const ref = useScrollReveal({ selector: "[data-post]", stagger: 0.1, y: 40 });
-  const { data: dbPosts = [] } = useBlogPosts();
+  const { data: dbPosts = [], isLoading } = useBlogPosts();
   const { close: closeCart } = useCart();
 
   // Defensive: cart drawer is global state above <Routes>. If a mistap on the
@@ -41,6 +42,16 @@ export function BlogPage() {
   }, [active, posts]);
 
   const featured = posts.find((p) => p.featured) ?? posts[0];
+  const showcase: ShowcaseItem[] = posts
+    .filter((p) => p.heroImage)
+    .slice(0, 2)
+    .map((p) => ({
+      id: p.id,
+      image: p.heroImage as string,
+      title: p.title[lang] || p.title[lang === "ar" ? "en" : "ar"],
+      href: `/blog/${p.slug}`,
+      meta: `${p.readingMinutes} ${t("blog.minRead")}`,
+    }));
 
   return (
     <>
@@ -55,10 +66,22 @@ export function BlogPage() {
         title={t("blog.hero.title")}
         lede={t("blog.hero.lede")}
         accent="forest"
+        wideSide
+        side={<HeroShowcase isLoading={isLoading} items={showcase} fallbackLabel={t("heroExtras.latest")} />}
+        actions={
+          <HeroActions
+            cta={{ label: t("heroExtras.blog.cta"), icon: ArrowDown, scrollTo: featured ? "journal" : "journal-list" }}
+            points={[
+              { icon: PenLine, label: t("heroExtras.blog.author") },
+              { icon: Languages, label: t("heroExtras.blog.bilingual") },
+              { icon: BookOpen, label: t("heroExtras.blog.count", { count: posts.length }) },
+            ]}
+          />
+        }
       />
 
       {featured && (
-        <Section variant="default" pad="md">
+        <Section id="journal" variant="default" pad="md">
           <Container>
             <Link
               to={`/blog/${featured.slug}`}
@@ -100,7 +123,7 @@ export function BlogPage() {
         </Section>
       )}
 
-      <Section variant="default" pad="md">
+      <Section id="journal-list" variant="default" pad="md">
         <Container>
           <div className="mb-10 flex flex-wrap items-center gap-2">
             {CATS.map((c) => (

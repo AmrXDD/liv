@@ -1,6 +1,9 @@
 import { useTranslation } from "react-i18next";
+import { ArrowUpRight } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions } from "@/components/product/HeroShowcase";
+import { HeroListCard } from "@/components/product/HeroSideCards";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -25,6 +28,21 @@ export function B2BPage() {
         title={t("static.b2b.title")}
         lede={t("static.b2b.lede")}
         accent="coral"
+        wideSide
+        side={
+          <HeroListCard
+            eyebrow={t("heroExtras.b2b.eyebrow")}
+            rows={[...pillars]
+              .sort((a, b) => (a.tag ?? "").localeCompare(b.tag ?? ""))
+              .map((p) => ({
+                key: p.id,
+                lead: p.tag,
+                title: pick(p.title_en, p.title_ar),
+                href: p.link_url || undefined,
+              }))}
+          />
+        }
+        actions={<HeroActions cta={{ label: t("heroExtras.b2b.cta"), icon: ArrowUpRight, to: "/contact" }} />}
       />
 
       <Section variant="default" pad="md">

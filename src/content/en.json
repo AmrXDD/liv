@@ -38,15 +38,62 @@
     "terms": "Terms",
     "shop": "Shop"
   },
+  "heroExtras": {
+    "from": "From",
+    "featured": "Featured",
+    "latest": "Latest article",
+    "diy": {
+      "cta": "Browse the plans",
+      "download": "Instant PDF download",
+      "pace": "Self-paced",
+      "forever": "Yours forever"
+    },
+    "coaching": {
+      "cta": "Explore the programs",
+      "guided": "Guided by Reham",
+      "bilingual": "English & Arabic",
+      "personal": "Built around your life"
+    },
+    "blog": {
+      "cta": "Read the journal",
+      "author": "Written by Reham",
+      "bilingual": "English & Arabic",
+      "count": "{{count}} articles"
+    },
+    "recommended": {
+      "cta": "See the full list",
+      "shelf": "On our shelf",
+      "affiliate": "affiliate"
+    },
+    "contact": {
+      "cta": "Send a message",
+      "eyebrow": "Prefer to chat?",
+      "whatsapp": "WhatsApp",
+      "whatsappMeta": "Message us directly",
+      "instagram": "Instagram",
+      "instagramMeta": "@livfunctional",
+      "consult": "Free consultation",
+      "consultMeta": "Book a call with Reham"
+    },
+    "whyUs": {
+      "cta": "Book a free consultation",
+      "name": "Reham Alsharif",
+      "role": "Functional Nutrition Coach"
+    },
+    "b2b": {
+      "cta": "Start a conversation",
+      "eyebrow": "What we offer"
+    },
+    "collection": {
+      "cta": "View the collection"
+    }
+  },
   "shop": {
     "hero": {
       "eyebrow": "Shop",
       "title": "The LIV Shop",
       "lede": "Books, tools, and small-batch products Reham makes and uses — built to support your reset.",
       "cta": "Browse the collection",
-      "featured": "Featured",
-      "from": "From",
-      "view": "View",
       "trust": {
         "author": "Written by Reham",
         "checkout": "Secure checkout",

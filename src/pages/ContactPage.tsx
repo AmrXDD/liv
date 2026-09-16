@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ArrowDown, CalendarHeart, Instagram, MessageCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SEO } from "@/components/seo/SEO";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions } from "@/components/product/HeroShowcase";
+import { HeroListCard } from "@/components/product/HeroSideCards";
+import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -62,8 +66,38 @@ export function ContactPage() {
         eyebrow={t("nav.contact")}
         title={t("static.contact.title")}
         lede={t("static.contact.lede")}
+        wideSide
+        side={
+          <HeroListCard
+            eyebrow={t("heroExtras.contact.eyebrow")}
+            rows={[
+              {
+                key: "whatsapp",
+                lead: <MessageCircle className="h-4 w-4" />,
+                title: t("heroExtras.contact.whatsapp"),
+                meta: t("heroExtras.contact.whatsappMeta"),
+                href: `https://wa.me/${WHATSAPP_PHONE}`,
+              },
+              {
+                key: "instagram",
+                lead: <Instagram className="h-4 w-4" />,
+                title: t("heroExtras.contact.instagram"),
+                meta: t("heroExtras.contact.instagramMeta"),
+                href: "https://www.instagram.com/livfunctional/",
+              },
+              {
+                key: "consult",
+                lead: <CalendarHeart className="h-4 w-4" />,
+                title: t("heroExtras.contact.consult"),
+                meta: t("heroExtras.contact.consultMeta"),
+                href: "/consultations",
+              },
+            ]}
+          />
+        }
+        actions={<HeroActions cta={{ label: t("heroExtras.contact.cta"), icon: ArrowDown, scrollTo: "contact-form" }} />}
       />
-      <Section variant="default" pad="md">
+      <Section id="contact-form" variant="default" pad="md">
         <Container>
           <form
             onSubmit={handleSubmit(onSubmit)}

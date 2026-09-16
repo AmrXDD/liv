@@ -50,7 +50,9 @@ export function CollectionHero({ eyebrow, title, lede, accent = "forest", side, 
       }
     }, ref);
     return () => ctx.revert();
-  }, []);
+    // Re-run when the copy changes: admin-edited text loads after first paint,
+    // and words added by it would otherwise stay hidden below their mask.
+  }, [title, lede, !!actions]);
 
   return (
     <section className="relative isolate overflow-hidden bg-editorial pb-24 pt-12 md:pt-20">

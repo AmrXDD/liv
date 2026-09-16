@@ -1,7 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions } from "@/components/product/HeroShowcase";
+import { HeroListCard } from "@/components/product/HeroSideCards";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -29,8 +31,26 @@ export function RecommendedProductsPage() {
         eyebrow={t("nav.recommended")}
         title={t("static.recommended.title")}
         lede={t("static.recommended.lede")}
+        wideSide
+        side={
+          <HeroListCard
+            eyebrow={t("heroExtras.recommended.shelf")}
+            rows={items.slice(0, 4).map((it, i) => ({
+              key: it.id,
+              lead: String(i + 1).padStart(2, "0"),
+              title: pick(it.name_en, it.name_ar),
+              meta: pick(it.category_en ?? "", it.category_ar) || undefined,
+              href: it.url || undefined,
+            }))}
+          />
+        }
+        actions={
+          items.length > 0 ? (
+            <HeroActions cta={{ label: t("heroExtras.recommended.cta"), icon: ArrowDown, scrollTo: "recommended-list" }} />
+          ) : undefined
+        }
       />
-      <Section variant="default" pad="md">
+      <Section id="recommended-list" variant="default" pad="md">
         <Container>
           {isLoading ? (
             <p className="text-sm text-ink-muted">Loading…</p>

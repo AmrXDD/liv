@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { DOCK_NAV } from "@/lib/navConfig";
 
-const PHONE = "96595597962";
+export const WHATSAPP_PHONE = "96595597962";
 
 /** Official WhatsApp glyph (phone in a speech bubble). */
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -18,7 +18,7 @@ export function WhatsAppFab() {
   const label = t("whatsapp.label", { defaultValue: "Chat on WhatsApp" });
   return (
     <a
-      href={`https://wa.me/${PHONE}`}
+      href={`https://wa.me/${WHATSAPP_PHONE}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}

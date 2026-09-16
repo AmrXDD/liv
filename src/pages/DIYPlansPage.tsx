@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowDown, Clock, Download, Infinity as InfinityIcon } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions, HeroShowcase, productShowcaseItems } from "@/components/product/HeroShowcase";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
@@ -11,7 +13,8 @@ import { useProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export function DIYPlansPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const ref = useScrollReveal({ selector: "[data-prod]", stagger: 0.1, y: 50 });
   const { data: products = [], isLoading } = useProducts("diy");
 
@@ -29,9 +32,27 @@ export function DIYPlansPage() {
         title={t("diy.hero.title")}
         lede={t("diy.hero.lede")}
         accent="forest"
+        wideSide
+        side={
+          <HeroShowcase
+            isLoading={isLoading}
+            items={productShowcaseItems(products, lang, t("heroExtras.from"))}
+            fallbackLabel={t("heroExtras.featured")}
+          />
+        }
+        actions={
+          <HeroActions
+            cta={{ label: t("heroExtras.diy.cta"), icon: ArrowDown, scrollTo: "diy-plans" }}
+            points={[
+              { icon: Download, label: t("heroExtras.diy.download") },
+              { icon: Clock, label: t("heroExtras.diy.pace") },
+              { icon: InfinityIcon, label: t("heroExtras.diy.forever") },
+            ]}
+          />
+        }
       />
 
-      <Section variant="default" pad="md">
+      <Section id="diy-plans" variant="default" pad="md">
         <Container>
           <div ref={ref as React.RefObject<HTMLDivElement>} className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             {isLoading && (

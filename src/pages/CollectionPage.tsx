@@ -1,9 +1,11 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowDown } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CollectionHero } from "@/components/product/CollectionHero";
+import { HeroActions, HeroShowcase, productShowcaseItems } from "@/components/product/HeroShowcase";
 import { ProductCard } from "@/components/product/ProductCard";
 import { useCollection } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -43,9 +45,22 @@ export function CollectionPage() {
         title={collection.title[lang]}
         lede={collection.description?.[lang] ?? ""}
         accent={collection.accent === "coral" ? "coral" : "forest"}
+        wideSide
+        side={
+          <HeroShowcase
+            isLoading={false}
+            items={productShowcaseItems(products, lang, t("heroExtras.from"))}
+            fallbackLabel={t("heroExtras.featured")}
+          />
+        }
+        actions={
+          products.length > 0 ? (
+            <HeroActions cta={{ label: t("heroExtras.collection.cta"), icon: ArrowDown, scrollTo: "collection-products" }} />
+          ) : undefined
+        }
       />
 
-      <Section variant="default" pad="md">
+      <Section id="collection-products" variant="default" pad="md">
         <Container>
           <div
             ref={ref as React.RefObject<HTMLDivElement>}
