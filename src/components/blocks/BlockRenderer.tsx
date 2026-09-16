@@ -56,7 +56,7 @@ export function BlockRenderer({ block }: { block: Block }) {
           <div
             dir={lang === "ar" ? "rtl" : "ltr"}
             className={cn(
-              "prose prose-neutral max-w-3xl [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600",
+              "rich-content max-w-3xl [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600",
               block.align === "center" && "mx-auto text-center"
             )}
             dangerouslySetInnerHTML={{ __html: block.html[lang] || "" }}

@@ -1,9 +1,23 @@
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Extension, Node, mergeAttributes } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { ImageNodeView } from "./ImageNodeView";
+
+export type ImageAlign = "left" | "center" | "right";
+
+/** Inline styles for a sized / aligned image in the saved HTML. */
+function imageStyle(width: number | null, align: ImageAlign | null): string {
+  const parts: string[] = [];
+  if (width) parts.push(`width:${width}%`);
+  if (align === "left") parts.push("margin-left:0", "margin-right:auto");
+  if (align === "right") parts.push("margin-left:auto", "margin-right:0");
+  if (align === "center") parts.push("margin-left:auto", "margin-right:auto");
+  return parts.join(";");
+}
 
 /**
- * Inline image node for the WYSIWYG editor. Stores a plain <img> so the public
- * blog/page renderers (which inject the saved HTML) display it with no extra
- * styling wiring — the prose classes already size images responsively.
+ * Inline image node for the WYSIWYG editor. Stores a plain <img> (with inline
+ * width / alignment styles) so the public blog/page renderers, which inject the
+ * saved HTML, display it exactly as sized in the editor.
  */
 export const InlineImage = Node.create({
   name: "image",
@@ -14,13 +28,109 @@ export const InlineImage = Node.create({
     return {
       src: { default: null },
       alt: { default: "" },
+      // Percentage of the content column; null = natural size (capped at 100%).
+      width: {
+        default: null,
+        parseHTML: (el) => {
+          const raw = el.getAttribute("data-width") || el.style.width.match(/^(\d+(?:\.\d+)?)%$/)?.[1];
+          const n = raw ? Math.round(Number(raw)) : NaN;
+          return n >= 10 && n <= 100 ? n : null;
+        },
+        renderHTML: () => ({}),
+      },
+      align: {
+        default: null,
+        parseHTML: (el) => {
+          const a = el.getAttribute("data-align");
+          return a === "left" || a === "center" || a === "right" ? a : null;
+        },
+        renderHTML: () => ({}),
+      },
     };
   },
   parseHTML() {
     return [{ tag: "img[src]" }];
   },
-  renderHTML({ HTMLAttributes }) {
-    return ["img", mergeAttributes(HTMLAttributes, { loading: "lazy" })];
+  renderHTML({ node, HTMLAttributes }) {
+    const { width, align } = node.attrs as { width: number | null; align: ImageAlign | null };
+    const style = imageStyle(width, align);
+    return [
+      "img",
+      mergeAttributes(HTMLAttributes, {
+        loading: "lazy",
+        ...(width ? { "data-width": String(width) } : {}),
+        ...(align ? { "data-align": align } : {}),
+        ...(style ? { style } : {}),
+      }),
+    ];
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageNodeView);
+  },
+});
+
+export type TextAlign = "left" | "center" | "right" | "justify";
+const TEXT_ALIGNS: TextAlign[] = ["left", "center", "right", "justify"];
+
+/** Line-spacing presets offered in the toolbar (CSS line-height values). */
+export const LINE_HEIGHTS = [
+  { value: "1.3", label: "Compact" },
+  { value: "2", label: "Relaxed" },
+  { value: "2.5", label: "Double" },
+] as const;
+const LINE_HEIGHT_VALUES: string[] = LINE_HEIGHTS.map((l) => l.value);
+
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    blockFormatting: {
+      setTextAlign: (align: TextAlign | null) => ReturnType;
+      setLineHeight: (lineHeight: string | null) => ReturnType;
+    };
+  }
+}
+
+const FORMATTED_BLOCKS = ["paragraph", "heading"];
+
+/**
+ * Paragraph-level formatting: text alignment and line spacing, stored as
+ * inline styles on <p>/<h2>/<h3> so they carry over to the public pages.
+ */
+export const BlockFormatting = Extension.create({
+  name: "blockFormatting",
+  addGlobalAttributes() {
+    return [
+      {
+        types: FORMATTED_BLOCKS,
+        attributes: {
+          textAlign: {
+            default: null,
+            parseHTML: (el) => {
+              const a = el.style.textAlign as TextAlign;
+              return TEXT_ALIGNS.includes(a) ? a : null;
+            },
+            renderHTML: (attrs) => (attrs.textAlign ? { style: `text-align:${attrs.textAlign}` } : {}),
+          },
+          lineHeight: {
+            default: null,
+            // Only keep our presets — pasted Google Docs / Word line-heights are dropped.
+            parseHTML: (el) => (LINE_HEIGHT_VALUES.includes(el.style.lineHeight) ? el.style.lineHeight : null),
+            renderHTML: (attrs) => (attrs.lineHeight ? { style: `line-height:${attrs.lineHeight}` } : {}),
+          },
+        },
+      },
+    ];
+  },
+  addCommands() {
+    return {
+      setTextAlign:
+        (align) =>
+        ({ commands }) =>
+          FORMATTED_BLOCKS.map((type) => commands.updateAttributes(type, { textAlign: align })).some(Boolean),
+      setLineHeight:
+        (lineHeight) =>
+        ({ commands }) =>
+          FORMATTED_BLOCKS.map((type) => commands.updateAttributes(type, { lineHeight })).some(Boolean),
+    };
   },
 });
 

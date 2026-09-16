@@ -183,6 +183,92 @@
     color: transparent;
   }
 
+  /* ------------------------------------------------------------
+     Rich content — HTML written in the admin WYSIWYG editor.
+     Shared by the editor itself and the public renderers (blog
+     posts, rich text page blocks) so what you see while editing
+     is what gets published.
+     ------------------------------------------------------------ */
+  .rich-content {
+    line-height: 1.75;
+  }
+  .rich-content > :first-child { margin-top: 0; }
+  .rich-content > :last-child { margin-bottom: 0; }
+  .rich-content p { margin: 0 0 1em; }
+  /* Blank lines (pressing Enter twice) are saved as <p></p>. Give them a
+     line's height so the extra space survives on the published page. */
+  .rich-content p:empty::before { content: "\00a0"; }
+  /* …except the empty paragraph the editor always keeps at the very end. */
+  .rich-content > p:empty:last-child::before { content: none; }
+  .rich-content h2 {
+    margin: 1.6em 0 0.6em;
+    font-size: 1.6em;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .rich-content h3 {
+    margin: 1.4em 0 0.5em;
+    font-size: 1.3em;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .rich-content strong,
+  .rich-content b { font-weight: 700; }
+  .rich-content em,
+  .rich-content i { font-style: italic; }
+  .rich-content u { text-decoration: underline; }
+  .rich-content s { text-decoration: line-through; }
+  .rich-content ul,
+  .rich-content ol {
+    margin: 0 0 1em;
+    padding-inline-start: 1.5em;
+  }
+  .rich-content ul { list-style: disc; }
+  .rich-content ol { list-style: decimal; }
+  .rich-content li { margin: 0.25em 0; }
+  .rich-content li > p { margin: 0; }
+  .rich-content blockquote {
+    margin: 1.5em 0;
+    padding-inline-start: 1em;
+    border-inline-start: 3px solid #006c45;
+    color: #3a4a44;
+    font-style: italic;
+  }
+  .rich-content hr {
+    margin: 2em 0;
+    border: 0;
+    border-top: 1px solid rgba(10, 22, 18, 0.12);
+  }
+  .rich-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5em auto;
+    border-radius: 0.75rem;
+  }
+  /* Images sized small for desktop would be thumbnail-tiny on phones. */
+  @media (max-width: 640px) {
+    .rich-content img[data-width] { min-width: 60%; }
+  }
+  .rich-content code {
+    padding: 0.1em 0.35em;
+    border-radius: 0.35em;
+    background: #f1ede4;
+    font-size: 0.9em;
+  }
+
+  /* Editor-only affordances */
+  .rich-content.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: inline-start;
+    height: 0;
+    color: rgba(10, 22, 18, 0.35);
+    pointer-events: none;
+  }
+  .rich-content.ProseMirror hr.ProseMirror-selectednode {
+    border-top-color: #006c45;
+  }
+
   /* Reduced motion safety */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

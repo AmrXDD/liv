@@ -158,7 +158,7 @@ export function BlogPostPage() {
 
           {body ? (
             <article
-              className="mx-auto mt-12 w-full max-w-2xl prose prose-lg leading-relaxed break-words [overflow-wrap:anywhere] [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl [&_iframe]:max-w-full [&_iframe]:w-full [&_video]:max-w-full [&_video]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_code]:break-words [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto"
+              className="mx-auto mt-12 w-full max-w-2xl rich-content text-lg break-words [overflow-wrap:anywhere] [&_a]:text-forest-700 [&_a]:underline [&_a:hover]:text-coral-600 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl [&_iframe]:max-w-full [&_iframe]:w-full [&_video]:max-w-full [&_video]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_code]:break-words [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto"
               dir={bodyDir === "ar" ? "rtl" : "ltr"}
               dangerouslySetInnerHTML={{ __html: body }}
             />
