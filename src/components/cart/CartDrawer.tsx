@@ -79,7 +79,7 @@ export function CartDrawer() {
               </div>
               <p className="mb-6 max-w-xs text-sm text-ink-muted">
                 {t("cart.emptyHint", {
-                  defaultValue: "Browse our DIY plans and coaching to get started.",
+                  defaultValue: "Browse our self-guided programs and coaching to get started.",
                 })}
               </p>
               <Link
@@ -102,7 +102,7 @@ export function CartDrawer() {
                 const categoryLabel = isPhysical
                   ? (lang === "ar" ? "منتج ملموس" : "Physical product")
                   : item.category === "diy"
-                  ? (lang === "ar" ? "خطة رقمية" : "DIY plan")
+                  ? (lang === "ar" ? "خطة رقمية" : "Self-guided program")
                   : (lang === "ar" ? "برنامج تدريبي" : "Coaching");
                 const maxReached = item.stock != null && item.qty >= item.stock;
                 const isOutOfStock = item.stock != null && item.stock <= 0;

@@ -152,7 +152,7 @@ export function Footer() {
             <SocialIcon href="https://www.instagram.com/livfunctional/" label="Instagram">
               <Instagram className="h-4 w-4" />
             </SocialIcon>
-            <SocialIcon href="https://www.facebook.com/livfunctional/" label="Facebook">
+            <SocialIcon href="https://www.facebook.com/liv.lowcarb/" label="Facebook">
               <Facebook className="h-4 w-4" />
             </SocialIcon>
             <SocialIcon href="https://x.com/livfunctional" label="X">

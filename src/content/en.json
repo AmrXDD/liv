@@ -15,7 +15,7 @@
     "error": "Couldn't submit. Try again?"
   },
   "nav": {
-    "diy": "DIY Plans",
+    "diy": "Self-Guided Programs",
     "consultations": "Consultations",
     "coaching": "Coaching",
     "about": "About",
@@ -149,7 +149,7 @@
     "items": [
       {
         "tag": "01",
-        "title": "DIY plans",
+        "title": "Self-guided programs",
         "summary": "Downloadable, clinician-built protocols you can run from home.",
         "outcome": "Move from overwhelm to a structured 30-day reset.",
         "href": "/diy-plans"
@@ -191,7 +191,7 @@
     "title": "Four steps from stuck to systemized.",
     "steps": [
       { "n": "01", "title": "Free 45-min call", "body": "We listen, we don't sell. You leave with a next step." },
-      { "n": "02", "title": "Choose your path", "body": "DIY plan, coaching program, or hybrid — your pace." },
+      { "n": "02", "title": "Choose your path", "body": "Self-guided program, coaching program, or hybrid — your pace." },
       { "n": "03", "title": "Run the protocol", "body": "Weekly check-ins, structured habits, measurable wins." },
       { "n": "04", "title": "Live functional", "body": "You graduate with skills you keep — not a subscription you forget." }
     ]
@@ -200,7 +200,7 @@
     "eyebrow": "Start today",
     "title": "Featured plans",
     "lede": "Hand-picked, downloadable protocols.",
-    "viewAll": "View all DIY plans"
+    "viewAll": "View all self-guided programs"
   },
   "blogPreview": {
     "eyebrow": "Field notes",
@@ -224,7 +224,7 @@
   },
   "diy": {
     "hero": {
-      "eyebrow": "DIY plans",
+      "eyebrow": "Self-guided programs",
       "title": "Clinician-built. Self-paced. Yours forever.",
       "lede": "Downloadable PDF protocols designed to deliver one focused outcome each. Buy once, run forever."
     },

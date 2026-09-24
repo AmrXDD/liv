@@ -17,7 +17,7 @@ export function HomePage() {
     <>
       <SEO
         title={`${t("brand.name")} — ${t("brand.tagline")}`}
-        description="Bilingual functional wellness studio offering DIY plans, 1:1 coaching, and free consultations grounded in functional medicine and behavior change."
+        description="Bilingual functional wellness studio offering self-guided programs, 1:1 coaching, and free consultations grounded in functional medicine and behavior change."
         path="/"
         schema={{
           "@context": "https://schema.org",
