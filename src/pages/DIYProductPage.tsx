@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { MedicalDisclaimer } from "@/components/ui/MedicalDisclaimer";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { useProduct } from "@/lib/queries";
 import { formatPrice } from "@/lib/utils";
@@ -198,6 +199,8 @@ export function DIYProductPage() {
                   <BadgeCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-forest-600" strokeWidth={2} />
                   <span>{t("product.trust")}</span>
                 </div>
+
+                <MedicalDisclaimer className="mt-3" />
 
                 <div className="mt-6 flex flex-wrap gap-2 text-xs text-ink-muted">
                   {isPhysical ? (

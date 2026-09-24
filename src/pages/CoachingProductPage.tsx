@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { useProduct } from "@/lib/queries";
 import { formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
+import { MedicalDisclaimer } from "@/components/ui/MedicalDisclaimer";
 
 export function CoachingProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -157,6 +158,8 @@ export function CoachingProductPage() {
                         "Every program starts with a free 45-minute discovery call.",
                     })}
                   </p>
+
+                  <MedicalDisclaimer className="mt-3 text-bone-200/70" />
                 </div>
               </div>
             </aside>
