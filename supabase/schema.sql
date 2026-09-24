@@ -264,6 +264,7 @@ create or replace function public.decrement_product_stock(
 returns void
 language plpgsql
 security definer
+set search_path = public
 as $$
 begin
   update public.products
@@ -274,6 +275,11 @@ begin
     and (stock is not null);
 end;
 $$;
+
+-- Only the Stripe webhook (service role) may call this; revoke the default
+-- PUBLIC grant so the anon/authenticated API keys cannot change stock.
+revoke all on function public.decrement_product_stock(uuid, integer) from public, anon, authenticated;
+grant execute on function public.decrement_product_stock(uuid, integer) to service_role;
 
 create table if not exists digital_orders (
   id            uuid primary key default gen_random_uuid(),

@@ -24,12 +24,10 @@ create index if not exists digital_orders_session_idx on digital_orders(stripe_s
 
 -- =============================================================
 -- RLS HARDENING
--- The success page needs to read the row it just paid for, but only
--- that one. The Stripe checkout session id is a >40 char unguessable
--- secret returned in the redirect URL — we use it as the read key.
--- Without `stripe_session_id is not null` the policy could match all
--- legacy rows, so we require both that the column is set AND that
--- the request supplies it via .eq('stripe_session_id', ...).
+-- The success page reads only the order it just paid for, through the
+-- get_order_confirmation(session_id) RPC keyed on the unguessable Stripe
+-- checkout session id. There is no public SELECT policy on orders or
+-- digital_orders.
 -- =============================================================
 
 -- Drop legacy permissive policies if any
@@ -43,17 +41,8 @@ create policy "digital_orders service insert"
   on digital_orders for insert
   with check (auth.role() = 'service_role');
 
--- Anon (and any client) may select rows, but only when the row's
--- stripe_session_id is set. The supabase-js query MUST filter by
--- .eq('stripe_session_id', '<id from URL>'); without that filter
--- the query returns nothing useful since we don't expose listing.
--- Combined with download_expires_at this gives bounded exposure.
-create policy "digital_orders read by session"
-  on digital_orders for select
-  using (
-    stripe_session_id is not null
-    and (download_expires_at is null or download_expires_at > now())
-  );
+-- No public SELECT policy: the success page reads its order through the
+-- get_order_confirmation(session_id) RPC (see security_fix_orders_2026_09_23.sql).
 
 -- Admins (any authenticated user) full access.
 create policy "digital_orders admin"
@@ -80,11 +69,8 @@ create policy "orders admin"
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
 
--- Allow customer to read their own order summary on success page via stripe_session_id
-drop policy if exists "orders read by session" on orders;
-create policy "orders read by session"
-  on orders for select
-  using (stripe_session_id is not null);
+-- No public SELECT policy: the success page reads its order through the
+-- get_order_confirmation(session_id) RPC (see security_fix_orders_2026_09_23.sql).
 
 -- ---------- CONTACTS / BOOKINGS / NEWSLETTER (small hardening) ----------
 -- Keep anon insert (forms still work) but prevent anon SELECT explicitly

@@ -51,6 +51,7 @@ create or replace function public.decrement_product_stock(
 returns void
 language plpgsql
 security definer
+set search_path = public
 as $$
 begin
   update public.products
@@ -62,18 +63,13 @@ begin
 end;
 $$;
 
--- Grant execute permissions to service role and authenticated users
+-- Only the Stripe webhook (service role) may call this; revoke the default
+-- PUBLIC grant so the anon/authenticated API keys cannot change stock.
+revoke all on function public.decrement_product_stock(uuid, integer) from public, anon, authenticated;
 grant execute on function public.decrement_product_stock(uuid, integer) to service_role;
-grant execute on function public.decrement_product_stock(uuid, integer) to authenticated;
 
--- 5. RLS: Allow customers to read their own order details on the success page
--- by filtering on the unguessable stripe_session_id returned by Stripe redirect.
-drop policy if exists "orders read by session" on public.orders;
-create policy "orders read by session"
-  on public.orders for select
-  using (
-    stripe_session_id is not null
-  );
+-- No public SELECT policy: the success page reads its order through the
+-- get_order_confirmation(session_id) RPC (see security_fix_orders_2026_09_23.sql).
 
 -- Refresh schema cache notification
 notify pgrst, 'reload schema';
