@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { HomePage } from "@/pages/HomePage";
 import { DIYPlansPage } from "@/pages/DIYPlansPage";
@@ -44,6 +44,7 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function App() {
   return (
@@ -52,8 +53,11 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
 
-        <Route path="/diy-plans" element={<DIYPlansPage />} />
-        <Route path="/diy-plans/:slug" element={<DIYProductPage />} />
+        <Route path={SELF_GUIDED_PATH} element={<DIYPlansPage />} />
+        <Route path={`${SELF_GUIDED_PATH}/:slug`} element={<DIYProductPage />} />
+        {/* Old /diy-plans addresses (also 301-redirected in vercel.json) */}
+        <Route path="/diy-plans" element={<Navigate to={SELF_GUIDED_PATH} replace />} />
+        <Route path="/diy-plans/:slug" element={<LegacyDiyRedirect />} />
 
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/shop/:slug" element={<DIYProductPage />} />
@@ -125,4 +129,9 @@ export function App() {
       </Route>
     </Routes>
   );
+}
+
+function LegacyDiyRedirect() {
+  const { slug = "" } = useParams();
+  return <Navigate to={`${SELF_GUIDED_PATH}/${slug}`} replace />;
 }

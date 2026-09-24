@@ -12,6 +12,7 @@ import { useProduct } from "@/lib/queries";
 import { formatPrice } from "@/lib/utils";
 import { productSchema, buildCanonical } from "@/lib/seo";
 import { useCart } from "@/lib/cart";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 /**
  * Product detail page for digital (DIY plans / books) and physical (shop)
@@ -35,10 +36,10 @@ export function DIYProductPage() {
       </Section>
     );
   }
-  if (!product) return <Navigate to="/diy-plans" replace />;
+  if (!product) return <Navigate to={SELF_GUIDED_PATH} replace />;
 
   const isPhysical = product.category === "physical" || product.format === "Physical";
-  const basePath = isPhysical ? "/shop" : "/diy-plans";
+  const basePath = isPhysical ? "/shop" : SELF_GUIDED_PATH;
   const cover = product.heroImage ?? product.images?.[0];
   const gallery = (product.images ?? []).filter((src) => src !== cover).slice(0, 4);
   const hasOutcomes = (product.outcomes?.length ?? 0) > 0;

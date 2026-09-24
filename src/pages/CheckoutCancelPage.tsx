@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SEO } from "@/components/seo/SEO";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function CheckoutCancelPage() {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ export function CheckoutCancelPage() {
                 Return to checkout
               </Link>
               <Link
-                to="/diy-plans"
+                to={SELF_GUIDED_PATH}
                 className="inline-flex rounded-full border border-ink/15 px-6 py-3 text-sm font-semibold hover:bg-bone-100"
               >
                 Keep browsing

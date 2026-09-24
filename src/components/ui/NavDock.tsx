@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ClipboardList, CalendarHeart, HeartHandshake, BookOpen, Info } from "lucide-react";
 import { Dock, type DockItemData } from "./Dock";
+import { SELF_GUIDED_PATH, isSelfGuidedPath } from "@/lib/routes";
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(false);
@@ -40,8 +41,8 @@ export function NavDock() {
       icon: <ClipboardList />,
       label: t("nav.diy"),
       ariaLabel: t("nav.diy"),
-      active: pathname.startsWith("/diy-plans"),
-      onClick: () => nav("/diy-plans"),
+      active: isSelfGuidedPath(pathname),
+      onClick: () => nav(SELF_GUIDED_PATH),
     },
     {
       icon: <CalendarHeart />,

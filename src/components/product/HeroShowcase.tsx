@@ -5,6 +5,7 @@ import type { Product } from "@/types";
 import { cn, formatPrice } from "@/lib/utils";
 import { useDirection } from "@/hooks/useDirection";
 import { smoothScrollTo } from "@/hooks/useLenis";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 /* ------------------------------------------------------------------
    Shared "luxury" pieces for the right-hand side of CollectionHero:
@@ -29,7 +30,7 @@ export interface ShowcaseItem {
 /** Public URL for a product, by category. */
 export function productHref(p: Product): string {
   if (p.category === "physical") return `/shop/${p.slug}`;
-  if (p.category === "diy") return `/diy-plans/${p.slug}`;
+  if (p.category === "diy") return `${SELF_GUIDED_PATH}/${p.slug}`;
   return `/coaching/${p.slug}`;
 }
 

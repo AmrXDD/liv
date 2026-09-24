@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 import type { Block, Locale } from "@/types";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 function useLang(): Locale {
   const { i18n } = useTranslation();
@@ -150,7 +151,7 @@ function ProductGridBlockRenderer({
         {products.map((p) => (
           <Link
             key={p.id}
-            to={p.category === "diy" ? `/diy-plans/${p.slug}` : `/coaching/${p.slug}`}
+            to={p.category === "diy" ? `${SELF_GUIDED_PATH}/${p.slug}` : `/coaching/${p.slug}`}
           >
             <ProductCard product={p} />
           </Link>

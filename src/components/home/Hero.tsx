@@ -9,6 +9,7 @@ import { MedicalDisclaimer } from "@/components/ui/MedicalDisclaimer";
 import { BloodSugarAnimation } from "./BloodSugarAnimation";
 import { useDirection } from "@/hooks/useDirection";
 import { cn } from "@/lib/utils";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function Hero() {
   const { t } = useTranslation();
@@ -158,7 +159,7 @@ export function Hero() {
                 <MagneticButton to="/consultations">{t("cta.primary")}</MagneticButton>
               </div>
               <div data-hero-cta>
-                <Button to="/diy-plans" variant="ghost" arrow>
+                <Button to={SELF_GUIDED_PATH} variant="ghost" arrow>
                   {t("cta.secondary")}
                 </Button>
               </div>

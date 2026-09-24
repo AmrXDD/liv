@@ -11,6 +11,7 @@ import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { useProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function DIYPlansPage() {
   const { t, i18n } = useTranslation();
@@ -23,7 +24,7 @@ export function DIYPlansPage() {
       <SEO
         title={t("diy.hero.title")}
         description={t("diy.hero.lede")}
-        path="/diy-plans"
+        path={SELF_GUIDED_PATH}
         keywords="10 day reset plan, insulin sensitivity reset, insulin resistance protocol, lower fasting insulin, lower A1C naturally, fasting glucose protocol, blood sugar stabilization, prediabetes plan, PCOS nutrition plan, pcos, no medication for diabetes prevention, metabolic health program, gut health insulin resistance, functional nutrition protocol, مقاومه الأنسولين, علاج السكري من غير دوا, علاج السكري الكويت, دايت لعلاج السكري, تكيس المبايض"
       />
 
@@ -65,7 +66,7 @@ export function DIYPlansPage() {
             )}
             {products.map((p) => (
               <div key={p.id} data-prod>
-                <Link to={`/diy-plans/${p.slug}`}>
+                <Link to={`${SELF_GUIDED_PATH}/${p.slug}`}>
                   <ProductCard product={p} />
                 </Link>
               </div>

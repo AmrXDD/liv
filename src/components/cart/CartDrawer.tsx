@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { cn, formatPrice } from "@/lib/utils";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function CartDrawer() {
   const { t, i18n } = useTranslation();
@@ -83,7 +84,7 @@ export function CartDrawer() {
                 })}
               </p>
               <Link
-                to="/diy-plans"
+                to={SELF_GUIDED_PATH}
                 onClick={close}
                 className="rounded-full bg-forest-500 px-5 py-2.5 text-sm font-semibold text-bone-50 hover:bg-forest-600"
               >
@@ -97,7 +98,7 @@ export function CartDrawer() {
                 const linkPath = isPhysical
                   ? `/shop/${item.slug}`
                   : item.category === "diy"
-                  ? `/diy-plans/${item.slug}`
+                  ? `${SELF_GUIDED_PATH}/${item.slug}`
                   : `/coaching/${item.slug}`;
                 const categoryLabel = isPhysical
                   ? (lang === "ar" ? "منتج ملموس" : "Physical product")

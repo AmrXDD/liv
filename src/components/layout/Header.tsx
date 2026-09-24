@@ -8,6 +8,7 @@ import { MobileMenu } from "./MobileMenu";
 import { Button } from "@/components/ui/Button";
 import { CartButton } from "@/components/cart/CartButton";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function Header() {
   const { t } = useTranslation();
@@ -80,7 +81,7 @@ export function Header() {
           </Link>
 
           <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">
-            {navItem("/diy-plans", t("nav.diy"))}
+            {navItem(SELF_GUIDED_PATH, t("nav.diy"))}
             {navItem("/shop", t("nav.shop"))}
             {navItem("/consultations", t("nav.consultations"))}
             {navItem("/coaching", t("nav.coaching"))}

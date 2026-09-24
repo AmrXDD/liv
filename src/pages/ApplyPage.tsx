@@ -13,6 +13,7 @@ import { useProduct, useNutritionIssues } from "@/lib/queries";
 import { getSupabase } from "@/lib/supabase";
 import { cn, formatPrice } from "@/lib/utils";
 import { labelForIssueSlug } from "@/data/nutritionIssues";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function ApplyPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -49,7 +50,7 @@ export function ApplyPage() {
   }
   if (!product) return <Navigate to="/coaching" replace />;
   // DIY products are not application-gated
-  if (product.category === "diy") return <Navigate to={`/diy-plans/${product.slug}`} replace />;
+  if (product.category === "diy") return <Navigate to={`${SELF_GUIDED_PATH}/${product.slug}`} replace />;
 
   const productName = product.title[lang];
   const heroImage = product.heroImage ?? product.images?.[0];

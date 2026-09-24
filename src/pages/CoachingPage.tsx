@@ -13,6 +13,7 @@ import { useProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn, formatPrice } from "@/lib/utils";
 import { useDirection } from "@/hooks/useDirection";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function CoachingPage() {
   const { t, i18n } = useTranslation();
@@ -66,7 +67,7 @@ export function CoachingPage() {
             )}
             {products.map((p, i) => {
               const isDiy = p.category === "diy";
-              const ctaHref = isDiy ? `/diy-plans/${p.slug}` : `/apply/${p.slug}`;
+              const ctaHref = isDiy ? `${SELF_GUIDED_PATH}/${p.slug}` : `/apply/${p.slug}`;
               const ctaText = isDiy
                 ? t("coaching.apply")
                 : t("apply.cta", {

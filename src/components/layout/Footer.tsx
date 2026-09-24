@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { getSupabase } from "@/lib/supabase";
 import { useAccreditations } from "@/lib/queries";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function Footer() {
   const { t, i18n } = useTranslation();
@@ -15,7 +16,7 @@ export function Footer() {
   const { data: accreditations = [] } = useAccreditations();
 
   const explore = [
-    { to: "/diy-plans", label: t("nav.diy") },
+    { to: SELF_GUIDED_PATH, label: t("nav.diy") },
     { to: "/coaching", label: t("nav.coaching") },
     { to: "/consultations", label: t("nav.consultations") },
     { to: "/blog", label: t("nav.blog") },

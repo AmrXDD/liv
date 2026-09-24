@@ -9,6 +9,7 @@ import { HeroActions, HeroShowcase, productShowcaseItems } from "@/components/pr
 import { ProductCard } from "@/components/product/ProductCard";
 import { useCollection } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function CollectionPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -73,7 +74,7 @@ export function CollectionPage() {
             )}
             {products.map((p) => {
               const href =
-                p.category === "diy" ? `/diy-plans/${p.slug}` : `/coaching/${p.slug}`;
+                p.category === "diy" ? `${SELF_GUIDED_PATH}/${p.slug}` : `/coaching/${p.slug}`;
               return (
                 <div key={p.id} data-prod>
                   <Link to={href}>

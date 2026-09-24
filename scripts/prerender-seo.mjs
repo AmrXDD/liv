@@ -3,7 +3,7 @@
 // <link rel="canonical">, and hreflang alternates baked in.
 //
 // Vercel serves static files before applying the SPA rewrite, so direct
-// hits (and crawler fetches) to /coaching, /diy-plans, etc. land on the
+// hits (and crawler fetches) to /coaching, /shop, etc. land on the
 // per-route HTML with correct meta tags. The SPA still hydrates client-
 // side from the same shell — runtime behavior is unchanged.
 
@@ -30,12 +30,12 @@ const routes = [
     path: "/",
     title: "Liv Functional — Functional wellness, real transformation.",
     description:
-      "Liv Functional is a bilingual wellness studio offering DIY plans, 1:1 coaching, and free consultations rooted in functional medicine and behavior change.",
+      "Liv Functional is a bilingual wellness studio offering self-guided programs, 1:1 coaching, and free consultations rooted in functional medicine and behavior change.",
   },
   {
-    path: "/diy-plans",
+    path: "/self-guided-programs-خطة-مقاومة-الانسولين",
     title:
-      "DIY Plans — Insulin Resistance Reset & Metabolic Protocols | Liv Functional",
+      "Self-Guided Programs — Insulin Resistance Reset & Metabolic Protocols | Liv Functional",
     description:
       "Self-paced reset programs for insulin resistance, hormones, gut health, and metabolic function. Built by functional nutritionists.",
   },
@@ -144,7 +144,7 @@ const routes = [
 
 function buildHtml(template, route) {
   const isHome = route.path === "/";
-  const canonical = `${SITE_URL}${isHome ? "/" : route.path}`;
+  const canonical = `${SITE_URL}${isHome ? "/" : encodeURI(route.path)}`;
   const arUrl = `${canonical}${canonical.includes("?") ? "&" : "?"}lang=ar`;
   const title = escapeAttr(route.title);
   const description = escapeAttr(route.description);

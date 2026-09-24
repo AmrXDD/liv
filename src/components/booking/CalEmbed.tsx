@@ -50,7 +50,7 @@ export function CalEmbed({ initial = "free" }: { initial?: Tab }) {
           )}
         >
           <div className="text-eyebrow uppercase opacity-80">
-            {t("consultations.tabs.paidEyebrow", { defaultValue: "Holistic consultation" })}
+            {t("consultations.tabs.paidEyebrow", { defaultValue: "Functional Health Deep-Dive" })}
           </div>
           <div className="mt-1 font-semibold">
             {t("consultations.tabs.paidTitle", { defaultValue: "135 KWD · 90 minutes" })}
@@ -61,7 +61,7 @@ export function CalEmbed({ initial = "free" }: { initial?: Tab }) {
       <div className="overflow-hidden rounded-2xl border border-ink/10 bg-white">
         <iframe
           key={tab}
-          title={tab === "free" ? "Free discovery booking" : "Holistic consultation booking"}
+          title={tab === "free" ? "Free discovery booking" : "Functional Health Deep-Dive booking"}
           src={src}
           loading="lazy"
           className="block h-[760px] w-full sm:h-[820px] md:h-[880px]"

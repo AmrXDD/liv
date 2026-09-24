@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/product/ProductCard";
 import { useFeaturedProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 export function FeaturedProducts() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export function FeaturedProducts() {
             </h2>
             <p className="mt-4 max-w-md text-ink-muted">{t("featuredProducts.lede")}</p>
           </div>
-          <Button to="/diy-plans" variant="ghost" arrow>
+          <Button to={SELF_GUIDED_PATH} variant="ghost" arrow>
             {t("featuredProducts.viewAll")}
           </Button>
         </div>
@@ -33,7 +34,7 @@ export function FeaturedProducts() {
         <div ref={ref as React.RefObject<HTMLDivElement>} className="grid gap-8 md:grid-cols-3">
           {featured.map((p) => (
             <div key={p.id} data-featured>
-              <Link to={`/diy-plans/${p.slug}`}>
+              <Link to={`${SELF_GUIDED_PATH}/${p.slug}`}>
                 <ProductCard product={p} />
               </Link>
             </div>

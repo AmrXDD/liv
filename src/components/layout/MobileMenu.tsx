@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
+import { SELF_GUIDED_PATH } from "@/lib/routes";
 
 interface Props {
   open: boolean;
@@ -22,7 +23,7 @@ export function MobileMenu({ open, onClose }: Props) {
   }, [open]);
 
   const items = [
-    { to: "/diy-plans", label: t("nav.diy") },
+    { to: SELF_GUIDED_PATH, label: t("nav.diy") },
     { to: "/shop", label: t("nav.shop") },
     { to: "/consultations", label: t("nav.consultations") },
     { to: "/coaching", label: t("nav.coaching") },
