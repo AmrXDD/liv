@@ -47,7 +47,9 @@ create index if not exists idx_blog_posts_is_published on public.blog_posts (is_
 
 -- 2) updated_at trigger ----------------------------------------
 create or replace function public.tg_blog_posts_set_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at := now();
   return new;
