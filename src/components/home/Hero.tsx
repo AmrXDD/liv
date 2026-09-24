@@ -5,6 +5,7 @@ import { prefersReducedMotion } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Button } from "@/components/ui/Button";
+import { MedicalDisclaimer } from "@/components/ui/MedicalDisclaimer";
 import { BloodSugarAnimation } from "./BloodSugarAnimation";
 import { useDirection } from "@/hooks/useDirection";
 import { cn } from "@/lib/utils";
@@ -162,6 +163,8 @@ export function Hero() {
                 </Button>
               </div>
             </div>
+
+            <MedicalDisclaimer className="mt-6 max-w-xl" />
           </header>
 
           <div className="lg:col-span-4" data-hero-shape>

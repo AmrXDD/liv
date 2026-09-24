@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { MedicalDisclaimer } from "@/components/ui/MedicalDisclaimer";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export function ConversionFunnel() {
@@ -25,6 +26,7 @@ export function ConversionFunnel() {
           <div data-fn className="mt-10 inline-block">
             <MagneticButton to="/consultations">{t("funnel.button")}</MagneticButton>
           </div>
+          <MedicalDisclaimer className="mt-6 mx-auto max-w-xl" />
         </div>
       </Container>
     </Section>

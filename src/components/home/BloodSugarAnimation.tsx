@@ -235,9 +235,7 @@ export function BloodSugarAnimation() {
         </div>
 
         <div className="mt-3 rounded-xl border border-ink/10 px-3 py-2 text-xs leading-snug text-ink-muted">
-          {t("hero.glucose.caption", {
-            defaultValue: "Real client data — protocols that bring blood sugar into a healthy range, in weeks not years.",
-          })}
+          {t("hero.glucose.caption")}
         </div>
       </div>
     </div>

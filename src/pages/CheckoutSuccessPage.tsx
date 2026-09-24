@@ -47,27 +47,25 @@ export function CheckoutSuccessPage() {
     const tick = async () => {
       attempts += 1;
 
-      // 1. Fetch order details
-      const { data: orderData } = await sb
-        .from("orders")
-        .select("*")
-        .eq("stripe_session_id", sessionId)
-        .maybeSingle();
-
-      if (orderData && !cancelled) {
-        setOrder(orderData as Order);
-      }
-
-      // 2. Fetch digital downloads (if any exist)
-      const { data: digitalData, error: digitalErr } = await sb
-        .from("digital_orders")
-        .select("id, product_slug, download_url, download_expires_at")
-        .eq("stripe_session_id", sessionId);
+      // Order + downloads for this exact session only. The orders and
+      // digital_orders tables are not readable by the anon key; see
+      // supabase/security_fix_orders_2026_09_23.sql.
+      const { data, error } = await sb.rpc("get_order_confirmation", {
+        p_session_id: sessionId,
+      });
 
       if (cancelled) return;
-      if (digitalErr) {
+      if (error) {
         setStatus("err");
         return;
+      }
+
+      const result = data as { order: Order | null; downloads: DigitalRow[] } | null;
+      const orderData = result?.order ?? null;
+      const digitalData = result?.downloads ?? [];
+
+      if (orderData) {
+        setOrder(orderData);
       }
 
       if (digitalData && digitalData.length > 0) {

@@ -116,7 +116,11 @@
     "bookCall": "Book a call",
     "viewAll": "View all"
   },
+  "disclaimer": "LivFunctional provides educational and wellness support and does not replace medical diagnosis or treatment. Always consult your doctor before changing your diet, supplements, or medication.",
   "hero": {
+    "glucose": {
+      "caption": "Real client data showing how individualized protocols may support steadier blood glucose over time."
+    },
     "eyebrow": "Functional wellness studio",
     "titleA": "Real",
     "titleB": "transformation",
