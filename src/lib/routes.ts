@@ -9,3 +9,10 @@ export const isSelfGuidedPath = (pathname: string) => {
     return pathname.startsWith(SELF_GUIDED_PATH);
   }
 };
+
+/** Lead-gen quiz. Not in the nav on purpose: it is linked from ads and social only. */
+export const IR_QUIZ_PATH =
+  "/what-are-insulin-resistance-symptoms-how-do-i-know-if-i-have-it-كيف-اعرف-إذا-في-عندي-مقاومة-انسولين";
+
+/** Slug of the retired "Do I have Insulin Resistance?" free-assessment product (redirects to the quiz). */
+export const FREE_ASSESSMENT_SLUG = "free-assessment-كيف-اعرف-إذا-عندي-مقاومة-انسولين";

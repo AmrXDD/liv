@@ -262,6 +262,18 @@ export function AdminProductFormPage() {
                     onChange={(e) => set("weightGrams", Number(e.currentTarget.value))}
                   />
                 </Field>
+                <Field label="Shop section" hint="Where it appears on /shop.">
+                  <Select
+                    value={form.shopGroup ?? ""}
+                    onChange={(e) =>
+                      set("shopGroup", (e.currentTarget.value || null) as "book" | "tool" | null)
+                    }
+                  >
+                    <option value="">Physical Products</option>
+                    <option value="book">Books</option>
+                    <option value="tool">Tools</option>
+                  </Select>
+                </Field>
                 <Field label="Requires shipping">
                   <Select
                     value={form.requiresShipping === false ? "no" : "yes"}

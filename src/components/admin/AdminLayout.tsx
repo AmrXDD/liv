@@ -14,6 +14,7 @@ const NAV = [
   { to: "/admin/accreditations", label: "Accreditations", icon: Award },
   { to: "/admin/consultations", label: "Consultations", icon: CalendarDays },
   { to: "/admin/inquiries", label: "Inquiries", icon: Mail },
+  { to: "/admin/quiz-leads", label: "Quiz leads", icon: ListChecks },
   { to: "/admin/nutrition-issues", label: "Nutrition issues", icon: ListChecks },
   { to: "/admin/newsletter", label: "Newsletter", icon: AtSign },
   { to: "/admin/payments", label: "Payments & Orders", icon: Wallet },

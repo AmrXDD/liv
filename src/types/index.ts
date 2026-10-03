@@ -38,6 +38,8 @@ export interface Product {
   heightCm?: number;
   stock?: number;
   requiresShipping?: boolean;
+  /** Shop page section for physical products: book | tool | none (= Physical Products). */
+  shopGroup?: "book" | "tool" | null;
 }
 
 export interface Collection {

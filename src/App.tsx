@@ -44,11 +44,16 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
-import { SELF_GUIDED_PATH } from "@/lib/routes";
+import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG } from "@/lib/routes";
+import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
+import { AdminQuizLeadsPage } from "@/pages/admin/AdminQuizLeadsPage";
 
 export function App() {
   return (
     <Routes>
+      {/* Lead-gen quiz: standalone (no site header/footer), linked from ads and social only */}
+      <Route path={IR_QUIZ_PATH} element={<InsulinQuizPage />} />
+
       {/* Public site */}
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
@@ -65,6 +70,9 @@ export function App() {
         <Route path="/coaching" element={<CoachingPage />} />
         <Route path="/coaching/:slug" element={<CoachingProductPage />} />
 
+        {/* Retired free assessment product: its traffic goes to the quiz */}
+        <Route path={"/apply/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
+        <Route path={"/coaching/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
         <Route path="/apply/:slug" element={<ApplyPage />} />
 
         <Route path="/consultations" element={<ConsultationsPage />} />
@@ -118,6 +126,7 @@ export function App() {
         <Route path="payments" element={<AdminPaymentsPage />} />
         <Route path="import" element={<AdminImportPage />} />
         <Route path="inquiries" element={<AdminInquiriesPage />} />
+        <Route path="quiz-leads" element={<AdminQuizLeadsPage />} />
         <Route path="emails" element={<AdminEmailsPage />} />
         <Route path="newsletter" element={<AdminNewsletterPage />} />
         <Route path="blog" element={<AdminBlogPage />} />

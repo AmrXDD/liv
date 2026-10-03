@@ -4,6 +4,7 @@ import { Hero } from "@/components/home/Hero";
 import { MarqueeBand } from "@/components/home/MarqueeBand";
 import { ServicesPillars } from "@/components/home/ServicesPillars";
 import { Credentials } from "@/components/home/Credentials";
+import { LivMethodSection } from "@/components/home/LivMethodSection";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
@@ -27,6 +28,7 @@ export function HomePage() {
       <Hero />
       <MarqueeBand />
       <ServicesPillars />
+      <LivMethodSection />
       <Credentials />
       <FeaturedProducts />
       <HowItWorks />

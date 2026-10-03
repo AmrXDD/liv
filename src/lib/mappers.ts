@@ -44,6 +44,7 @@ type ProductRow = {
   height_cm?: number | string | null;
   stock?: number | null;
   requires_shipping?: boolean | null;
+  shop_group?: string | null;
 };
 
 const ls = (en: string | null, ar: string | null): LocalizedString | undefined =>
@@ -79,6 +80,7 @@ export function mapProduct(row: ProductRow): Product {
     heightCm: row.height_cm == null ? undefined : Number(row.height_cm),
     stock: row.stock ?? undefined,
     requiresShipping: row.requires_shipping ?? undefined,
+    shopGroup: row.shop_group === "book" || row.shop_group === "tool" ? row.shop_group : null,
   };
 }
 
@@ -129,6 +131,7 @@ export function productToRow(p: Partial<Product>): Record<string, unknown> {
   if (p.heightCm !== undefined) out.height_cm = p.heightCm;
   if (p.stock !== undefined) out.stock = p.stock;
   if (p.requiresShipping !== undefined) out.requires_shipping = p.requiresShipping;
+  if (p.shopGroup !== undefined) out.shop_group = p.shopGroup;
   return out;
 }
 
