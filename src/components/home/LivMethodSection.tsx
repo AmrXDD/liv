@@ -81,7 +81,7 @@ const steps: { tag: L; title: L; body: L }[] = [
     tag: { en: "Do it with Reham", ar: "نفّذيها مع ريهام" },
     title: { en: "Coaching", ar: "التدريب" },
     body: {
-      en: "The Guided Reset or the 90-Day LIV Method Intensive, with a plan built around your labs and your data.",
+      en: "The Guided Reset or the LIV Method Intensive, with a plan built around your labs and your data.",
       ar: "برنامج تصحيح المسار أو برنامج طريقة LIV المكثّف، بخطة مبنية على تحاليلك وبياناتك.",
     },
   },

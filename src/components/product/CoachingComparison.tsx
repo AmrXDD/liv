@@ -7,7 +7,7 @@ import type { Product } from "@/types";
 
 type L = { en: string; ar: string };
 
-/** [row label, Guided Reset cell, 90-Day LIV Method Intensive cell] */
+/** [row label, Guided Reset cell, LIV Method Intensive cell] */
 const ROWS: [L, L, L][] = [
   [
     { en: "Sessions", ar: "الجلسات" },
