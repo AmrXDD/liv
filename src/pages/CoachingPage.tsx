@@ -9,6 +9,7 @@ import { HeroActions, HeroShowcase, productShowcaseItems } from "@/components/pr
 import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { ConversionFunnel } from "@/components/home/ConversionFunnel";
+import { CoachingComparison } from "@/components/product/CoachingComparison";
 import { useProducts } from "@/lib/queries";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn, formatPrice } from "@/lib/utils";
@@ -169,6 +170,8 @@ export function CoachingPage() {
           </div>
         </Container>
       </Section>
+
+      <CoachingComparison products={products} />
 
       <Credentials />
       <TestimonialsSlider />
