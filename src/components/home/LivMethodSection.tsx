@@ -82,7 +82,7 @@ const steps: { tag: L; title: L; body: L }[] = [
     title: { en: "Coaching", ar: "التدريب" },
     body: {
       en: "The Guided Reset or the 90-Day LIV Method Intensive, with a plan built around your labs and your data.",
-      ar: "برنامج تصحيح المسار أو برنامج طريقة LIV المكثّف لمدة 90 يومًا، بخطة مبنية على تحاليلك وبياناتك.",
+      ar: "برنامج تصحيح المسار أو برنامج طريقة LIV المكثّف، بخطة مبنية على تحاليلك وبياناتك.",
     },
   },
 ];
