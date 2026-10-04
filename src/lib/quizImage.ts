@@ -1,7 +1,7 @@
-import { QUIZ_DISCLAIMER, type QuizResult } from "@/data/irQuiz";
+import { type QuizResult } from "@/data/irQuiz";
 
 const W = 1080;
-const H = 1350;
+const H = 1210;
 const FOREST = "#006c45";
 const CORAL = "#ff5757";
 const INK = "#0a1612";
@@ -160,27 +160,11 @@ export async function renderQuizImage({ name, result, lang }: QuizImageInput): P
   ctx.font = font(500, 34);
   wrap(ctx, result.band.summary[lang], W - 220).forEach((l, i) => ctx.fillText(l, edge === 80 ? 100 : W - 100, cardY + 70 + i * 52));
 
-  // Next step
-  ctx.fillStyle = FOREST;
-  roundRect(ctx, 60, 1100, W - 120, 100, 50);
-  ctx.fill();
-  ctx.fillStyle = "#ffffff";
-  ctx.textAlign = "center";
-  ctx.font = font(700, 32);
-  ctx.fillText(
-    isAr ? "أرسلي نتيجتك لريهام على واتساب لخطوتك التالية" : "Send this to Reham on WhatsApp for your next step",
-    W / 2,
-    1162,
-  );
-
   // Footer
-  ctx.fillStyle = MUTED;
-  ctx.font = font(400, 22);
-  ctx.textAlign = "center";
-  wrap(ctx, QUIZ_DISCLAIMER[lang], W - 160).forEach((l, i) => ctx.fillText(l, W / 2, 1245 + i * 32));
   ctx.fillStyle = CORAL;
   ctx.font = font(700, 24);
-  ctx.fillText("livfunctional.com", W / 2, 1315);
+  ctx.textAlign = "center";
+  ctx.fillText("livfunctional.com", W / 2, 1150);
 
   return canvas.toDataURL("image/jpeg", 0.92);
 }

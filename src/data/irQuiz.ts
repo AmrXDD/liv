@@ -38,7 +38,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "crash",
     prompt: {
       en: "Do you feel sleepy or drained after meals?",
-      ar: "هل تشعرين بالنعاس أو الإرهاق بعد الأكل؟",
+      ar: "هل تشعر بالنعاس أو الإرهاق بعد الأكل؟",
     },
     hint: { en: "Especially after rice, bread, pasta or sweets.", ar: "خصوصًا بعد الرز والخبز والمعكرونة والحلويات." },
     options: freq(
@@ -52,7 +52,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "cravings",
     prompt: {
       en: "How often do you crave sweets or carbs?",
-      ar: "كم مرة تشتهين الحلويات أو النشويات؟",
+      ar: "كم مرة تشتهي الحلويات أو النشويات؟",
     },
     hint: { en: "The kind of craving that is hard to ignore.", ar: "الاشتهاء الذي يصعب تجاهله." },
     options: freq(
@@ -66,7 +66,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "hunger",
     prompt: {
       en: "Are you hungry again within 2–3 hours of a full meal?",
-      ar: "هل تجوعين من جديد بعد ساعتين أو ثلاث من وجبة كاملة؟",
+      ar: "هل تجوع من جديد بعد ساعتين أو ثلاث من وجبة كاملة؟",
     },
     options: freq(
       ["No, I stay full", "لا، أبقى شبعانة"],
@@ -79,7 +79,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "weight",
     prompt: {
       en: "Do you gain weight around your belly, or struggle to lose it even when you try?",
-      ar: "هل يزيد وزنك حول البطن، أو يصعب عليك إنقاصه رغم المحاولة؟",
+      ar: "هل عندك دهون و وزن حول البطن، أو يصعب عليك إنقاصه رغم المحاولة؟",
     },
     options: freq(
       ["No", "لا"],
@@ -92,7 +92,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "skin",
     prompt: {
       en: "Do you have dark, velvety patches of skin (neck, armpits, groin) or skin tags?",
-      ar: "هل لديك بقع جلدية داكنة وناعمة (الرقبة، الإبطان، الأربية) أو زوائد جلدية؟",
+      ar: "هل لديك بقع جلدية داكنة وناعمة (الرقبة، الإبطان) أو زوائد جلدية؟",
     },
     options: [
       { label: { en: "No", ar: "لا" }, points: 0 },
@@ -130,7 +130,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "fog",
     prompt: {
       en: "Do you get brain fog, low focus or an afternoon energy crash?",
-      ar: "هل تعانين من ضبابية الدماغ أو ضعف التركيز أو هبوط الطاقة بعد الظهر؟",
+      ar: "هل تعاني من ضبابية الدماغ أو ضعف التركيز أو هبوط الطاقة بعد الظهر؟",
     },
     options: freq(
       ["Rarely", "نادرًا"],
@@ -156,7 +156,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "labs",
     prompt: {
       en: "What did your last blood tests say about glucose, HbA1c or fasting insulin?",
-      ar: "ماذا قالت آخر تحاليلك عن السكر أو HbA1c أو أنسولين الصيام؟",
+      ar: "ماذا أظهرت آخر تحاليلك عن السكر أو HbA1c أو أنسولين الصيام؟",
     },
     options: [
       { label: { en: "All normal", ar: "كلها طبيعية" }, points: 0 },
@@ -183,7 +183,7 @@ export const QUIZ_BANDS: QuizBand[] = [
     label: { en: "Few signs", ar: "علامات قليلة" },
     summary: {
       en: "Your answers show few of the common signs of insulin resistance. A good moment to protect that with food, movement and sleep habits.",
-      ar: "إجاباتك تُظهر علامات قليلة من علامات مقاومة الأنسولين الشائعة. وقت مناسب لحماية هذا الوضع بعادات الأكل والحركة والنوم.",
+      ar: "إجاباتك تُظهر علامات قليلة من علامات مقاومة الأنسولين الشائعة. الآن هو الوقت مناسب لحماية هذا الوضع بعادات الأكل والحركة والنوم.",
     },
     color: "#2d8e60",
   },
@@ -193,7 +193,7 @@ export const QUIZ_BANDS: QuizBand[] = [
     label: { en: "Early signs", ar: "علامات مبكرة" },
     summary: {
       en: "Some of your answers match early patterns of insulin resistance. This is the easiest stage to turn around.",
-      ar: "بعض إجاباتك تتوافق مع أنماط مبكرة من مقاومة الأنسولين. هذه أسهل مرحلة للتحسن.",
+      ar: ". لا تتأخر. بعض إجاباتك توضح صوره مبكرة من مقاومة الأنسولين. هذه أسهل مرحلة للتحسن.",
     },
     color: "#c9a227",
   },
@@ -203,7 +203,7 @@ export const QUIZ_BANDS: QuizBand[] = [
     label: { en: "Moderate signs", ar: "علامات متوسطة" },
     summary: {
       en: "Several of your answers point to insulin resistance patterns. It is worth checking your labs and building a plan around them.",
-      ar: "عدة إجابات لديك تشير إلى أنماط مقاومة الأنسولين. يستحق الأمر فحص التحاليل وبناء خطة بناءً عليها.",
+      ar: "عدة إجابات تشير إلى بداية مقاومة الأنسولين. يجب فحص تحاليل الدم وبناء خطة. لا تتأخر لأن جسمك بدأ حالات إلتهاب داخليه صامته.",
     },
     color: "#ef8a3c",
   },
@@ -213,7 +213,7 @@ export const QUIZ_BANDS: QuizBand[] = [
     label: { en: "Strong signs", ar: "علامات قوية" },
     summary: {
       en: "Your answers show many of the signs linked to insulin resistance. Speak to your doctor about the right tests, and let's talk about a plan.",
-      ar: "إجاباتك تُظهر كثيرًا من العلامات المرتبطة بمقاومة الأنسولين. تحدثي مع طبيبك عن الفحوصات المناسبة، ولنتحدث عن خطة لك.",
+      ar: "إجاباتك تُظهر كثيرًا من العلامات المرتبطة بمقاومة الأنسولين. تحدث معي لأدلك على الفحوصات اللآزمه، وعن خطة غذائيه تقلل إعتمادك على الادويه و تقلل أعراض الإلتهاب و الوزن.",
     },
     color: "#ff5757",
   },

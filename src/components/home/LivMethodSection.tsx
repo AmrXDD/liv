@@ -16,7 +16,7 @@ const copy = {
   } as L,
   stepsTitle: { en: "Three ways to work with it", ar: "ثلاث طرق للعمل بها" } as L,
   cta1: { en: "Explore self-guided programs", ar: "استكشفي برامج التنفيذ الشخصي" } as L,
-  cta2: { en: "Work with Reham", ar: "اعملي مع ريهام" } as L,
+  cta2: { en: "Work with Reham", ar: "اعملي مع رهام" } as L,
 };
 
 const pillars: { title: L; body: L }[] = [
@@ -78,7 +78,7 @@ const steps: { tag: L; title: L; body: L }[] = [
     },
   },
   {
-    tag: { en: "Do it with Reham", ar: "نفّذيها مع ريهام" },
+    tag: { en: "Do it with Reham", ar: "نفّذيها مع رهام" },
     title: { en: "Coaching", ar: "التدريب" },
     body: {
       en: "The Guided Reset or the LIV Method Intensive, with a plan built around your labs and your data.",

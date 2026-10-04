@@ -186,7 +186,7 @@ update public.pages
                     'rounded', true,
                     'caption', jsonb_build_object(
                       'en','Reham Alsharif — Founder, Liv Functional',
-                      'ar', $ar$ريهام الشريف — مؤسِّسة ليف$ar$
+                      'ar', $ar$رهام الشريف — مؤسِّسة ليف$ar$
                     )
                   )
                 )

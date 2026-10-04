@@ -12,7 +12,6 @@ import { IR_QUIZ_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import {
   IR_QUIZ_SOURCE,
-  QUIZ_DISCLAIMER,
   QUIZ_QUESTIONS,
   scoreQuiz,
   type QuizResult,
@@ -37,7 +36,7 @@ const copy = {
   contactTitle: { en: "Where should we send your result?", ar: "أين نرسل لك نتيجتك؟" },
   contactLede: {
     en: "Add your name and WhatsApp number. Reham will message you with your next step.",
-    ar: "أضيفي اسمك ورقم واتساب. ستراسلك ريهام بخطوتك التالية.",
+    ar: "أضيفي اسمك ورقم واتساب. ستراسلك رهام بخطوتك التالية.",
   },
   name: { en: "First name", ar: "الاسم الأول" },
   phone: { en: "WhatsApp number (with country code)", ar: "رقم واتساب (مع رمز الدولة)" },
@@ -48,12 +47,8 @@ const copy = {
   see: { en: "Show my result", ar: "أظهري نتيجتي" },
   badPhone: { en: "Please enter a valid WhatsApp number.", ar: "من فضلك أدخلي رقم واتساب صحيحًا." },
   resultEyebrow: { en: "Your result", ar: "نتيجتك" },
-  openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسلي نتيجتي لريهام على واتساب" },
+  openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسلي النتيجة لرهام على واتساب" },
   download: { en: "Download my result (JPG)", ar: "تحميل نتيجتي (JPG)" },
-  waHint: {
-    en: "Tap the green button to open WhatsApp. Reham will reply with your next step.",
-    ar: "اضغطي الزر الأخضر لفتح واتساب. سترد عليك ريهام بخطوتك التالية.",
-  },
   seoTitle: {
     en: "What are the insulin resistance symptoms and how do I know if I have it?",
     ar: "كيف أعرف إذا في عندي مقاومة أنسولين؟",
@@ -184,13 +179,13 @@ export function InsulinQuizPage() {
     renderQuizImage({ name: name.trim(), result, lang }).then(setImageUrl).catch(() => undefined);
   }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const waHref = useMemo(() => {
-    if (!result) return `https://wa.me/${WHATSAPP_PHONE}`;
-    const msg = isAr
-      ? `مرحبًا ريهام، أنا ${name.trim()}. أجريت اختبار مقاومة الأنسولين ونتيجتي: ${result.band.label.ar} (${result.percent}٪).`
+  const waText = useMemo(() => {
+    if (!result) return "";
+    return isAr
+      ? `مرحبًا رهام، أنا ${name.trim()}. أجريت اختبار مقاومة الأنسولين ونتيجتي: ${result.band.label.ar} (${result.percent}٪).`
       : `Hi Reham, I'm ${name.trim()}. I took the insulin resistance quiz and my result is: ${result.band.label.en} (${result.percent}%).`;
-    return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
   }, [result, name, isAr]);
+  const waHref = `https://wa.me/${WHATSAPP_PHONE}${waText ? `?text=${encodeURIComponent(waText)}` : ""}`;
 
   const Arrow = isAr ? ArrowRight : ArrowLeft;
   const q = QUIZ_QUESTIONS[qIndex];
@@ -232,7 +227,6 @@ export function InsulinQuizPage() {
               >
                 {t("start")}
               </button>
-              <p className="mt-6 text-xs text-ink-muted">{QUIZ_DISCLAIMER[lang]}</p>
             </motion.section>
           )}
 
@@ -368,7 +362,6 @@ export function InsulinQuizPage() {
               >
                 {t("openWa")}
               </a>
-              <p className="mt-3 text-center text-sm text-ink-muted">{t("waHint")}</p>
               {imageUrl && (
                 <a
                   href={imageUrl}
