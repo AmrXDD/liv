@@ -210,7 +210,7 @@ export const QUIZ_BANDS: QuizBand[] = [
   {
     id: "strong",
     maxPercent: 100,
-    label: { en: "Strong signs", ar: "علامات مرضيه كبيره" },
+    label: { en: "Strong signs", ar: "علامات مرضية كبيرة" },
     summary: {
       en: "Your answers show many of the signs linked to insulin resistance. Talk to me and I'll guide you to the right tests and a nutrition plan that reduces your reliance on medication and eases inflammation symptoms and weight.",
       ar: "إجاباتك تُظهر كثيرًا من العلامات المرتبطة بمقاومة الأنسولين. تحدّث معي لأدلّك على الفحوصات اللازمة وعلى خطة غذائية تقلّل اعتمادك على الأدوية وتخفّف أعراض الالتهاب والوزن.",
