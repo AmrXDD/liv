@@ -69,7 +69,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       ar: "هل تجوع من جديد بعد ساعتين أو ثلاث من وجبة كاملة؟",
     },
     options: freq(
-      ["No, I stay full", "لا، أبقى شبعانة"],
+      ["No, I stay full", "لا، أبقى شبعان"],
       ["Sometimes", "أحيانًا"],
       ["Often", "كثيرًا"],
       ["Almost always", "تقريبًا دائمًا"],
@@ -78,8 +78,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "weight",
     prompt: {
-      en: "Do you gain weight around your belly, or struggle to lose it even when you try?",
-      ar: "هل عندك دهون و وزن حول البطن، أو يصعب عليك إنقاصه رغم المحاولة؟",
+      en: "Do you carry extra fat and weight around your belly, or struggle to lose it even when you try?",
+      ar: "هل عندك دهون ووزن حول البطن، أو يصعب عليك إنقاصهما رغم المحاولة؟",
     },
     options: freq(
       ["No", "لا"],
@@ -91,12 +91,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "skin",
     prompt: {
-      en: "Do you have dark, velvety patches of skin (neck, armpits, groin) or skin tags?",
+      en: "Do you have dark, velvety patches of skin (neck, armpits) or skin tags?",
       ar: "هل لديك بقع جلدية داكنة وناعمة (الرقبة، الإبطان) أو زوائد جلدية؟",
     },
     options: [
       { label: { en: "No", ar: "لا" }, points: 0 },
-      { label: { en: "Not sure", ar: "لست متأكدة" }, points: 1 },
+      { label: { en: "Not sure", ar: "لست متأكدًا" }, points: 1 },
       { label: { en: "Yes, mild", ar: "نعم، خفيفة" }, points: 2 },
       { label: { en: "Yes, clearly", ar: "نعم، واضحة" }, points: 3 },
     ],
@@ -155,7 +155,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "labs",
     prompt: {
-      en: "What did your last blood tests say about glucose, HbA1c or fasting insulin?",
+      en: "What did your last blood tests show about glucose, HbA1c or fasting insulin?",
       ar: "ماذا أظهرت آخر تحاليلك عن السكر أو HbA1c أو أنسولين الصيام؟",
     },
     options: [
@@ -183,7 +183,7 @@ export const QUIZ_BANDS: QuizBand[] = [
     label: { en: "Few signs", ar: "علامات قليلة" },
     summary: {
       en: "Your answers show few of the common signs of insulin resistance. A good moment to protect that with food, movement and sleep habits.",
-      ar: "إجاباتك تُظهر علامات قليلة من علامات مقاومة الأنسولين الشائعة. الآن هو الوقت مناسب لحماية هذا الوضع بعادات الأكل والحركة والنوم.",
+      ar: "إجاباتك تُظهر علامات قليلة من علامات مقاومة الأنسولين الشائعة. الآن هو الوقت المناسب لحماية هذا الوضع بعادات الأكل والحركة والنوم.",
     },
     color: "#2d8e60",
   },
@@ -192,28 +192,28 @@ export const QUIZ_BANDS: QuizBand[] = [
     maxPercent: 49,
     label: { en: "Early signs", ar: "علامات مبكرة" },
     summary: {
-      en: "Some of your answers match early patterns of insulin resistance. This is the easiest stage to turn around.",
-      ar: ". لا تتأخر. بعض إجاباتك توضح صوره مبكرة من مقاومة الأنسولين. هذه أسهل مرحلة للتحسن.",
+      en: "Don't wait. Some of your answers show an early picture of insulin resistance. This is the easiest stage to turn around.",
+      ar: "لا تتأخر. بعض إجاباتك تُظهر صورة مبكرة من مقاومة الأنسولين. هذه أسهل مرحلة للتحسن.",
     },
     color: "#c9a227",
   },
   {
     id: "moderate",
     maxPercent: 74,
-    label: { en: "Moderate signs", ar: "علامات متوسطة" },
+    label: { en: "Alarming signs", ar: "علامات مقلقه" },
     summary: {
-      en: "Several of your answers point to insulin resistance patterns. It is worth checking your labs and building a plan around them.",
-      ar: "عدة إجابات تشير إلى بداية مقاومة الأنسولين. يجب فحص تحاليل الدم وبناء خطة. لا تتأخر لأن جسمك بدأ حالات إلتهاب داخليه صامته.",
+      en: "Several of your answers point to the start of insulin resistance. Your blood tests should be checked and a plan built. Don't wait: your body has started a silent internal inflammation.",
+      ar: "عدة إجابات تشير إلى بداية مقاومة الأنسولين. يجب فحص تحاليل الدم وبناء خطة. لا تتأخر، فجسمك بدأ يمرّ بحالة التهاب داخلي صامت.",
     },
     color: "#ef8a3c",
   },
   {
     id: "strong",
     maxPercent: 100,
-    label: { en: "Strong signs", ar: "علامات قوية" },
+    label: { en: "Strong signs", ar: "علامات مرضيه كبيره" },
     summary: {
-      en: "Your answers show many of the signs linked to insulin resistance. Speak to your doctor about the right tests, and let's talk about a plan.",
-      ar: "إجاباتك تُظهر كثيرًا من العلامات المرتبطة بمقاومة الأنسولين. تحدث معي لأدلك على الفحوصات اللآزمه، وعن خطة غذائيه تقلل إعتمادك على الادويه و تقلل أعراض الإلتهاب و الوزن.",
+      en: "Your answers show many of the signs linked to insulin resistance. Talk to me and I'll guide you to the right tests and a nutrition plan that reduces your reliance on medication and eases inflammation symptoms and weight.",
+      ar: "إجاباتك تُظهر كثيرًا من العلامات المرتبطة بمقاومة الأنسولين. تحدّث معي لأدلّك على الفحوصات اللازمة وعلى خطة غذائية تقلّل اعتمادك على الأدوية وتخفّف أعراض الالتهاب والوزن.",
     },
     color: "#ff5757",
   },

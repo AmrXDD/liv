@@ -29,14 +29,14 @@ const copy = {
   },
   lede: {
     en: "Answer 10 quick questions and see where you sit on the insulin resistance spectrum. You get a one-page result you can keep.",
-    ar: "أجيبي عن 10 أسئلة سريعة وتعرفي أين تقفين على طيف مقاومة الأنسولين. وتحصلين على نتيجة في صفحة واحدة تحتفظين بها.",
+    ar: "أجب عن 10 أسئلة سريعة وتعرّف أين تقف على طيف مقاومة الأنسولين. وتحصل على نتيجة في صفحة واحدة تحتفظ بها.",
   },
   start: { en: "Start the quiz", ar: "ابدأ الاختبار" },
   back: { en: "Back", ar: "رجوع" },
   contactTitle: { en: "Where should we send your result?", ar: "أين نرسل لك نتيجتك؟" },
   contactLede: {
     en: "Add your name and WhatsApp number. Reham will message you with your next step.",
-    ar: "أضيفي اسمك ورقم واتساب. ستراسلك رهام بخطوتك التالية.",
+    ar: "أضف اسمك ورقم واتساب. ستراسلك رهام بخطوتك التالية.",
   },
   name: { en: "First name", ar: "الاسم الأول" },
   phone: { en: "WhatsApp number (with country code)", ar: "رقم واتساب (مع رمز الدولة)" },
@@ -44,10 +44,10 @@ const copy = {
     en: "I agree to be contacted on WhatsApp about my result.",
     ar: "أوافق على التواصل معي عبر واتساب بخصوص نتيجتي.",
   },
-  see: { en: "Show my result", ar: "أظهري نتيجتي" },
-  badPhone: { en: "Please enter a valid WhatsApp number.", ar: "من فضلك أدخلي رقم واتساب صحيحًا." },
+  see: { en: "Show my result", ar: "أظهر نتيجتي" },
+  badPhone: { en: "Please enter a valid WhatsApp number.", ar: "من فضلك أدخل رقم واتساب صحيحًا." },
   resultEyebrow: { en: "Your result", ar: "نتيجتك" },
-  openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسلي النتيجة لرهام على واتساب" },
+  openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسل النتيجة لرهام على واتساب" },
   download: { en: "Download my result (JPG)", ar: "تحميل نتيجتي (JPG)" },
   seoTitle: {
     en: "What are the insulin resistance symptoms and how do I know if I have it?",
@@ -55,7 +55,7 @@ const copy = {
   },
   seoDesc: {
     en: "A free 2-minute quiz on common insulin resistance symptoms. See where you sit on the spectrum and get a one-page result on WhatsApp.",
-    ar: "اختبار مجاني في دقيقتين عن أعراض مقاومة الأنسولين الشائعة. اعرفي أين تقفين على الطيف واحصلي على نتيجتك في صفحة واحدة عبر واتساب.",
+    ar: "اختبار مجاني في دقيقتين عن أعراض مقاومة الأنسولين الشائعة. اعرف أين تقف على الطيف واحصل على نتيجتك في صفحة واحدة عبر واتساب.",
   },
 } as const;
 
