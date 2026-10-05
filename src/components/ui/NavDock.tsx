@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useNavigate, stripLang } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { ClipboardList, CalendarHeart, HeartHandshake, BookOpen, Info } from "lucide-react";
 import { Dock, type DockItemData } from "./Dock";
@@ -24,7 +25,7 @@ function useIsMobile() {
  */
 export function NavDock() {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
+  const pathname = stripLang(useLocation().pathname);
   const nav = useNavigate();
   const isMobile = useIsMobile();
 

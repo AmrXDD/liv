@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 
 interface Props {
   to?: string;

@@ -1,4 +1,5 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { ArrowDown, Globe, PenLine, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SEO } from "@/components/seo/SEO";

@@ -7,6 +7,7 @@ import { Calendar, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { getSupabase } from "@/lib/supabase";
+import { withLang } from "@/lib/langRouting";
 import type { BookingPayload, Locale } from "@/types";
 import { buildGoogleCalendarUrl, PRACTITIONER_EMAIL } from "@/lib/googleCalendar";
 
@@ -294,7 +295,7 @@ export function BookingWidget() {
           <span>
             {L.agreementPre}
             <a
-              href="/coaching-agreement"
+              href={withLang("/coaching-agreement", locale)}
               target="_blank"
               rel="noreferrer"
               className="font-semibold text-ink underline underline-offset-2 hover:text-forest-700"

@@ -1,4 +1,5 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Navigate } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { SEO } from "@/components/seo/SEO";
 import { Container } from "@/components/ui/Container";

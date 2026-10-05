@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { ArrowUpRight, Check, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types";
 import { cn, formatPrice } from "@/lib/utils";

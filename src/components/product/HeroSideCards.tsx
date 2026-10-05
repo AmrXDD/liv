@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDirection } from "@/hooks/useDirection";

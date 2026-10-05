@@ -1,4 +1,5 @@
-import { Link, Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Link, Navigate } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { ArrowDown } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";

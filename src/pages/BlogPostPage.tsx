@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";

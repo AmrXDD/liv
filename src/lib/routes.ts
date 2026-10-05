@@ -3,10 +3,11 @@ export const SELF_GUIDED_PATH = "/self-guided-programs-خطة-مقاومة-ال�
 
 /** True when the current pathname (percent-encoded or not) is on the self-guided section. */
 export const isSelfGuidedPath = (pathname: string) => {
+  const p = pathname === "/ar" || pathname.startsWith("/ar/") ? pathname.slice(3) : pathname;
   try {
-    return decodeURI(pathname).startsWith(SELF_GUIDED_PATH);
+    return decodeURI(p).startsWith(SELF_GUIDED_PATH);
   } catch {
-    return pathname.startsWith(SELF_GUIDED_PATH);
+    return p.startsWith(SELF_GUIDED_PATH);
   }
 };
 

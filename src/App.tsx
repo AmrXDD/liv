@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
+import { Navigate } from "@/lib/langRouting";
 import { Layout } from "@/components/layout/Layout";
 import { HomePage } from "@/pages/HomePage";
 import { DIYPlansPage } from "@/pages/DIYPlansPage";
@@ -48,60 +49,66 @@ import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG } from "@/lib/rout
 import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
 import { AdminQuizLeadsPage } from "@/pages/admin/AdminQuizLeadsPage";
 
+const publicRoutes = (
+  <>
+        <Route index element={<HomePage />} />
+
+        <Route path={SELF_GUIDED_PATH.slice(1)} element={<DIYPlansPage />} />
+        <Route path={`${SELF_GUIDED_PATH.slice(1)}/:slug`} element={<DIYProductPage />} />
+        {/* Old /diy-plans addresses (also 301-redirected in vercel.json) */}
+        <Route path="diy-plans" element={<Navigate to={SELF_GUIDED_PATH} replace />} />
+        <Route path="diy-plans/:slug" element={<LegacyDiyRedirect />} />
+
+        <Route path="shop" element={<ShopPage />} />
+        <Route path="shop/:slug" element={<DIYProductPage />} />
+
+        <Route path="coaching" element={<CoachingPage />} />
+        <Route path="coaching/:slug" element={<CoachingProductPage />} />
+
+        {/* Retired free assessment product: its traffic goes to the quiz */}
+        <Route path={"apply/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
+        <Route path={"coaching/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
+        <Route path="apply/:slug" element={<ApplyPage />} />
+
+        <Route path="consultations" element={<ConsultationsPage />} />
+
+        <Route path="blog" element={<BlogPage />} />
+        <Route path="blog/:slug" element={<BlogPostPage />} />
+
+        <Route path="about" element={<DynamicPage slug="about" />} />
+        <Route path="my-story" element={<DynamicPage slug="my-story" />} />
+        <Route path="why-us" element={<WhyUsPage />} />
+        <Route path="contact" element={<ContactPage />} />
+        <Route path="how-it-works" element={<DynamicPage slug="how-it-works" />} />
+        <Route path="faq" element={<DynamicPage slug="faq" />} />
+        <Route path="partners" element={<DynamicPage slug="partners" />} />
+        <Route path="b2b" element={<B2BPage />} />
+        <Route path="recommended" element={<RecommendedProductsPage />} />
+        <Route path="collections/:slug" element={<CollectionPage />} />
+        <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="checkout/success" element={<CheckoutSuccessPage />} />
+        <Route path="checkout/cancel" element={<CheckoutCancelPage />} />
+        <Route path="privacy" element={<DynamicPage slug="privacy-policy" />} />
+        <Route path="terms" element={<DynamicPage slug="refund-policy" />} />
+        <Route path="coaching-agreement" element={<DynamicPage slug="coaching-agreement" />} />
+
+        {/* Dynamic, admin-built pages */}
+        <Route path="p/:slug" element={<DynamicPage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
+  </>
+);
+
 export function App() {
   return (
     <Routes>
       {/* Lead-gen quiz: standalone (no site header/footer), linked from ads and social only */}
       <Route path={IR_QUIZ_PATH} element={<InsulinQuizPage />} />
+      <Route path={`/ar${IR_QUIZ_PATH}`} element={<InsulinQuizPage />} />
 
-      {/* Public site */}
-      <Route element={<Layout />}>
-        <Route index element={<HomePage />} />
-
-        <Route path={SELF_GUIDED_PATH} element={<DIYPlansPage />} />
-        <Route path={`${SELF_GUIDED_PATH}/:slug`} element={<DIYProductPage />} />
-        {/* Old /diy-plans addresses (also 301-redirected in vercel.json) */}
-        <Route path="/diy-plans" element={<Navigate to={SELF_GUIDED_PATH} replace />} />
-        <Route path="/diy-plans/:slug" element={<LegacyDiyRedirect />} />
-
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/shop/:slug" element={<DIYProductPage />} />
-
-        <Route path="/coaching" element={<CoachingPage />} />
-        <Route path="/coaching/:slug" element={<CoachingProductPage />} />
-
-        {/* Retired free assessment product: its traffic goes to the quiz */}
-        <Route path={"/apply/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
-        <Route path={"/coaching/"+FREE_ASSESSMENT_SLUG} element={<Navigate to={IR_QUIZ_PATH} replace />} />
-        <Route path="/apply/:slug" element={<ApplyPage />} />
-
-        <Route path="/consultations" element={<ConsultationsPage />} />
-
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
-
-        <Route path="/about" element={<DynamicPage slug="about" />} />
-        <Route path="/my-story" element={<DynamicPage slug="my-story" />} />
-        <Route path="/why-us" element={<WhyUsPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/how-it-works" element={<DynamicPage slug="how-it-works" />} />
-        <Route path="/faq" element={<DynamicPage slug="faq" />} />
-        <Route path="/partners" element={<DynamicPage slug="partners" />} />
-        <Route path="/b2b" element={<B2BPage />} />
-        <Route path="/recommended" element={<RecommendedProductsPage />} />
-        <Route path="/collections/:slug" element={<CollectionPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
-        <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
-        <Route path="/privacy" element={<DynamicPage slug="privacy-policy" />} />
-        <Route path="/terms" element={<DynamicPage slug="refund-policy" />} />
-        <Route path="/coaching-agreement" element={<DynamicPage slug="coaching-agreement" />} />
-
-        {/* Dynamic, admin-built pages */}
-        <Route path="/p/:slug" element={<DynamicPage />} />
-
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
+      {/* Public site: English at the root, Arabic mirrored under /ar */}
+      <Route element={<Layout />}>{publicRoutes}</Route>
+      <Route path="ar" element={<Layout />}>{publicRoutes}</Route>
 
       {/* Admin */}
       <Route path="/admin/login" element={<AdminLoginPage />} />

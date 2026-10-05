@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUpRight, Check, HeartHandshake, Languages, UserRound } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";

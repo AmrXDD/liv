@@ -7,6 +7,7 @@ import "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/lib/cart";
 import { App } from "./App";
+import { LanguageRouteSync } from "@/lib/langRouting";
 import "./index.css";
 
 const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
+          <LanguageRouteSync />
           <AuthProvider>
             <CartProvider>
               <App />

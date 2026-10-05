@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { ArrowUpRight } from "lucide-react";
 import { useDirection } from "@/hooks/useDirection";
 

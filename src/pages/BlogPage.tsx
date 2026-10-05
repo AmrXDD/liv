@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUpRight, BookOpen, Languages, PenLine } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";

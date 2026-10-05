@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";

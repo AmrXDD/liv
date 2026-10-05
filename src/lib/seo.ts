@@ -16,9 +16,8 @@ export function buildCanonical(path = "/") {
 }
 
 export function buildLangUrl(path = "/", lang: "en" | "ar" = "en") {
-  const base = new URL(path, SITE_URL);
-  if (lang === "ar") base.searchParams.set("lang", "ar");
-  return base.toString();
+  const clean = path.startsWith("/ar/") || path === "/ar" ? path.slice(3) || "/" : path;
+  return new URL(lang === "ar" ? (clean === "/" ? "/ar" : `/ar${clean}`) : clean, SITE_URL).toString();
 }
 
 export function organizationSchema() {

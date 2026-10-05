@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { langFromPath, stripLang, withLang } from "@/lib/langRouting";
 import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher({
@@ -10,13 +12,20 @@ export function LanguageSwitcher({
   compact?: boolean;
 }) {
   const { i18n, t } = useTranslation();
-  const next = i18n.language?.startsWith("ar") ? "en" : "ar";
+  const { pathname, search, hash } = useLocation();
+  const navigate = useNavigate();
+  const next = langFromPath(pathname) === "ar" ? "en" : "ar";
+  const switchLang = () => {
+    // The URL carries the language; LanguageRouteSync updates i18n from it.
+    if (pathname.startsWith("/admin")) return void i18n.changeLanguage(next);
+    navigate(`${withLang(stripLang(pathname), next)}${search}${hash}`);
+  };
 
   if (compact) {
     return (
       <button
         type="button"
-        onClick={() => i18n.changeLanguage(next)}
+        onClick={switchLang}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full border border-current/20",
           "px-3 py-2 text-eyebrow uppercase font-semibold min-h-[40px]",
@@ -34,7 +43,7 @@ export function LanguageSwitcher({
   return (
     <button
       type="button"
-      onClick={() => i18n.changeLanguage(next)}
+      onClick={switchLang}
       className={cn(
         "group inline-flex items-center gap-1.5 text-eyebrow uppercase font-semibold",
         "px-3 py-1.5 rounded-full border border-current/15 hover:border-current/50 transition-colors",
@@ -42,7 +51,7 @@ export function LanguageSwitcher({
       )}
       aria-label={t("nav.language")}
     >
-      <span className="opacity-70 group-hover:opacity-100">{i18n.language?.startsWith("ar") ? "AR" : "EN"}</span>
+      <span className="opacity-70 group-hover:opacity-100">{next === "en" ? "AR" : "EN"}</span>
       <span aria-hidden className="opacity-40">/</span>
       <span>{t("nav.language")}</span>
     </button>

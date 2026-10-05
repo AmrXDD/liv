@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { Download, PackageCheck, Truck, CheckCircle2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";

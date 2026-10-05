@@ -142,14 +142,21 @@ const routes = [
   },
 ];
 
-function buildHtml(template, route) {
+function buildHtml(template, route, lang = "en") {
   const isHome = route.path === "/";
-  const canonical = `${SITE_URL}${isHome ? "/" : encodeURI(route.path)}`;
-  const arUrl = `${canonical}${canonical.includes("?") ? "&" : "?"}lang=ar`;
+  const enUrl = `${SITE_URL}${isHome ? "/" : encodeURI(route.path)}`;
+  const arUrl = `${SITE_URL}/ar${isHome ? "" : encodeURI(route.path)}`;
+  const canonical = lang === "ar" ? arUrl : enUrl;
   const title = escapeAttr(route.title);
   const description = escapeAttr(route.description);
 
   let html = template;
+
+  if (lang === "ar") {
+    html = html.replace(/<html([^>]*?)\slang=["'][^"']*["']/i, '<html$1 lang="ar"');
+    if (/<html[^>]*\sdir=/i.test(html)) html = html.replace(/(<html[^>]*?)\sdir=["'][^"']*["']/i, '$1 dir="rtl"');
+    else html = html.replace(/<html/i, '<html dir="rtl"');
+  }
 
   // <title>
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
@@ -169,7 +176,7 @@ function buildHtml(template, route) {
   // hreflang alternates (replace all three; order: en, ar, x-default)
   html = html.replace(
     /<link\s+rel=["']alternate["']\s+hreflang=["']en["'][^>]*>/i,
-    `<link rel="alternate" hreflang="en" href="${canonical}" />`
+    `<link rel="alternate" hreflang="en" href="${enUrl}" />`
   );
   html = html.replace(
     /<link\s+rel=["']alternate["']\s+hreflang=["']ar["'][^>]*>/i,
@@ -177,7 +184,7 @@ function buildHtml(template, route) {
   );
   html = html.replace(
     /<link\s+rel=["']alternate["']\s+hreflang=["']x-default["'][^>]*>/i,
-    `<link rel="alternate" hreflang="x-default" href="${canonical}" />`
+    `<link rel="alternate" hreflang="x-default" href="${enUrl}" />`
   );
 
   // OG
@@ -218,6 +225,12 @@ function main() {
   let count = 0;
 
   for (const route of routes) {
+    // Arabic twin at /ar/<route> (same shell; the SPA fills in Arabic content)
+    const arDir = path.join(DIST, "ar", ...route.path.replace(/^\//, "").split("/").filter(Boolean));
+    fs.mkdirSync(arDir, { recursive: true });
+    fs.writeFileSync(path.join(arDir, "index.html"), buildHtml(template, route, "ar"), "utf8");
+    count += 1;
+
     const html = buildHtml(template, route);
     if (route.path === "/") {
       fs.writeFileSync(indexPath, html, "utf8");

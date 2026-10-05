@@ -1,4 +1,5 @@
-import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Navigate, useNavigate } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { Check, BadgeCheck } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";

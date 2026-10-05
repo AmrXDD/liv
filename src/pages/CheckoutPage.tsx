@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Navigate, useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { Navigate } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, Lock, Truck, AlertCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
