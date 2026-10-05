@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Download } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
+import { DIAL_COUNTRIES, dialLabel } from "@/data/dialCodes";
 import { getSupabase } from "@/lib/supabase";
 import { renderQuizImage } from "@/lib/quizImage";
 import { IR_QUIZ_PATH } from "@/lib/routes";
@@ -39,7 +40,8 @@ const copy = {
     ar: "أضف اسمك ورقم واتساب. ستراسلك رهام بخطوتك التالية.",
   },
   name: { en: "First name", ar: "الاسم الأول" },
-  phone: { en: "WhatsApp number (with country code)", ar: "رقم واتساب (مع رمز الدولة)" },
+  country: { en: "Country code", ar: "رمز الدولة" },
+  phone: { en: "WhatsApp number", ar: "رقم واتساب" },
   consent: {
     en: "I agree to be contacted on WhatsApp about my result.",
     ar: "أوافق على التواصل معي عبر واتساب بخصوص نتيجتي.",
@@ -59,13 +61,13 @@ const copy = {
   },
 } as const;
 
-/** Keeps digits and a leading "+"; defaults to Kuwait (+965) when no country code is typed. */
-function normalizePhone(raw: string): string | null {
+/** Dial code + local number -> "+9655xxxxxxx". Accepts a pasted full "+code…" / "00code…" number too. */
+function normalizePhone(dial: string, raw: string): string | null {
   let s = raw.trim().replace(/[\s\-().]/g, "");
   s = s.replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
   if (s.startsWith("00")) s = `+${s.slice(2)}`;
-  if (!s.startsWith("+")) s = /^\d{8}$/.test(s) ? `+965${s}` : `+${s}`;
-  return /^\+\d{8,15}$/.test(s) ? s : null;
+  const full = s.startsWith("+") ? s : `+${dial}${s.replace(/^0+/, "")}`;
+  return /^\+\d{8,15}$/.test(full) ? full : null;
 }
 
 export function InsulinQuizPage() {
@@ -78,7 +80,8 @@ export function InsulinQuizPage() {
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+965 ");
+  const [dial, setDial] = useState("KW");
+  const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [trap, setTrap] = useState("");
   const [phoneErr, setPhoneErr] = useState(false);
@@ -135,7 +138,7 @@ export function InsulinQuizPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const normalized = normalizePhone(phone);
+    const normalized = normalizePhone(DIAL_COUNTRIES.find((c) => c.iso === dial)?.dial ?? "965", phone);
     if (!normalized) {
       setPhoneErr(true);
       return;
@@ -287,20 +290,33 @@ export function InsulinQuizPage() {
                   <label className="mb-2 block text-sm font-medium" htmlFor="quiz-phone">
                     {t("phone")}
                   </label>
-                  <input
-                    id="quiz-phone"
-                    required
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    dir="ltr"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={cn(
-                      "w-full rounded-2xl border bg-white px-4 py-3.5 text-base focus:outline-none focus:ring-2",
-                      phoneErr ? "border-coral-500 focus:ring-coral-500/20" : "border-ink/10 focus:border-forest-500 focus:ring-forest-500/20",
-                    )}
-                  />
+                  <div dir="ltr" className="flex gap-2">
+                    <select
+                      aria-label={t("country")}
+                      value={dial}
+                      onChange={(e) => setDial(e.target.value)}
+                      className="w-[7.5rem] flex-shrink-0 rounded-2xl border border-ink/10 bg-white px-3 py-3.5 text-base focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20"
+                    >
+                      {DIAL_COUNTRIES.map((c) => (
+                        <option key={c.iso} value={c.iso} label={`${c.iso} +${c.dial}`}>
+                          {dialLabel(c, lang)}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      id="quiz-phone"
+                      required
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel-national"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={cn(
+                        "min-w-0 flex-1 rounded-2xl border bg-white px-4 py-3.5 text-base focus:outline-none focus:ring-2",
+                        phoneErr ? "border-coral-500 focus:ring-coral-500/20" : "border-ink/10 focus:border-forest-500 focus:ring-forest-500/20",
+                      )}
+                    />
+                  </div>
                   {phoneErr && <p className="mt-2 text-sm text-coral-700">{t("badPhone")}</p>}
                 </div>
                 {/* honeypot: real visitors never see or fill this */}
