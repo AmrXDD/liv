@@ -38,6 +38,28 @@
     font-feature-settings: "ss01", "ss02";
   }
 
+  /* Arabic needs taller lines than the Latin display scale (stacked dots and
+     marks collide at ~1.0) and must never be letter-spaced — negative tracking
+     breaks the joined letterforms. */
+  html[lang="ar"] * {
+    letter-spacing: normal !important;
+  }
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] h3,
+  html[lang="ar"] h4,
+  html[lang="ar"] [class*="text-display-"],
+  html[lang="ar"] [class*="leading-["],
+  html[lang="ar"] .leading-none,
+  html[lang="ar"] .leading-tight,
+  html[lang="ar"] .leading-snug {
+    line-height: 1.25 !important;
+  }
+  /* Reveal masks clip overflow per line; give Arabic marks room. */
+  html[lang="ar"] .overflow-hidden > .mask-inner {
+    padding-block: 0.1em;
+  }
+
   body {
     background: var(--color-bg);
     color: var(--color-fg);
