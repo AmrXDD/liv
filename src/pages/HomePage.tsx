@@ -8,7 +8,6 @@ import { LivMethodSection } from "@/components/home/LivMethodSection";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
-import { GlowNewsletter } from "@/components/home/GlowNewsletter";
 import { ConversionFunnel } from "@/components/home/ConversionFunnel";
 import { useTranslation } from "react-i18next";
 
@@ -33,7 +32,6 @@ export function HomePage() {
       <FeaturedProducts />
       <HowItWorks />
       <TestimonialsSlider />
-      <GlowNewsletter />
       <ConversionFunnel />
     </>
   );
