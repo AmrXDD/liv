@@ -272,6 +272,33 @@
   @media (max-width: 640px) {
     .rich-content img[data-width] { min-width: 60%; }
   }
+  /* Book call-to-action: a main button plus a smaller outlined one. */
+  .rich-content .liv-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5em 0 0.5em;
+  }
+  .rich-content a.liv-btn {
+    display: inline-block;
+    padding: 0.8em 1.5em;
+    border: 2px solid #006c45;
+    border-radius: 6px;
+    background: #006c45;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none;
+  }
+  .rich-content a.liv-btn:hover { background: #00563a; border-color: #00563a; color: #fff; }
+  .rich-content a.liv-btn-alt { background: transparent; color: #006c45; }
+  .rich-content a.liv-btn-alt:hover { background: #e8f0ec; color: #006c45; }
+  .rich-content .liv-cta-note {
+    margin: 0 0 1.5em;
+    font-size: 0.9em;
+    color: #3a4a44;
+  }
   .rich-content table {
     width: 100%;
     margin: 1.5em 0;
