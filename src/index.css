@@ -272,6 +272,24 @@
   @media (max-width: 640px) {
     .rich-content img[data-width] { min-width: 60%; }
   }
+  .rich-content table {
+    width: 100%;
+    margin: 1.5em 0;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    line-height: 1.55;
+  }
+  .rich-content th,
+  .rich-content td {
+    padding: 0.65em 0.8em;
+    border: 1px solid rgba(10, 22, 18, 0.12);
+    text-align: start;
+    vertical-align: top;
+  }
+  .rich-content th {
+    background: #e8f0ec;
+    font-weight: 700;
+  }
   .rich-content code {
     padding: 0.1em 0.35em;
     border-radius: 0.35em;
