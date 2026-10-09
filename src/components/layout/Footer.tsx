@@ -27,7 +27,7 @@ export function Footer() {
     { to: "/about", label: t("nav.about") },
     { to: "/my-story", label: t("nav.myStory") },
     { to: "/why-us", label: t("nav.whyUs") },
-    { to: "/b2b", label: t("nav.groupWorkshops") },
+    { to: "/liv-at-work", label: t("nav.livAtWork") },
   ];
 
   const support = [

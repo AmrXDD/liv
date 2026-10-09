@@ -34,7 +34,7 @@ export function MobileMenu({ open, onClose }: Props) {
     { to: "/blog", label: t("nav.blog") },
     { to: "/how-it-works", label: t("nav.howItWorks") },
     { to: "/faq", label: t("nav.faq") },
-    { to: "/b2b", label: t("nav.b2b") },
+    { to: "/liv-at-work", label: t("nav.livAtWork") },
     { to: "/recommended", label: t("nav.recommended") },
   ];
 

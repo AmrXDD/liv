@@ -12,7 +12,6 @@ import { BlogPage } from "@/pages/BlogPage";
 import { BlogPostPage } from "@/pages/BlogPostPage";
 import { WhyUsPage } from "@/pages/WhyUsPage";
 import { ContactPage } from "@/pages/ContactPage";
-import { B2BPage } from "@/pages/B2BPage";
 import { RecommendedProductsPage } from "@/pages/RecommendedProductsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { DynamicPage } from "@/pages/DynamicPage";
@@ -45,7 +44,8 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
-import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG } from "@/lib/routes";
+import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG } from "@/lib/routes";
+import { LivAtWorkPage } from "@/pages/LivAtWorkPage";
 import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
 import { AdminQuizLeadsPage } from "@/pages/admin/AdminQuizLeadsPage";
 
@@ -82,7 +82,11 @@ const publicRoutes = (
         <Route path="how-it-works" element={<DynamicPage slug="how-it-works" />} />
         <Route path="faq" element={<DynamicPage slug="faq" />} />
         <Route path="partners" element={<DynamicPage slug="partners" />} />
-        <Route path="b2b" element={<B2BPage />} />
+        <Route path={LIV_AT_WORK_PATH.slice(1)} element={<LivAtWorkPage />} />
+        {/* The old B2B page and the corporate coaching product now live on one landing page */}
+        <Route path="b2b" element={<Navigate to={LIV_AT_WORK_PATH} replace />} />
+        <Route path={"coaching/" + CORPORATE_PRODUCT_SLUG} element={<Navigate to={LIV_AT_WORK_PATH} replace />} />
+        <Route path={"apply/" + CORPORATE_PRODUCT_SLUG} element={<Navigate to={LIV_AT_WORK_PATH} replace />} />
         <Route path="recommended" element={<RecommendedProductsPage />} />
         <Route path="collections/:slug" element={<CollectionPage />} />
         <Route path="checkout" element={<CheckoutPage />} />

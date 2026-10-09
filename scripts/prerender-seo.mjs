@@ -51,7 +51,7 @@ const routes = [
     title:
       "Book Your Free 30-Minute Discovery Call | Liv Functional",
     description:
-      "Book a free 30-minute discovery call or a deep-dive holistic consultation with a functional nutrition practitioner.",
+      "Book a free 30-minute discovery call with a functional nutrition practitioner and walk away with a clear next step.",
   },
   {
     path: "/blog",
@@ -99,11 +99,10 @@ const routes = [
       "Talk to Liv Functional. We answer every email — usually within 48 hours.",
   },
   {
-    path: "/b2b",
-    title:
-      "B2B Wellness — Workshops, Retreats & Corporate Programs | Liv Functional",
+    path: "/liv-at-work",
+    title: "LIV At Work: Metabolic Health Workshops for Teams | Liv Functional",
     description:
-      "We design workshops that fit your corporate culture, event ideas, or wellness programs. Bilingual programming for teams under pressure.",
+      "A 3-hour live workshop at your office. Watch a real glucose monitor react to real food and leave with a plan for your working day. Up to 20 people, English or Arabic.",
   },
   {
     path: "/recommended",
@@ -199,10 +198,10 @@ const arCopy = {
     description:
       "تحدّثي إلى ليف فنكشنال. نردّ على كل بريد، وعادة خلال ٤٨ ساعة.",
   },
-  "/b2b": {
-    title: "ويلنس للشركات — ورش وخلوات وبرامج مؤسسية | ليف فنكشنال",
+  "/liv-at-work": {
+    title: "LIV At Work: ورش الصحة الأيضية لفرق العمل | ليف فنكشنال",
     description:
-      "نصمّم ورشًا تناسب ثقافة شركتكم وفعالياتكم وبرامجكم الصحية، ببرامج ثنائية اللغة لفرق تعمل تحت الضغط.",
+      "ورشة حية مدتها 3 ساعات في مقر شركتك. شاهد جهاز قياس سكر حقيقيًا يتفاعل مع أكل حقيقي، واخرج بخطة ليوم عملك. حتى 20 شخصًا، بالعربية أو الإنجليزية.",
   },
   "/recommended": {
     title: "منتجات نوصي بها — اختيارات ليف فنكشنال",

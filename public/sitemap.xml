@@ -194,20 +194,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/contact" />
   </url>
   <url>
-    <loc>https://www.livfunctional.com/b2b</loc>
+    <loc>https://www.livfunctional.com/liv-at-work</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/b2b" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/b2b" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/b2b" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/liv-at-work" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/liv-at-work" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/liv-at-work" />
   </url>
   <url>
-    <loc>https://www.livfunctional.com/ar/b2b</loc>
+    <loc>https://www.livfunctional.com/ar/liv-at-work</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/b2b" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/b2b" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/b2b" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/liv-at-work" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/liv-at-work" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/liv-at-work" />
   </url>
   <url>
     <loc>https://www.livfunctional.com/partners</loc>

@@ -17,3 +17,9 @@ export const IR_QUIZ_PATH =
 
 /** Slug of the retired "Do I have Insulin Resistance?" free-assessment product (redirects to the quiz). */
 export const FREE_ASSESSMENT_SLUG = "free-assessment-كيف-اعرف-إذا-عندي-مقاومة-انسولين";
+
+/** Corporate wellness landing page (replaces the old /b2b page). */
+export const LIV_AT_WORK_PATH = "/liv-at-work";
+
+/** Slug of the old "Liv At work | Corporate Wellness Coaching" product (redirects to the page above). */
+export const CORPORATE_PRODUCT_SLUG = "HR-corporate-wellness-coaching-program-corporate-event-idea-in-kuwait";
