@@ -97,7 +97,7 @@ const formats: {
     featured: true,
     title: { en: "LIV At Work Workshop", ar: "ورشة LIV At Work" },
     meta: { en: "3 hours · on site · up to 20 people", ar: "3 ساعات · في مقر الشركة · حتى 20 شخصًا" },
-    price: { en: "From KWD 950", ar: "ابتداءً من 950 د.ك" },
+    price: { en: "From KWD 650", ar: "ابتداءً من 650 د.ك" },
     bullets: [
       { en: "Live glucose monitor demo, projected on screen", ar: "عرض مباشر لجهاز قياس السكر على الشاشة" },
       { en: "Office food audit, if it suits your space", ar: "تدقيق في طعام المكتب إن كان المكان مناسبًا" },
