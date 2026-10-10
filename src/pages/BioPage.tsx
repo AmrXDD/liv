@@ -4,7 +4,7 @@ import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { ThreadsGlyph, TikTokGlyph, XGlyph } from "@/components/layout/Footer";
 import { Link } from "@/lib/langRouting";
-import { BIO_PATH, IR_QUIZ_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
+import { BIO_PATH, IR_QUIZ_PATH, LIV_AT_WORK_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://www.livfunctional.com").replace(/\/$/, "");
@@ -45,9 +45,19 @@ const links: {
     label: { en: "Self-guided programs", ar: "برامج التنفيذ الشخصي" },
   },
   {
+    href: LIV_AT_WORK_PATH,
+    external: false,
+    label: { en: "LIV At Work, for companies", ar: "ليف أت وورك للشركات" },
+  },
+  {
+    href: "https://www.amazon.com/dp/B0H2S82BF6",
+    external: true,
+    label: { en: "My LADA book on Amazon", ar: "كتابي عن LADA على أمازون" },
+  },
+  {
     href: "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
     external: true,
-    label: { en: "Reham's books on Amazon", ar: "كتب رهام على أمازون" },
+    label: { en: "More books by Reham", ar: "المزيد من كتب رهام" },
   },
 ];
 
