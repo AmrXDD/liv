@@ -139,6 +139,12 @@ const routes = [
       "Book a free discovery call, take the insulin resistance quiz, start a self-guided program or read Reham's books.",
   },
   {
+    path: "/insulin-reset-guide",
+    title: "Free 10-Day Insulin Sensitivity Reset | Liv Functional",
+    description:
+      "A free, structured 10-day plan for prediabetes, PCOS, high fasting insulin and high A1C. Enter your email to download it.",
+  },
+  {
     path: "/p/cgm-guide",
     title:
       "CGM Guide — Continuous Glucose Monitoring for Insulin Resistance | Liv Functional",
@@ -235,6 +241,11 @@ const arCopy = {
     description:
       "حجز مكالمة تعريفية مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق، وكتب رهام.",
   },
+  "/insulin-reset-guide": {
+    title: "إعادة ضبط حساسية الإنسولين خلال 10 أيام، مجانًا | ليف فنكشنال",
+    description:
+      "خطة منظمة مجانية لمدة 10 أيام لما قبل السكري وتكيس المبايض وارتفاع إنسولين الصيام وارتفاع A1C. أدخل بريدك الإلكتروني لتحميلها.",
+  },
   "/p/cgm-guide": {
     title: "دليل جهاز CGM — مراقبة الجلوكوز المستمرة لمقاومة الإنسولين | ليف فنكشنال",
     description:
@@ -261,6 +272,7 @@ const shareCopy = {
     "/recommended": "Products we actually use. Some links are affiliate, and your price stays the same.",
     "/partners": "Clinics, brands and practitioners we trust.",
     "/bio": "Book a free call, take the insulin resistance quiz, or start a self-guided program.",
+    "/insulin-reset-guide": "A free 10-day plan to improve insulin sensitivity. Enter your email and download it.",
     "/p/cgm-guide": "What a glucose monitor shows about your insulin resistance, and how to use it.",
   },
   ar: {
@@ -279,6 +291,7 @@ const shareCopy = {
     "/recommended": "منتجات نستخدمها نحن فعلًا. بعض الروابط تابعة ولا يتغير السعر عليك.",
     "/partners": "عيادات وعلامات وممارسون نثق بهم.",
     "/bio": "حجز مكالمة مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق.",
+    "/insulin-reset-guide": "خطة مجانية لمدة 10 أيام لتحسين حساسية الإنسولين. أدخل بريدك وحمّلها.",
     "/p/cgm-guide": "ماذا يكشف جهاز قياس السكر المستمر عن مقاومة الإنسولين عندك، وكيف تستفيدين من بياناته.",
   },
 };

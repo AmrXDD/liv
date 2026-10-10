@@ -26,3 +26,6 @@ export const CORPORATE_PRODUCT_SLUG = "HR-corporate-wellness-coaching-program-co
 
 /** Short link-in-bio page (standalone, no site header/footer). The old /p/link-in-bio redirects here. */
 export const BIO_PATH = "/bio";
+
+/** Email-gated landing page for the free 10-day insulin sensitivity reset (standalone, ad/social traffic). */
+export const INSULIN_RESET_GUIDE_PATH = "/insulin-reset-guide";

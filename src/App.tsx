@@ -44,7 +44,8 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
-import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH } from "@/lib/routes";
+import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH, INSULIN_RESET_GUIDE_PATH } from "@/lib/routes";
+import { InsulinResetGuidePage } from "@/pages/InsulinResetGuidePage";
 import { LivAtWorkPage } from "@/pages/LivAtWorkPage";
 import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
 import { BioPage } from "@/pages/BioPage";
@@ -115,6 +116,10 @@ export function App() {
       {/* Link-in-bio: standalone (no site header/footer) */}
       <Route path={BIO_PATH} element={<BioPage />} />
       <Route path={`/ar${BIO_PATH}`} element={<BioPage />} />
+
+      {/* Email-gated free guide: standalone (no site header/footer) */}
+      <Route path={INSULIN_RESET_GUIDE_PATH} element={<InsulinResetGuidePage />} />
+      <Route path={`/ar${INSULIN_RESET_GUIDE_PATH}`} element={<InsulinResetGuidePage />} />
 
       {/* Public site: English at the root, Arabic mirrored under /ar */}
       <Route element={<Layout />}>{publicRoutes}</Route>
