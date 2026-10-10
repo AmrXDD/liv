@@ -44,9 +44,10 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
-import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG } from "@/lib/routes";
+import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH } from "@/lib/routes";
 import { LivAtWorkPage } from "@/pages/LivAtWorkPage";
 import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
+import { BioPage } from "@/pages/BioPage";
 import { AdminQuizLeadsPage } from "@/pages/admin/AdminQuizLeadsPage";
 
 const publicRoutes = (
@@ -97,6 +98,7 @@ const publicRoutes = (
         <Route path="coaching-agreement" element={<DynamicPage slug="coaching-agreement" />} />
 
         {/* Dynamic, admin-built pages */}
+        <Route path="p/link-in-bio" element={<Navigate to={BIO_PATH} replace />} />
         <Route path="p/:slug" element={<DynamicPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
@@ -109,6 +111,10 @@ export function App() {
       {/* Lead-gen quiz: standalone (no site header/footer), linked from ads and social only */}
       <Route path={IR_QUIZ_PATH} element={<InsulinQuizPage />} />
       <Route path={`/ar${IR_QUIZ_PATH}`} element={<InsulinQuizPage />} />
+
+      {/* Link-in-bio: standalone (no site header/footer) */}
+      <Route path={BIO_PATH} element={<BioPage />} />
+      <Route path={`/ar${BIO_PATH}`} element={<BioPage />} />
 
       {/* Public site: English at the root, Arabic mirrored under /ar */}
       <Route element={<Layout />}>{publicRoutes}</Route>

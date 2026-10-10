@@ -6,6 +6,8 @@
   "installCommand": "npm install",
   "trailingSlash": false,
   "redirects": [
+    { "source": "/p/link-in-bio", "destination": "/bio", "permanent": true },
+    { "source": "/ar/p/link-in-bio", "destination": "/ar/bio", "permanent": true },
     { "source": "/b2b", "destination": "/liv-at-work", "permanent": true },
     { "source": "/coaching/HR-corporate-wellness-coaching-program-corporate-event-idea-in-kuwait", "destination": "/liv-at-work", "permanent": true },
     { "source": "/apply/HR-corporate-wellness-coaching-program-corporate-event-idea-in-kuwait", "destination": "/liv-at-work", "permanent": true },

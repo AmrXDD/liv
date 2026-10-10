@@ -23,3 +23,6 @@ export const LIV_AT_WORK_PATH = "/liv-at-work";
 
 /** Slug of the old "Liv At work | Corporate Wellness Coaching" product (redirects to the page above). */
 export const CORPORATE_PRODUCT_SLUG = "HR-corporate-wellness-coaching-program-corporate-event-idea-in-kuwait";
+
+/** Short link-in-bio page (standalone, no site header/footer). The old /p/link-in-bio redirects here. */
+export const BIO_PATH = "/bio";

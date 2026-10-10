@@ -133,6 +133,12 @@ const routes = [
       "The coaching agreement for clients enrolled in Liv Functional 1:1 programs.",
   },
   {
+    path: "/bio",
+    title: "Liv Functional · Links",
+    description:
+      "Book a free discovery call, take the insulin resistance quiz, start a self-guided program or read Reham's books.",
+  },
+  {
     path: "/p/cgm-guide",
     title:
       "CGM Guide — Continuous Glucose Monitoring for Insulin Resistance | Liv Functional",
@@ -224,12 +230,87 @@ const arCopy = {
     title: "اتفاقية التدريب | ليف فنكشنال",
     description: "اتفاقية التدريب للمشتركات في برامج ليف فنكشنال الفردية.",
   },
+  "/bio": {
+    title: "ليف فنكشنال · الروابط",
+    description:
+      "احجزي مكالمة تعريفية مجانية، وجرّبي اختبار مقاومة الإنسولين، وابدئي برنامج التنفيذ الشخصي، أو اقرئي كتب رهام.",
+  },
   "/p/cgm-guide": {
     title: "دليل جهاز CGM — مراقبة الجلوكوز المستمرة لمقاومة الإنسولين | ليف فنكشنال",
     description:
       "ماذا يكشف جهاز مراقبة الجلوكوز المستمرة (CGM) عن مقاومة الإنسولين لديكِ، وكيف تستخدمين بياناته لتغيير صحتك الأيضية.",
   },
 };
+
+// Short, warm text for link previews (WhatsApp, iMessage, Facebook, LinkedIn).
+// Falls back to the meta description when a route has no entry.
+const shareCopy = {
+  en: {
+    "/": "Functional nutrition coaching for women with insulin resistance. Programs, 1:1 coaching and a free call.",
+    "/self-guided-programs-خطة-مقاومة-الانسولين": "Self-paced plans to reset insulin resistance, hormones and gut health. Start today, at your own speed.",
+    "/coaching": "1:1 coaching with Reham to reverse insulin resistance, one realistic habit at a time.",
+    "/consultations": "A free 30-minute call. You leave knowing your next step.",
+    "/blog": "Plain-language notes on hormones, gut health and blood sugar.",
+    "/about": "A bilingual wellness studio built on functional medicine and real behavior change.",
+    "/my-story": "From Marketing VP to a LADA diagnosis at 44. Why Reham started LIV.",
+    "/why-us": "Bilingual, behavior-first and clinically grounded. Why women choose LIV.",
+    "/how-it-works": "What working with LIV looks like, step by step.",
+    "/faq": "Answers about the free discovery call and what happens next.",
+    "/contact": "Questions? Write to us. We reply within 48 hours.",
+    "/liv-at-work": "A 3-hour workshop at your office. A live glucose monitor reacts to real food. Up to 20 people.",
+    "/recommended": "Products we actually use. Some links are affiliate, and your price stays the same.",
+    "/partners": "Clinics, brands and practitioners we trust.",
+    "/bio": "Book a free call, take the insulin resistance quiz, or start a self-guided program.",
+    "/p/cgm-guide": "What a glucose monitor shows about your insulin resistance, and how to use it.",
+  },
+  ar: {
+    "/": "تغذية وظيفية للنساء مع مقاومة الإنسولين. برامج، وتدريب فردي، ومكالمة مجانية.",
+    "/self-guided-programs-خطة-مقاومة-الانسولين": "خطط ذاتية لإعادة ضبط مقاومة الإنسولين والهرمونات والأمعاء. ابدئي اليوم وبالسرعة التي تناسبك.",
+    "/coaching": "تدريب فردي مع رهام لعكس مقاومة الإنسولين، بعادة واقعية كل مرة.",
+    "/consultations": "مكالمة مجانية مدتها ٣٠ دقيقة. تخرجين منها وأنتِ تعرفين خطوتك التالية.",
+    "/blog": "ملاحظات بلغة بسيطة عن الهرمونات والأمعاء وسكر الدم.",
+    "/about": "استوديو صحي ثنائي اللغة، مبني على الطب الوظيفي وتغيير السلوك الحقيقي.",
+    "/my-story": "من نائبة رئيس تسويق إلى تشخيص LADA في الرابعة والأربعين. هكذا بدأت رهام ليف.",
+    "/why-us": "ثنائي اللغة، يبدأ بالسلوك، ومبني على أساس علمي. لماذا تختارنا النساء.",
+    "/how-it-works": "كيف يكون العمل معنا، خطوة بخطوة.",
+    "/faq": "أجوبة عن المكالمة التعريفية المجانية وما بعدها.",
+    "/contact": "عندك سؤال؟ اكتبي لنا. نردّ خلال ٤٨ ساعة.",
+    "/liv-at-work": "ورشة ٣ ساعات في مقر شركتكم. جهاز قياس سكر حي يتفاعل مع أكل حقيقي. حتى ٢٠ شخصًا.",
+    "/recommended": "منتجات نستخدمها نحن فعلًا. بعض الروابط تابعة ولا يتغير السعر عليك.",
+    "/partners": "عيادات وعلامات وممارسون نثق بهم.",
+    "/bio": "احجزي مكالمة مجانية، أو جرّبي اختبار مقاومة الإنسولين، أو ابدئي برنامج التنفيذ الشخصي.",
+    "/p/cgm-guide": "ماذا يكشف جهاز قياس السكر المستمر عن مقاومة الإنسولين عندك، وكيف تستفيدين من بياناته.",
+  },
+};
+
+// Share images live in public/og/. Drop a file named after the route slug to
+// give that page its own picture; add "-ar" for an Arabic-specific one.
+//   public/og/coaching.jpg, public/og/coaching-ar.jpg, ...
+// Anything missing falls back to public/og/default.png.
+const ogSlugs = {
+  "/": "home",
+  "/self-guided-programs-خطة-مقاومة-الانسولين": "programs",
+  "/p/cgm-guide": "cgm-guide",
+};
+const ogSlug = (routePath) =>
+  ogSlugs[routePath] ?? routePath.replace(/^\//, "").replace(/\//g, "-");
+
+function resolveOgImage(routePath, lang) {
+  const slug = ogSlug(routePath);
+  const candidates = [
+    ...(lang === "ar" ? [`${slug}-ar`] : []),
+    slug,
+    "default",
+  ];
+  for (const name of candidates) {
+    for (const ext of ["jpg", "png"]) {
+      if (fs.existsSync(path.join(DIST, "og", `${name}.${ext}`))) {
+        return `${SITE_URL}/og/${name}.${ext}`;
+      }
+    }
+  }
+  return `${SITE_URL}/liv-logo.png`;
+}
 
 function buildHtml(template, route, lang = "en") {
   const isHome = route.path === "/";
@@ -286,10 +367,28 @@ function buildHtml(template, route, lang = "en") {
     /<meta\s+property=["']og:title["'][^>]*>/i,
     `<meta property="og:title" content="${title}" />`
   );
+  const shareDescription = escapeAttr(
+    shareCopy[lang]?.[route.path] ?? copy.description
+  );
+  const ogImage = resolveOgImage(route.path, lang);
   html = html.replace(
     /<meta\s+property=["']og:description["'][^>]*>/i,
-    `<meta property="og:description" content="${description}" />`
+    `<meta property="og:description" content="${shareDescription}" />`
   );
+  html = html.replace(
+    /<meta\s+property=["']og:image["'][^>]*>/i,
+    `<meta property="og:image" content="${ogImage}" />\n    <meta property="og:image:width" content="1200" />\n    <meta property="og:image:height" content="630" />\n    <meta property="og:image:alt" content="${title}" />`
+  );
+  if (lang === "ar") {
+    html = html.replace(
+      /<meta\s+property=["']og:locale["'][^>]*>/i,
+      `<meta property="og:locale" content="ar_KW" />`
+    );
+    html = html.replace(
+      /<meta\s+property=["']og:locale:alternate["'][^>]*>/i,
+      `<meta property="og:locale:alternate" content="en_US" />`
+    );
+  }
 
   // Twitter
   html = html.replace(
@@ -298,7 +397,11 @@ function buildHtml(template, route, lang = "en") {
   );
   html = html.replace(
     /<meta\s+name=["']twitter:description["'][^>]*>/i,
-    `<meta name="twitter:description" content="${description}" />`
+    `<meta name="twitter:description" content="${shareDescription}" />`
+  );
+  html = html.replace(
+    /<meta\s+name=["']twitter:image["'][^>]*>/i,
+    `<meta name="twitter:image" content="${ogImage}" />`
   );
 
   return html;

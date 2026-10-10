@@ -224,7 +224,7 @@ function SocialIcon({
   );
 }
 
-function XGlyph() {
+export function XGlyph() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
       <path d="M18.244 2H21l-6.52 7.45L22 22h-6.797l-4.74-6.205L4.96 22H2.2l6.973-7.97L2 2h6.94l4.28 5.66L18.244 2zm-1.19 18h1.83L7.04 4H5.1l11.954 16z" />
@@ -232,7 +232,7 @@ function XGlyph() {
   );
 }
 
-function TikTokGlyph() {
+export function TikTokGlyph() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
       <path d="M16.5 3v3.2a5.3 5.3 0 0 0 4.5 2.2v3.1a8.4 8.4 0 0 1-4.5-1.4v6.5a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2a3 3 0 1 0 2 2.7V3h3z" />
@@ -240,7 +240,7 @@ function TikTokGlyph() {
   );
 }
 
-function ThreadsGlyph() {
+export function ThreadsGlyph() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M12 3a8 8 0 0 0-8 8c0 5.3 3.6 9 9 9 4 0 7-2.4 7-5.6 0-2.6-2-4.2-5-4.4-2.5-.2-4 .8-4.5 1.7M12 7c2.5 0 4 1.5 4.5 3" />
