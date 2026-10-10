@@ -50,9 +50,9 @@ const links: {
     label: { en: "LIV At Work, for companies", ar: "ليف أت وورك للشركات" },
   },
   {
-    href: "https://www.amazon.com/dp/B0H2S82BF6",
-    external: true,
-    label: { en: "My LADA book on Amazon", ar: "كتابي عن LADA على أمازون" },
+    href: "/shop/كتاب-علاج-مقاومة-الانسولين-بالعربي",
+    external: false,
+    label: { en: "Get the book: Reverse Insulin Resistance", ar: "كتاب علاج مقاومة الأنسولين" },
   },
   {
     href: "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
