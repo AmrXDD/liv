@@ -13,12 +13,12 @@ const copy = {
   name: { en: "Liv Functional", ar: "ليف فنكشنال" },
   tagline: {
     en: "Functional nutrition for women with insulin resistance",
-    ar: "تغذية وظيفية للنساء مع مقاومة الإنسولين",
+    ar: "تغذية وظيفية لمقاومة الإنسولين",
   },
   seoTitle: { en: "Liv Functional · Links", ar: "ليف فنكشنال · الروابط" },
   seoDesc: {
     en: "Book a free discovery call, take the insulin resistance quiz, start a self-guided program or read Reham's books.",
-    ar: "احجزي مكالمة تعريفية مجانية، وجرّبي اختبار مقاومة الإنسولين، وابدئي برنامج التنفيذ الشخصي، أو اقرئي كتب رهام.",
+    ar: "حجز مكالمة تعريفية مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق، وكتب رهام.",
   },
 } as const;
 
@@ -32,7 +32,7 @@ const links: {
     href: "https://cal.com/livfunctional/discovery?overlayCalendar=true",
     external: true,
     primary: true,
-    label: { en: "Book a free discovery call", ar: "احجزي مكالمة تعريفية مجانية" },
+    label: { en: "Book a free discovery call", ar: "حجز مكالمة تعريفية مجانية" },
   },
   {
     href: IR_QUIZ_PATH,
@@ -42,22 +42,22 @@ const links: {
   {
     href: SELF_GUIDED_PATH,
     external: false,
-    label: { en: "Self-guided programs", ar: "برامج التنفيذ الشخصي" },
+    label: { en: "Self-guided programs", ar: "برامج جاهزة للتطبيق" },
   },
   {
     href: LIV_AT_WORK_PATH,
     external: false,
-    label: { en: "LIV At Work, for companies", ar: "ليف أت وورك للشركات" },
+    label: { en: "LIV At Work, for companies", ar: "برامج توعية للشركات" },
   },
   {
     href: "/shop/كتاب-علاج-مقاومة-الانسولين-بالعربي",
     external: false,
-    label: { en: "Get the book: Reverse Insulin Resistance", ar: "كتاب علاج مقاومة الأنسولين" },
+    label: { en: "Get the book: Reverse Insulin Resistance", ar: "كتاب التغلب على مقاومة الانسولين" },
   },
   {
     href: "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
     external: true,
-    label: { en: "More books by Reham", ar: "المزيد من كتب رهام" },
+    label: { en: "More books by Reham", ar: "كتبي في امازون" },
   },
 ];
 
