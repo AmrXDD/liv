@@ -29,3 +29,6 @@ export const BIO_PATH = "/bio";
 
 /** Email-gated landing page for the free 10-day insulin sensitivity reset (standalone, ad/social traffic). */
 export const INSULIN_RESET_GUIDE_PATH = "/insulin-reset-guide";
+
+/** Downloadable agenda/tracker pages for readers of the book (standalone, Arabic first). */
+export const TRACKER_PATH = "/tracker";
