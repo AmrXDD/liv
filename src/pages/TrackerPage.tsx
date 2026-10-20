@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Bell, Check, Download, PenLine, Printer, Smartphone } from "lucide-react";
+import { ArrowUpRight, Check, Download, Lock, PenLine, Printer, Smartphone } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Link, useUrlLang } from "@/lib/langRouting";
@@ -18,8 +18,8 @@ const EN_COVER =
 const steps = [Printer, Smartphone, PenLine];
 
 /**
- * Per language. A file set to null shows "coming soon" plus the notify form, so the English
- * page can ship before its PDFs exist: drop them in public/downloads/tracker/ and set the paths.
+ * Per language. The download links stay hidden until the visitor gives a name and email.
+ * PDFs live in public/downloads/tracker/ (the gate is a soft one: the file URLs are not secret).
  */
 const copy = {
   ar: {
@@ -32,11 +32,10 @@ const copy = {
     title: "حمّل صفحات المتابعة الخاصة بكتابك",
     lede: "كيندل لا يعرض الصفحات المصممة بالشكل الذي صُممت به، لذلك وضعناها هنا بصيغة PDF جاهزة للطباعة أو للكتابة عليها من جهازك. هذه صفحات الفصلين التاسع والعاشر، من الصفحة 133 إلى 205.",
     all: "تحميل كل الصفحات",
-    allFile: `${DL}/liv-arabic-tracker-pages.pdf` as string | null,
+    allFile: `${DL}/liv-arabic-tracker-pages.pdf`,
     allMeta: "ملف واحد، 73 صفحة، 1.2 ميغابايت",
     or: "أو حمّل كل فصل لوحده",
     download: "تحميل PDF",
-    soon: "قريبًا",
     files: [
       {
         id: "ch9",
@@ -44,7 +43,7 @@ const copy = {
         title: "السجل اليومي",
         desc: "اليوم صفر، وصفحة لكل يوم من الأيام الـ 90، ولقطة أسبوعية في نهاية كل أسبوع.",
         meta: "الصفحات 133 إلى 194، 1.1 ميغابايت",
-        file: `${DL}/liv-tracker-chapter-9-daily-log.pdf` as string | null,
+        file: `${DL}/liv-tracker-chapter-9-daily-log.pdf`,
       },
       {
         id: "ch10",
@@ -52,17 +51,19 @@ const copy = {
         title: "المراجعات الأسبوعية",
         desc: "عشر دقائق كل أسبوع لتقرأ أرقامك وتلاحظ الأنماط، ثم ختام البروتوكول.",
         meta: "الصفحات 195 إلى 205، 0.4 ميغابايت",
-        file: `${DL}/liv-tracker-chapter-10-weekly-reviews.pdf` as string | null,
+        file: `${DL}/liv-tracker-chapter-10-weekly-reviews.pdf`,
       },
     ],
-    notifyTitle: "أخبرني عندما تجهز",
-    notifyBody: "اترك بريدك وسنرسل لك رابط الصفحات فور إضافتها.",
+    gateTitle: "أدخل اسمك وبريدك لفتح التحميل",
+    nameLabel: "الاسم",
+    namePh: "اسمك",
     emailLabel: "البريد الإلكتروني",
     emailPh: "name@example.com",
-    notifyBtn: "أرسل لي الرابط",
+    gateBtn: "افتح صفحات المتابعة",
     sending: "جارٍ الإرسال…",
-    error: "حدث خطأ ما. تحقق من بريدك الإلكتروني وحاول مرة أخرى.",
-    notifyOk: "تم. سنرسل لك الرابط عندما تجهز الصفحات.",
+    error: "أدخل اسمك وبريدًا إلكترونيًا صحيحًا وحاول مرة أخرى.",
+    locked: "تُفتح بعد التسجيل",
+    privacy: "سنرسل لك أيضًا نصائح متفرقة عن مقاومة الإنسولين. يمكنك إلغاء الاشتراك في أي وقت.",
     stepsTitle: "كيف تبدأ",
     steps: [
       { t: "اطبعها", d: "اطبع الصفحات بحجمها الأصلي، واحفظها في ملف. الصفحات مصممة للأبيض والأسود." },
@@ -128,11 +129,10 @@ const copy = {
     title: "Download your tracker pages",
     lede: "Kindle can't display heavily designed pages, so we put them here as PDFs you can print or write on from your tablet. These are the Chapter 9 and 10 pages from your book.",
     all: "Download all tracker pages",
-    allFile: `${DL}/liv-english-tracker-pages.pdf` as string | null,
+    allFile: `${DL}/liv-english-tracker-pages.pdf`,
     allMeta: "One file, 76 pages, 1.6 MB",
     or: "Or download each chapter on its own",
     download: "Download PDF",
-    soon: "Coming soon",
     files: [
       {
         id: "ch9",
@@ -140,7 +140,7 @@ const copy = {
         title: "The Daily Log",
         desc: "Day zero, one page for each of your 90 days, and a weekly snapshot at the end of every week.",
         meta: "57 pages, 0.3 MB",
-        file: `${DL}/liv-tracker-chapter-9-daily-log-en.pdf` as string | null,
+        file: `${DL}/liv-tracker-chapter-9-daily-log-en.pdf`,
       },
       {
         id: "ch10",
@@ -148,17 +148,19 @@ const copy = {
         title: "Weekly Reviews",
         desc: "Ten minutes a week to read your numbers and spot patterns, then the protocol wrap-up.",
         meta: "19 pages, 0.1 MB",
-        file: `${DL}/liv-tracker-chapter-10-weekly-reviews-en.pdf` as string | null,
+        file: `${DL}/liv-tracker-chapter-10-weekly-reviews-en.pdf`,
       },
     ],
-    notifyTitle: "Email me when they're ready",
-    notifyBody: "Leave your email and we'll send you the link as soon as the pages are added.",
+    gateTitle: "Enter your name and email to unlock the downloads",
+    nameLabel: "Name",
+    namePh: "Your name",
     emailLabel: "Email address",
     emailPh: "you@example.com",
-    notifyBtn: "Send me the link",
+    gateBtn: "Unlock my tracker pages",
     sending: "Sending…",
-    error: "Something went wrong. Please check your email and try again.",
-    notifyOk: "Done. We'll email you the link when the pages are ready.",
+    error: "Please enter your name and a valid email and try again.",
+    locked: "Unlocks after you sign up",
+    privacy: "We'll also send occasional tips on insulin resistance. Unsubscribe any time.",
     stepsTitle: "How to start",
     steps: [
       { t: "Print them", d: "Print the pages at their original size and keep them in a folder. They're designed for black and white." },
@@ -217,44 +219,67 @@ const copy = {
 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UNLOCK_KEY = "liv-tracker-unlocked";
 
-/** Standalone page for readers of the book: tracker downloads first, coaching upsell second. */
+const readUnlocked = () => {
+  try {
+    return localStorage.getItem(UNLOCK_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
+/** Standalone page for readers of the book: name + email unlocks the tracker downloads, coaching upsell follows. */
 export function TrackerPage() {
   const { i18n } = useTranslation();
   const lang = useUrlLang();
   const c = copy[lang];
   const dir = lang === "ar" ? "rtl" : "ltr";
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [trap, setTrap] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const [unlocked, setUnlocked] = useState(readUnlocked);
+  const [status, setStatus] = useState<"idle" | "loading" | "err">("idle");
 
-  const hasPending = !c.allFile || c.files.some((f) => !f.file);
+  const unlock = () => {
+    setUnlocked(true);
+    try {
+      localStorage.setItem(UNLOCK_KEY, "1");
+    } catch {
+      /* private mode: the page still unlocks for this visit */
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanName = name.trim();
     const clean = email.trim().toLowerCase();
-    if (!EMAIL_RE.test(clean)) {
+    if (!cleanName || !EMAIL_RE.test(clean)) {
       setStatus("err");
       return;
     }
     setStatus("loading");
-    // Honeypot: bots fill the hidden field. Report success without saving.
+    // Honeypot: bots fill the hidden field. Unlock without saving.
     if (trap) {
-      setStatus("ok");
+      unlock();
       return;
     }
     const sb = getSupabase();
     const payload = { email: clean, locale: i18n.language, source: `${SOURCE}-${lang}` };
     try {
       if (sb) {
-        const { error: fnErr } = await sb.functions.invoke("subscribe-newsletter", { body: payload });
+        // The name rides along for the edge function; the table fallback has no name column.
+        const { error: fnErr } = await sb.functions.invoke("subscribe-newsletter", {
+          body: { ...payload, name: cleanName },
+        });
         if (fnErr) {
           const { error } = await sb.from("newsletter").insert(payload);
           if (error) throw error;
         }
       }
-      setStatus("ok");
+      unlock();
+      setStatus("idle");
     } catch (err) {
       console.error("[tracker] subscribe failed:", err);
       setStatus("err");
@@ -263,6 +288,8 @@ export function TrackerPage() {
 
   const btn =
     "flex min-h-[56px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold transition-colors";
+  const field =
+    "mt-2 block min-h-[56px] w-full rounded-full border border-ink/20 bg-white px-5 text-base outline-none focus:border-forest-500";
 
   return (
     <div dir={dir} lang={lang} className="min-h-screen bg-bone-50 text-ink">
@@ -296,7 +323,7 @@ export function TrackerPage() {
             {c.title}
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-balance leading-relaxed text-ink-muted">{c.lede}</p>
-          {c.allFile ? (
+          {unlocked && (
             <>
               <a
                 href={c.allFile}
@@ -308,12 +335,74 @@ export function TrackerPage() {
               </a>
               <p className="mt-2 text-xs text-ink-muted">{c.allMeta}</p>
             </>
-          ) : (
-            <span className="mx-auto mt-7 inline-flex rounded-full bg-ink/5 px-5 py-3 text-sm font-semibold text-ink-muted">
-              {c.soon}
-            </span>
           )}
         </header>
+
+        {!unlocked && (
+          <form
+            onSubmit={submit}
+            noValidate
+            aria-live="polite"
+            className="mt-8 rounded-2xl border border-ink/10 bg-white p-6 text-start shadow-sm sm:p-8"
+          >
+            <h2 className="flex items-center justify-center gap-2 text-center text-xl font-bold">
+              <Lock className="h-4 w-4 text-ink-muted" aria-hidden />
+              {c.gateTitle}
+            </h2>
+            <label htmlFor="trk-name" className="mt-5 block text-sm font-medium">
+              {c.nameLabel}
+            </label>
+            <input
+              id="trk-name"
+              type="text"
+              autoComplete="name"
+              required
+              maxLength={120}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={c.namePh}
+              className={field}
+            />
+            <label htmlFor="trk-email" className="mt-4 block text-sm font-medium">
+              {c.emailLabel}
+            </label>
+            <input
+              id="trk-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              dir="ltr"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={c.emailPh}
+              className={field}
+            />
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden
+              value={trap}
+              onChange={(e) => setTrap(e.target.value)}
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className={cn(btn, "mt-5 bg-forest-500 text-bone-50 hover:bg-forest-600 disabled:opacity-60")}
+            >
+              {status === "loading" ? c.sending : c.gateBtn}
+            </button>
+            {status === "err" && (
+              <p role="alert" className="mt-3 text-center text-sm text-red-700">
+                {c.error}
+              </p>
+            )}
+            <p className="mt-4 text-center text-xs leading-relaxed text-ink-muted">{c.privacy}</p>
+          </form>
+        )}
 
         <section className="mt-10" aria-labelledby="dl-title">
           <h2 id="dl-title" className="mb-4 text-lg font-bold">
@@ -331,7 +420,7 @@ export function TrackerPage() {
                   <p className="mt-1 text-sm leading-relaxed text-ink-muted">{d.desc}</p>
                   {d.meta && <p className="mt-1 text-xs text-ink-muted">{d.meta}</p>}
                 </div>
-                {d.file ? (
+                {unlocked ? (
                   <a
                     href={d.file}
                     download
@@ -341,74 +430,14 @@ export function TrackerPage() {
                     {c.download}
                   </a>
                 ) : (
-                  <span className="inline-flex shrink-0 items-center justify-center self-start rounded-full bg-ink/5 px-4 py-2 text-sm font-semibold text-ink-muted sm:self-center">
-                    {c.soon}
+                  <span className="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-full bg-ink/5 px-4 py-2 text-sm font-semibold text-ink-muted sm:self-center">
+                    <Lock className="h-3.5 w-3.5" aria-hidden />
+                    {c.locked}
                   </span>
                 )}
               </li>
             ))}
           </ul>
-
-          {hasPending && (
-            <form
-              onSubmit={submit}
-              noValidate
-              aria-live="polite"
-              className="mt-4 rounded-2xl border border-dashed border-ink/20 p-5"
-            >
-              {status === "ok" ? (
-                <p className="flex items-center gap-2 text-sm font-medium">
-                  <Check className="h-5 w-5 text-forest-500" aria-hidden />
-                  {c.notifyOk}
-                </p>
-              ) : (
-                <>
-                  <h3 className="flex items-center gap-2 font-bold">
-                    <Bell className="h-4 w-4 text-ink-muted" aria-hidden />
-                    {c.notifyTitle}
-                  </h3>
-                  <p className="mt-1 text-sm text-ink-muted">{c.notifyBody}</p>
-                  <label htmlFor="trk-email" className="sr-only">
-                    {c.emailLabel}
-                  </label>
-                  <input
-                    id="trk-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    required
-                    dir="ltr"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={c.emailPh}
-                    className="mt-3 block min-h-[56px] w-full rounded-full border border-ink/20 bg-white px-5 text-base outline-none focus:border-forest-500"
-                  />
-                  <input
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden
-                    value={trap}
-                    onChange={(e) => setTrap(e.target.value)}
-                    className="absolute -left-[9999px] h-0 w-0 opacity-0"
-                  />
-                  <button
-                    type="submit"
-                    disabled={status === "loading"}
-                    className={cn(btn, "mt-3 border border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-bone-50 disabled:opacity-60")}
-                  >
-                    {status === "loading" ? c.sending : c.notifyBtn}
-                  </button>
-                  {status === "err" && (
-                    <p role="alert" className="mt-3 text-center text-sm text-red-700">
-                      {c.error}
-                    </p>
-                  )}
-                </>
-              )}
-            </form>
-          )}
         </section>
 
         <section className="mt-12" aria-labelledby="how-title">

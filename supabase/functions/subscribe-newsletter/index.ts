@@ -20,6 +20,7 @@ const corsHeaders = {
 
 interface NewsletterInput {
   email: string;
+  name?: string;
   locale?: string;
   source?: string;
 }
@@ -37,6 +38,8 @@ Deno.serve(async (req) => {
       });
     }
     const locale = (input.locale ?? "en").startsWith("ar") ? "ar" : "en";
+    // Optional. Needs supabase/newsletter_name.sql applied; skipped when no name is sent.
+    const name = (input.name ?? "").trim().slice(0, 120);
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -48,7 +51,13 @@ Deno.serve(async (req) => {
     const { error: dbErr } = await sb
       .from("newsletter")
       .upsert(
-        { email, locale, source: input.source ?? "site", unsubscribed_at: null },
+        {
+          email,
+          locale,
+          source: input.source ?? "site",
+          unsubscribed_at: null,
+          ...(name ? { name } : {}),
+        },
         { onConflict: "email" },
       );
     if (dbErr) throw dbErr;
