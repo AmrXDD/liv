@@ -146,9 +146,9 @@ const routes = [
   },
   {
     path: "/tracker",
-    title: "صفحات المتابعة لكتاب تغلب على مقاومة الأنسولين | ليف فنكشنال",
+    title: "Download Your Tracker Pages | Liv Functional",
     description:
-      "حمّل صفحات الفصلين التاسع والعاشر من كتابك بصيغة PDF. اطبعها أو اكتب عليها من جهازك اللوحي وسجّل أيامك الـ 90.",
+      "Download the Chapter 9 and 10 tracker pages from your book as PDFs. Print them or write on them from your tablet and log your 90 days.",
   },
   {
     path: "/p/cgm-guide",
@@ -284,7 +284,7 @@ const shareCopy = {
     "/partners": "Clinics, brands and practitioners we trust.",
     "/bio": "Book a free call, take the insulin resistance quiz, or start a self-guided program.",
     "/insulin-reset-guide": "A free 10-day plan to improve insulin sensitivity. Enter your email and download it.",
-    "/tracker": "صفحات المتابعة الخاصة بكتابك، جاهزة للطباعة أو للكتابة عليها من جهازك.",
+    "/tracker": "Your book's tracker pages, ready to print or write on from your device.",
     "/p/cgm-guide": "What a glucose monitor shows about your insulin resistance, and how to use it.",
   },
   ar: {

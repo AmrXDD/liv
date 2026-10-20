@@ -1,162 +1,326 @@
-import { Helmet } from "react-helmet-async";
-import { ArrowUpRight, Check, Download, PenLine, Printer, Smartphone } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ArrowUpRight, Bell, Check, Download, PenLine, Printer, Smartphone } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { Link, useUrlLang } from "@/lib/langRouting";
+import { getSupabase } from "@/lib/supabase";
 import { TRACKER_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://www.livfunctional.com").replace(/\/$/, "");
 const CALL_URL = "https://cal.com/livfunctional/discovery?overlayCalendar=true";
 const DL = "/downloads/tracker";
+const SOURCE = "book-tracker";
+const EN_COVER =
+  "https://qoomqtvldvgqecsvpftg.supabase.co/storage/v1/object/public/product-images/hero/1789393620015-kfokceks.png";
+
+const steps = [Printer, Smartphone, PenLine];
 
 /**
- * Arabic first. The English page reuses this component: add an `en` copy block and
- * file set, then pick by language and bring back the language switcher.
+ * Per language. A file set to null shows "coming soon" plus the notify form, so the English
+ * page can ship before its PDFs exist: drop them in public/downloads/tracker/ and set the paths.
  */
-const LANG = "ar" as const;
-
-const ar = {
-  seoTitle: "صفحات المتابعة لكتاب تغلب على مقاومة الأنسولين | ليف فنكشنال",
-  seoDesc:
-    "حمّل صفحات الفصلين التاسع والعاشر من كتابك بصيغة PDF. اطبعها أو اكتب عليها من جهازك اللوحي وسجّل أيامك الـ 90.",
-  name: "ليف فنكشنال",
-  coverAlt: "غلاف كتاب تغلب على مقاومة الأنسولين",
-  eyebrow: "لقرّاء كتاب تغلب على مقاومة الأنسولين",
-  title: "حمّل صفحات المتابعة الخاصة بكتابك",
-  lede: "كيندل لا يعرض الصفحات المصممة بالشكل الذي صُممت به، لذلك وضعناها هنا بصيغة PDF جاهزة للطباعة أو للكتابة عليها من جهازك. هذه صفحات الفصلين التاسع والعاشر، من الصفحة 133 إلى 205.",
-  all: "تحميل كل الصفحات",
-  allMeta: "ملف واحد، 73 صفحة، 1.2 ميغابايت",
-  or: "أو حمّل كل فصل لوحده",
-  download: "تحميل PDF",
-  files: [
-    {
-      id: "ch9",
-      chapter: "الفصل التاسع",
-      title: "السجل اليومي",
-      desc: "اليوم صفر، وصفحة لكل يوم من الأيام الـ 90، ولقطة أسبوعية في نهاية كل أسبوع.",
-      meta: "الصفحات 133 إلى 194، 1.1 ميغابايت",
-      file: `${DL}/liv-tracker-chapter-9-daily-log.pdf`,
-    },
-    {
-      id: "ch10",
-      chapter: "الفصل العاشر",
-      title: "المراجعات الأسبوعية",
-      desc: "عشر دقائق كل أسبوع لتقرأ أرقامك وتلاحظ الأنماط، ثم ختام البروتوكول.",
-      meta: "الصفحات 195 إلى 205، 0.4 ميغابايت",
-      file: `${DL}/liv-tracker-chapter-10-weekly-reviews.pdf`,
-    },
-  ],
-  allFile: `${DL}/liv-arabic-tracker-pages.pdf`,
-  stepsTitle: "كيف تبدأ",
-  steps: [
-    { icon: Printer, t: "اطبعها", d: "اطبع الصفحات بحجمها الأصلي، واحفظها في ملف. الصفحات مصممة للأبيض والأسود." },
-    { icon: Smartphone, t: "أو اكتب على جهازك", d: "افتح الملف في تطبيق مثل GoodNotes أو Notability واكتب عليه بالقلم." },
-    { icon: PenLine, t: "ابدأ باليوم صفر", d: "سجّل خط الأساس قبل تطبيق البروتوكول، ثم دقيقتان كل يوم." },
-  ],
-  coachEyebrow: "التنفيذ مع مدربة",
-  coachTitle: "لا تنفذ الأيام الـ 90 وحدك",
-  coachBody:
-    "عندما تسجل 90 يومًا من الأرقام يصير عندك بيانات تستحق أن تُقرأ. في برامج التدريب نقرؤها معك ونعدّل الخطة على جسمك أنت، من اليوم الأول حتى المراجعة النهائية.",
-  milestones: [
-    { d: "اليوم 1 إلى 14", t: "نراجع خط الأساس ونتأكد أنك تبدأ البروتوكول بشكل صحيح." },
-    { d: "اليوم 30", t: "أول مراجعة. نقارن أرقامك بخط الأساس ونعدّل." },
-    { d: "اليوم 60", t: "مراجعة منتصف الطريق. نثبّت ما نجح ونغيّر ما لم ينجح." },
-    { d: "اليوم 90", t: "المراجعة النهائية، وبروتوكول تكمل به بنفسك." },
-  ],
-  plansTitle: "اختر مستوى المتابعة",
-  plans: [
-    {
-      name: "برنامج تصحيح المسار",
-      tag: "متابعة منتظمة خلال الأسبوع",
-      points: [
-        "جلسة تعريفية مدتها 60 دقيقة وبروتوكول مكتوب لك",
-        "مكالمتان أسبوعيًا، 15 دقيقة لكل مكالمة",
-        "مجموعة واتساب والرد خلال 6 ساعات",
-        "تعديل البروتوكول كل شهر على بيانات جهاز الجلوكوز",
-      ],
-      cta: "تفاصيل البرنامج",
-      href: "/ar/coaching/guided-reset-علاج-مقاومة-الانسولين",
-    },
-    {
-      name: "برنامج طريقة LIV المكثّف",
-      tag: "المدربة معك كل يوم",
-      points: [
-        "جلسة فردية أسبوعية مدتها 30 دقيقة",
-        "متابعة يومية عبر واتساب والرد في اليوم نفسه",
-        "تعديل البروتوكول لحظة تتغير بياناتك",
-        "جدول مكملات ومنتجات LIV ضمن البرنامج",
-      ],
-      cta: "تفاصيل البرنامج",
-      href: "/ar/coaching/inner-circle-علاج-السكري-النوع-2-و-مقاومة-الانسولين",
-    },
-  ],
-  callTitle: "غير متأكد أي برنامج يناسبك؟",
-  callBody:
-    "احجز مكالمة تعريفية مجانية مدتها 30 دقيقة. أخبرنا أنك بدأت الكتاب لنبدأ من حيث وصلت، وتخرج وأنت تعرف خطوتك التالية.",
-  callBtn: "احجز مكالمتك المجانية",
-  allPrograms: "شاهد كل برامج التدريب",
-  faqTitle: "أسئلة قبل أن تبدأ",
-  faq: [
-    { q: "الملف لا يفتح عندي", a: "افتحه بتطبيق قارئ PDF مثل Adobe Acrobat Reader. على الهاتف يعمل في تطبيق الملفات أو Books." },
-    { q: "هل أطبع الصفحات كلها؟", a: "اطبع اليوم صفر وخريطة الأيام التسعين أولًا، ثم أسبوعًا بأسبوع. هكذا لا تضيع منك الصفحات." },
-    { q: "هل أحتاج النسخة الورقية من الكتاب؟", a: "لا. هذه الصفحات هي نفسها الموجودة في الفصلين التاسع والعاشر من نسختك الرقمية." },
-  ],
-  disclaimer: "معلومات تثقيفية وليست نصيحة طبية. استشر طبيبك قبل تغيير أي دواء أو مكمل.",
+const copy = {
+  ar: {
+    seoTitle: "صفحات المتابعة لكتاب تغلب على مقاومة الأنسولين | ليف فنكشنال",
+    seoDesc:
+      "حمّل صفحات الفصلين التاسع والعاشر من كتابك بصيغة PDF. اطبعها أو اكتب عليها من جهازك اللوحي وسجّل أيامك الـ 90.",
+    cover: "/tracker-cover.webp",
+    coverAlt: "غلاف كتاب تغلب على مقاومة الأنسولين",
+    eyebrow: "لقرّاء كتاب تغلب على مقاومة الأنسولين",
+    title: "حمّل صفحات المتابعة الخاصة بكتابك",
+    lede: "كيندل لا يعرض الصفحات المصممة بالشكل الذي صُممت به، لذلك وضعناها هنا بصيغة PDF جاهزة للطباعة أو للكتابة عليها من جهازك. هذه صفحات الفصلين التاسع والعاشر، من الصفحة 133 إلى 205.",
+    all: "تحميل كل الصفحات",
+    allFile: `${DL}/liv-arabic-tracker-pages.pdf` as string | null,
+    allMeta: "ملف واحد، 73 صفحة، 1.2 ميغابايت",
+    or: "أو حمّل كل فصل لوحده",
+    download: "تحميل PDF",
+    soon: "قريبًا",
+    files: [
+      {
+        id: "ch9",
+        chapter: "الفصل التاسع",
+        title: "السجل اليومي",
+        desc: "اليوم صفر، وصفحة لكل يوم من الأيام الـ 90، ولقطة أسبوعية في نهاية كل أسبوع.",
+        meta: "الصفحات 133 إلى 194، 1.1 ميغابايت",
+        file: `${DL}/liv-tracker-chapter-9-daily-log.pdf` as string | null,
+      },
+      {
+        id: "ch10",
+        chapter: "الفصل العاشر",
+        title: "المراجعات الأسبوعية",
+        desc: "عشر دقائق كل أسبوع لتقرأ أرقامك وتلاحظ الأنماط، ثم ختام البروتوكول.",
+        meta: "الصفحات 195 إلى 205، 0.4 ميغابايت",
+        file: `${DL}/liv-tracker-chapter-10-weekly-reviews.pdf` as string | null,
+      },
+    ],
+    notifyTitle: "أخبرني عندما تجهز",
+    notifyBody: "اترك بريدك وسنرسل لك رابط الصفحات فور إضافتها.",
+    emailLabel: "البريد الإلكتروني",
+    emailPh: "name@example.com",
+    notifyBtn: "أرسل لي الرابط",
+    sending: "جارٍ الإرسال…",
+    error: "حدث خطأ ما. تحقق من بريدك الإلكتروني وحاول مرة أخرى.",
+    notifyOk: "تم. سنرسل لك الرابط عندما تجهز الصفحات.",
+    stepsTitle: "كيف تبدأ",
+    steps: [
+      { t: "اطبعها", d: "اطبع الصفحات بحجمها الأصلي، واحفظها في ملف. الصفحات مصممة للأبيض والأسود." },
+      { t: "أو اكتب على جهازك", d: "افتح الملف في تطبيق مثل GoodNotes أو Notability واكتب عليه بالقلم." },
+      { t: "ابدأ باليوم صفر", d: "سجّل خط الأساس قبل تطبيق البروتوكول، ثم دقيقتان كل يوم." },
+    ],
+    coachEyebrow: "التنفيذ مع مدربة",
+    coachTitle: "لا تنفذ الأيام الـ 90 وحدك",
+    coachBody:
+      "عندما تسجل 90 يومًا من الأرقام يصير عندك بيانات تستحق أن تُقرأ. في برامج التدريب نقرؤها معك ونعدّل الخطة على جسمك أنت، من اليوم الأول حتى المراجعة النهائية.",
+    milestones: [
+      { d: "اليوم 1 إلى 14", t: "نراجع خط الأساس ونتأكد أنك تبدأ البروتوكول بشكل صحيح." },
+      { d: "اليوم 30", t: "أول مراجعة. نقارن أرقامك بخط الأساس ونعدّل." },
+      { d: "اليوم 60", t: "مراجعة منتصف الطريق. نثبّت ما نجح ونغيّر ما لم ينجح." },
+      { d: "اليوم 90", t: "المراجعة النهائية، وبروتوكول تكمل به بنفسك." },
+    ],
+    plansTitle: "اختر مستوى المتابعة",
+    plans: [
+      {
+        name: "برنامج تصحيح المسار",
+        tag: "متابعة منتظمة خلال الأسبوع",
+        points: [
+          "جلسة تعريفية مدتها 60 دقيقة وبروتوكول مكتوب لك",
+          "مكالمتان أسبوعيًا، 15 دقيقة لكل مكالمة",
+          "مجموعة واتساب والرد خلال 6 ساعات",
+          "تعديل البروتوكول كل شهر على بيانات جهاز الجلوكوز",
+        ],
+        href: "/coaching/guided-reset-علاج-مقاومة-الانسولين",
+      },
+      {
+        name: "برنامج طريقة LIV المكثّف",
+        tag: "المدربة معك كل يوم",
+        points: [
+          "جلسة فردية أسبوعية مدتها 30 دقيقة",
+          "متابعة يومية عبر واتساب والرد في اليوم نفسه",
+          "تعديل البروتوكول لحظة تتغير بياناتك",
+          "جدول مكملات ومنتجات LIV ضمن البرنامج",
+        ],
+        href: "/coaching/inner-circle-علاج-السكري-النوع-2-و-مقاومة-الانسولين",
+      },
+    ],
+    planCta: "تفاصيل البرنامج",
+    callTitle: "غير متأكد أي برنامج يناسبك؟",
+    callBody:
+      "احجز مكالمة تعريفية مجانية مدتها 30 دقيقة. أخبرنا أنك بدأت الكتاب لنبدأ من حيث وصلت، وتخرج وأنت تعرف خطوتك التالية.",
+    callBtn: "احجز مكالمتك المجانية",
+    allPrograms: "شاهد كل برامج التدريب",
+    faqTitle: "أسئلة قبل أن تبدأ",
+    faq: [
+      { q: "الملف لا يفتح عندي", a: "افتحه بتطبيق قارئ PDF مثل Adobe Acrobat Reader. على الهاتف يعمل في تطبيق الملفات أو Books." },
+      { q: "هل أطبع الصفحات كلها؟", a: "اطبع اليوم صفر وخريطة الأيام التسعين أولًا، ثم أسبوعًا بأسبوع. هكذا لا تضيع منك الصفحات." },
+      { q: "هل أحتاج النسخة الورقية من الكتاب؟", a: "لا. هذه الصفحات هي نفسها الموجودة في الفصلين التاسع والعاشر من نسختك الرقمية." },
+    ],
+    disclaimer: "معلومات تثقيفية وليست نصيحة طبية. استشر طبيبك قبل تغيير أي دواء أو مكمل.",
+  },
+  en: {
+    seoTitle: "Download Your Tracker Pages | Liv Functional",
+    seoDesc:
+      "Download the Chapter 9 and 10 tracker pages from your book as PDFs. Print them or write on them from your tablet and log your 90 days.",
+    cover: EN_COVER,
+    coverAlt: "Reverse Insulin Resistance: The 90-Day LIV Method, book cover",
+    eyebrow: "For readers of Reverse Insulin Resistance",
+    title: "Download your tracker pages",
+    lede: "Kindle can't display heavily designed pages, so we put them here as PDFs you can print or write on from your tablet. These are the Chapter 9 and 10 pages from your book.",
+    all: "Download all tracker pages",
+    allFile: null as string | null,
+    allMeta: "One file, Chapters 9 and 10",
+    or: "Or download each chapter on its own",
+    download: "Download PDF",
+    soon: "Coming soon",
+    files: [
+      {
+        id: "ch9",
+        chapter: "Chapter 9",
+        title: "The Daily Log",
+        desc: "Day zero, one page for each of your 90 days, and a weekly snapshot at the end of every week.",
+        meta: "",
+        file: null as string | null,
+      },
+      {
+        id: "ch10",
+        chapter: "Chapter 10",
+        title: "Weekly Reviews",
+        desc: "Ten minutes a week to read your numbers and spot patterns, then the protocol wrap-up.",
+        meta: "",
+        file: null as string | null,
+      },
+    ],
+    notifyTitle: "Email me when they're ready",
+    notifyBody: "Leave your email and we'll send you the link as soon as the pages are added.",
+    emailLabel: "Email address",
+    emailPh: "you@example.com",
+    notifyBtn: "Send me the link",
+    sending: "Sending…",
+    error: "Something went wrong. Please check your email and try again.",
+    notifyOk: "Done. We'll email you the link when the pages are ready.",
+    stepsTitle: "How to start",
+    steps: [
+      { t: "Print them", d: "Print the pages at their original size and keep them in a folder. They're designed for black and white." },
+      { t: "Or write on your device", d: "Open the file in an app like GoodNotes or Notability and write on it with a pencil." },
+      { t: "Start with day zero", d: "Record your baseline before you start the protocol, then two minutes a day." },
+    ],
+    coachEyebrow: "Coaching",
+    coachTitle: "Don't do the 90 days alone",
+    coachBody:
+      "After 90 days of logging you have data worth reading. In our coaching programs we read it with you and adjust the plan to your body, from day one to the final review.",
+    milestones: [
+      { d: "Days 1 to 14", t: "We review your baseline and make sure you're starting the protocol correctly." },
+      { d: "Day 30", t: "First review. We compare your numbers to your baseline and adjust." },
+      { d: "Day 60", t: "Midpoint review. We lock in what worked and change what didn't." },
+      { d: "Day 90", t: "Final review, and a protocol you can run on your own." },
+    ],
+    plansTitle: "Choose your level of support",
+    plans: [
+      {
+        name: "The Guided Reset Program",
+        tag: "Regular check-ins every week",
+        points: [
+          "60-minute onboarding session and a written protocol for you",
+          "Two 15-minute calls every week",
+          "WhatsApp group with a 6-hour response",
+          "Monthly protocol adjustment based on your CGM data",
+        ],
+        href: "/coaching/guided-reset-علاج-مقاومة-الانسولين",
+      },
+      {
+        name: "LIV Method Intensive",
+        tag: "Your coach with you every day",
+        points: [
+          "Weekly 30-minute 1:1 session",
+          "Daily WhatsApp check-in with a same-day response",
+          "Real-time protocol adjustment when your data changes",
+          "Supplement schedule and LIV products included",
+        ],
+        href: "/coaching/inner-circle-علاج-السكري-النوع-2-و-مقاومة-الانسولين",
+      },
+    ],
+    planCta: "Program details",
+    callTitle: "Not sure which program fits?",
+    callBody:
+      "Book a free 30-minute discovery call. Tell us you've started the book so we pick up where you are, and leave knowing your next step.",
+    callBtn: "Book your free call",
+    allPrograms: "See all coaching programs",
+    faqTitle: "Before you start",
+    faq: [
+      { q: "The file won't open", a: "Open it with a PDF reader such as Adobe Acrobat Reader. On your phone it opens in the Files app or Books." },
+      { q: "Do I print everything?", a: "Print day zero and the 90-day map first, then one week at a time. That way no pages get lost." },
+      { q: "Do I need the paperback?", a: "No. These are the same pages as Chapters 9 and 10 in your digital copy." },
+    ],
+    disclaimer: "Educational information, not medical advice. Talk to your doctor before changing medication or supplements.",
+  },
 } as const;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Standalone page for readers of the book: tracker downloads first, coaching upsell second. */
 export function TrackerPage() {
+  const { i18n } = useTranslation();
+  const lang = useUrlLang();
+  const c = copy[lang];
+  const dir = lang === "ar" ? "rtl" : "ltr";
+
+  const [email, setEmail] = useState("");
+  const [trap, setTrap] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+
+  const hasPending = !c.allFile || c.files.some((f) => !f.file);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(clean)) {
+      setStatus("err");
+      return;
+    }
+    setStatus("loading");
+    // Honeypot: bots fill the hidden field. Report success without saving.
+    if (trap) {
+      setStatus("ok");
+      return;
+    }
+    const sb = getSupabase();
+    const payload = { email: clean, locale: i18n.language, source: `${SOURCE}-${lang}` };
+    try {
+      if (sb) {
+        const { error: fnErr } = await sb.functions.invoke("subscribe-newsletter", { body: payload });
+        if (fnErr) {
+          const { error } = await sb.from("newsletter").insert(payload);
+          if (error) throw error;
+        }
+      }
+      setStatus("ok");
+    } catch (err) {
+      console.error("[tracker] subscribe failed:", err);
+      setStatus("err");
+    }
+  };
+
   const btn =
     "flex min-h-[56px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold transition-colors";
 
   return (
-    <div dir="rtl" lang={LANG} className="min-h-screen bg-bone-50 text-ink">
+    <div dir={dir} lang={lang} className="min-h-screen bg-bone-50 text-ink">
       <SEO
-        title={ar.seoTitle}
-        description={ar.seoDesc}
+        title={c.seoTitle}
+        description={c.seoDesc}
         path={TRACKER_PATH}
         image={`${SITE_URL}/og/default.png`}
       />
-      {/* /tracker is served at the English root, so pin the document to Arabic. */}
-      <Helmet>
-        <html lang="ar" dir="rtl" />
-      </Helmet>
 
       <div className="mx-auto w-full max-w-2xl px-5 pb-14 pt-5">
-        <a href="/ar" className="text-sm font-bold tracking-tight">
-          {ar.name}
-        </a>
+        <div className="flex items-center justify-between">
+          <Link to="/" aria-label="Liv Functional" className="flex items-center gap-1.5" dir="ltr">
+            <img src="/liv-mark.png" alt="" width={261} height={175} className="h-9 w-auto" />
+            <span className="text-lg font-black tracking-tight" style={{ color: "#ff5757" }}>
+              Functional
+            </span>
+          </Link>
+          <LanguageSwitcher compact />
+        </div>
 
         <header className="mt-8 text-center">
           <img
-            src="/tracker-cover.webp"
-            alt={ar.coverAlt}
-            width={625}
-            height={1000}
+            src={c.cover}
+            alt={c.coverAlt}
             loading="eager"
             className="mx-auto h-56 w-auto rounded-md shadow-lg"
           />
-          <p className="mt-6 text-sm font-semibold text-forest-500">{ar.eyebrow}</p>
+          <p className="mt-6 text-sm font-semibold text-forest-500">{c.eyebrow}</p>
           <h1 className="mt-3 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-            {ar.title}
+            {c.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-lg text-balance leading-relaxed text-ink-muted">{ar.lede}</p>
-          <a
-            href={ar.allFile}
-            download
-            className={cn(btn, "mx-auto mt-7 max-w-sm bg-forest-500 text-bone-50 hover:bg-forest-600")}
-          >
-            <Download className="h-5 w-5" aria-hidden />
-            {ar.all}
-          </a>
-          <p className="mt-2 text-xs text-ink-muted">{ar.allMeta}</p>
+          <p className="mx-auto mt-4 max-w-lg text-balance leading-relaxed text-ink-muted">{c.lede}</p>
+          {c.allFile ? (
+            <>
+              <a
+                href={c.allFile}
+                download
+                className={cn(btn, "mx-auto mt-7 max-w-sm bg-forest-500 text-bone-50 hover:bg-forest-600")}
+              >
+                <Download className="h-5 w-5" aria-hidden />
+                {c.all}
+              </a>
+              <p className="mt-2 text-xs text-ink-muted">{c.allMeta}</p>
+            </>
+          ) : (
+            <span className="mx-auto mt-7 inline-flex rounded-full bg-ink/5 px-5 py-3 text-sm font-semibold text-ink-muted">
+              {c.soon}
+            </span>
+          )}
         </header>
 
         <section className="mt-10" aria-labelledby="dl-title">
           <h2 id="dl-title" className="mb-4 text-lg font-bold">
-            {ar.or}
+            {c.or}
           </h2>
           <ul className="space-y-3">
-            {ar.files.map((d) => (
+            {c.files.map((d) => (
               <li
                 key={d.id}
                 className="flex flex-col gap-4 rounded-2xl border border-ink/10 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
@@ -165,45 +329,115 @@ export function TrackerPage() {
                   <p className="text-xs font-semibold text-forest-500">{d.chapter}</p>
                   <h3 className="mt-1 text-lg font-bold">{d.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-ink-muted">{d.desc}</p>
-                  <p className="mt-1 text-xs text-ink-muted">{d.meta}</p>
+                  {d.meta && <p className="mt-1 text-xs text-ink-muted">{d.meta}</p>}
                 </div>
-                <a
-                  href={d.file}
-                  download
-                  className={cn(btn, "border border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-bone-50 sm:w-auto sm:shrink-0")}
-                >
-                  <Download className="h-5 w-5" aria-hidden />
-                  {ar.download}
-                </a>
+                {d.file ? (
+                  <a
+                    href={d.file}
+                    download
+                    className={cn(btn, "border border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-bone-50 sm:w-auto sm:shrink-0")}
+                  >
+                    <Download className="h-5 w-5" aria-hidden />
+                    {c.download}
+                  </a>
+                ) : (
+                  <span className="inline-flex shrink-0 items-center justify-center self-start rounded-full bg-ink/5 px-4 py-2 text-sm font-semibold text-ink-muted sm:self-center">
+                    {c.soon}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
+
+          {hasPending && (
+            <form
+              onSubmit={submit}
+              noValidate
+              aria-live="polite"
+              className="mt-4 rounded-2xl border border-dashed border-ink/20 p-5"
+            >
+              {status === "ok" ? (
+                <p className="flex items-center gap-2 text-sm font-medium">
+                  <Check className="h-5 w-5 text-forest-500" aria-hidden />
+                  {c.notifyOk}
+                </p>
+              ) : (
+                <>
+                  <h3 className="flex items-center gap-2 font-bold">
+                    <Bell className="h-4 w-4 text-ink-muted" aria-hidden />
+                    {c.notifyTitle}
+                  </h3>
+                  <p className="mt-1 text-sm text-ink-muted">{c.notifyBody}</p>
+                  <label htmlFor="trk-email" className="sr-only">
+                    {c.emailLabel}
+                  </label>
+                  <input
+                    id="trk-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    required
+                    dir="ltr"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={c.emailPh}
+                    className="mt-3 block min-h-[56px] w-full rounded-full border border-ink/20 bg-white px-5 text-base outline-none focus:border-forest-500"
+                  />
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden
+                    value={trap}
+                    onChange={(e) => setTrap(e.target.value)}
+                    className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className={cn(btn, "mt-3 border border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-bone-50 disabled:opacity-60")}
+                  >
+                    {status === "loading" ? c.sending : c.notifyBtn}
+                  </button>
+                  {status === "err" && (
+                    <p role="alert" className="mt-3 text-center text-sm text-red-700">
+                      {c.error}
+                    </p>
+                  )}
+                </>
+              )}
+            </form>
+          )}
         </section>
 
         <section className="mt-12" aria-labelledby="how-title">
           <h2 id="how-title" className="mb-4 text-lg font-bold">
-            {ar.stepsTitle}
+            {c.stepsTitle}
           </h2>
           <ol className="grid gap-4 sm:grid-cols-3">
-            {ar.steps.map(({ icon: Icon, t, d }) => (
-              <li key={t} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink/5">
-                <Icon className="h-6 w-6 text-forest-500" aria-hidden />
-                <h3 className="mt-3 font-bold">{t}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-ink-muted">{d}</p>
-              </li>
-            ))}
+            {c.steps.map(({ t, d }, i) => {
+              const Icon = steps[i];
+              return (
+                <li key={t} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink/5">
+                  <Icon className="h-6 w-6 text-forest-500" aria-hidden />
+                  <h3 className="mt-3 font-bold">{t}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-muted">{d}</p>
+                </li>
+              );
+            })}
           </ol>
         </section>
 
         <section className="mt-14 rounded-3xl bg-forest-500 p-6 text-bone-50 sm:p-8" aria-labelledby="coach-title">
-          <p className="text-sm font-semibold opacity-80">{ar.coachEyebrow}</p>
+          <p className="text-sm font-semibold opacity-80">{c.coachEyebrow}</p>
           <h2 id="coach-title" className="mt-2 text-balance text-2xl font-bold leading-tight">
-            {ar.coachTitle}
+            {c.coachTitle}
           </h2>
-          <p className="mt-3 leading-relaxed opacity-90">{ar.coachBody}</p>
+          <p className="mt-3 leading-relaxed opacity-90">{c.coachBody}</p>
 
           <ol className="mt-6 space-y-3 border-s border-bone-50/30 ps-5">
-            {ar.milestones.map((m) => (
+            {c.milestones.map((m) => (
               <li key={m.d} className="relative">
                 <span className="absolute -start-[26px] top-1.5 h-2.5 w-2.5 rounded-full bg-bone-50" aria-hidden />
                 <p className="text-sm font-bold">{m.d}</p>
@@ -212,9 +446,9 @@ export function TrackerPage() {
             ))}
           </ol>
 
-          <h3 className="mt-8 text-lg font-bold">{ar.plansTitle}</h3>
+          <h3 className="mt-8 text-lg font-bold">{c.plansTitle}</h3>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
-            {ar.plans.map((p) => (
+            {c.plans.map((p) => (
               <article key={p.name} className="flex flex-col rounded-2xl bg-white p-5 text-ink">
                 <h4 className="text-lg font-bold">{p.name}</h4>
                 <p className="mt-1 text-sm text-forest-500">{p.tag}</p>
@@ -226,40 +460,40 @@ export function TrackerPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={p.href}
+                <Link
+                  to={p.href}
                   className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold underline underline-offset-4"
                 >
-                  {p.cta}
-                  <ArrowUpRight className="h-4 w-4 -scale-x-100" aria-hidden />
-                </a>
+                  {c.planCta}
+                  <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
+                </Link>
               </article>
             ))}
           </div>
 
           <div className="mt-8 text-center">
-            <h3 className="text-lg font-bold">{ar.callTitle}</h3>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed opacity-90">{ar.callBody}</p>
+            <h3 className="text-lg font-bold">{c.callTitle}</h3>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed opacity-90">{c.callBody}</p>
             <a
               href={CALL_URL}
               target="_blank"
               rel="noreferrer"
               className={cn(btn, "mx-auto mt-5 max-w-sm bg-bone-50 text-forest-500 hover:bg-white")}
             >
-              {ar.callBtn}
+              {c.callBtn}
             </a>
-            <a href="/ar/coaching" className="mt-4 inline-block text-sm font-semibold underline underline-offset-4">
-              {ar.allPrograms}
-            </a>
+            <Link to="/coaching" className="mt-4 inline-block text-sm font-semibold underline underline-offset-4">
+              {c.allPrograms}
+            </Link>
           </div>
         </section>
 
         <section className="mt-12" aria-labelledby="faq-title">
           <h2 id="faq-title" className="mb-4 text-lg font-bold">
-            {ar.faqTitle}
+            {c.faqTitle}
           </h2>
           <div className="space-y-3">
-            {ar.faq.map((f) => (
+            {c.faq.map((f) => (
               <details key={f.q} className="rounded-2xl border border-ink/10 bg-white p-4">
                 <summary className="cursor-pointer font-semibold">{f.q}</summary>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{f.a}</p>
@@ -268,7 +502,7 @@ export function TrackerPage() {
           </div>
         </section>
 
-        <p className="mt-10 text-center text-xs leading-relaxed text-ink-muted">{ar.disclaimer}</p>
+        <p className="mt-10 text-center text-xs leading-relaxed text-ink-muted">{c.disclaimer}</p>
       </div>
     </div>
   );
