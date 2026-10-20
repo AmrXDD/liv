@@ -136,7 +136,7 @@ const routes = [
     path: "/bio",
     title: "Liv Functional · Links",
     description:
-      "Book a free discovery call, take the insulin resistance quiz, start a self-guided program or read Reham's books.",
+      "Take the free insulin resistance quiz, read Reham's book, start a ready-made plan or work with Reham 1:1.",
   },
   {
     path: "/insulin-reset-guide",
@@ -245,7 +245,7 @@ const arCopy = {
   "/bio": {
     title: "ليف فنكشنال · الروابط",
     description:
-      "حجز مكالمة تعريفية مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق، وكتب رهام.",
+      "إختبار مقاومة الأنسولين مجانا، وكتاب مقاومة الأنسولين، وخطط جاهزة، وتدريب شخصي.",
   },
   "/insulin-reset-guide": {
     title: "إعادة ضبط حساسية الإنسولين خلال 10 أيام، مجانًا | ليف فنكشنال",
@@ -282,7 +282,7 @@ const shareCopy = {
     "/liv-at-work": "A 3-hour workshop at your office. A live glucose monitor reacts to real food. Up to 20 people.",
     "/recommended": "Products we actually use. Some links are affiliate, and your price stays the same.",
     "/partners": "Clinics, brands and practitioners we trust.",
-    "/bio": "Book a free call, take the insulin resistance quiz, or start a self-guided program.",
+    "/bio": "Take the free insulin resistance quiz, get the book, or start a ready-made plan.",
     "/insulin-reset-guide": "A free 10-day plan to improve insulin sensitivity. Enter your email and download it.",
     "/tracker": "Your book's tracker pages, ready to print or write on from your device.",
     "/p/cgm-guide": "What a glucose monitor shows about your insulin resistance, and how to use it.",
@@ -302,7 +302,7 @@ const shareCopy = {
     "/liv-at-work": "ورشة ٣ ساعات في مقر شركتكم. جهاز قياس سكر حي يتفاعل مع أكل حقيقي. حتى ٢٠ شخصًا.",
     "/recommended": "منتجات نستخدمها نحن فعلًا. بعض الروابط تابعة ولا يتغير السعر عليك.",
     "/partners": "عيادات وعلامات وممارسون نثق بهم.",
-    "/bio": "حجز مكالمة مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق.",
+    "/bio": "إختبار مقاومة الأنسولين مجانا، وكتاب مقاومة الأنسولين، وخطط جاهزة.",
     "/insulin-reset-guide": "خطة مجانية لمدة 10 أيام لتحسين حساسية الإنسولين. أدخل بريدك وحمّلها.",
     "/tracker": "صفحات المتابعة الخاصة بكتابك، جاهزة للطباعة أو للكتابة عليها من جهازك.",
     "/p/cgm-guide": "ماذا يكشف جهاز قياس السكر المستمر عن مقاومة الإنسولين عندك، وكيف تستفيدين من بياناته.",

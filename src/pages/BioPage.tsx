@@ -17,8 +17,8 @@ const copy = {
   },
   seoTitle: { en: "Liv Functional · Links", ar: "ليف فنكشنال · الروابط" },
   seoDesc: {
-    en: "Book a free discovery call, take the insulin resistance quiz, start a self-guided program or read Reham's books.",
-    ar: "حجز مكالمة تعريفية مجانية، واختبار مقاومة الإنسولين، وبرامج جاهزة للتطبيق، وكتب رهام.",
+    en: "Take the free insulin resistance quiz, read Reham's book, start a ready-made plan or work with Reham 1:1.",
+    ar: "إختبار مقاومة الأنسولين مجانا، وكتاب مقاومة الأنسولين، وخطط جاهزة، وتدريب شخصي.",
   },
 } as const;
 
@@ -29,35 +29,35 @@ const links: {
   label: { en: string; ar: string };
 }[] = [
   {
-    href: "https://cal.com/livfunctional/discovery?overlayCalendar=true",
-    external: true,
-    primary: true,
-    label: { en: "Book a free discovery call", ar: "حجز مكالمة تعريفية مجانية" },
-  },
-  {
     href: IR_QUIZ_PATH,
     external: false,
-    label: { en: "Take the insulin resistance quiz", ar: "اختبار مقاومة الإنسولين" },
-  },
-  {
-    href: SELF_GUIDED_PATH,
-    external: false,
-    label: { en: "Self-guided programs", ar: "برامج جاهزة للتطبيق" },
-  },
-  {
-    href: LIV_AT_WORK_PATH,
-    external: false,
-    label: { en: "LIV At Work, for companies", ar: "برامج توعية للشركات" },
+    primary: true,
+    label: { en: "Free insulin resistance quiz", ar: "إختبار مقاومة الأنسولين مجانا" },
   },
   {
     href: "/shop/كتاب-علاج-مقاومة-الانسولين-بالعربي",
     external: false,
-    label: { en: "Get the book: Reverse Insulin Resistance", ar: "كتاب التغلب على مقاومة الانسولين" },
+    label: { en: "Insulin resistance book (Arabic)", ar: "كتاب مقاومة الأنسولين (عربي)" },
   },
   {
     href: "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
     external: true,
-    label: { en: "More books by Reham", ar: "كتبي في امازون" },
+    label: { en: "All my books on Amazon", ar: "جميع كتبي على أمازون" },
+  },
+  {
+    href: SELF_GUIDED_PATH,
+    external: false,
+    label: { en: "Ready-made insulin resistance plans", ar: "خطط مقاومة الأنسولين الجاهزه" },
+  },
+  {
+    href: "/coaching",
+    external: false,
+    label: { en: "1:1 coaching", ar: "التدريب الشخصي" },
+  },
+  {
+    href: LIV_AT_WORK_PATH,
+    external: false,
+    label: { en: "Work with us: companies", ar: "التعاون مع الشركات" },
   },
 ];
 
