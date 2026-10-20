@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ArrowUpRight, Check, Download, Lock, PenLine, Printer, Smartphone } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
@@ -34,26 +33,6 @@ const copy = {
     all: "تحميل كل الصفحات",
     allFile: `${DL}/liv-arabic-tracker-pages.pdf`,
     allMeta: "ملف واحد، 73 صفحة، 1.2 ميغابايت",
-    or: "أو حمّل كل فصل لوحده",
-    download: "تحميل PDF",
-    files: [
-      {
-        id: "ch9",
-        chapter: "الفصل التاسع",
-        title: "السجل اليومي",
-        desc: "اليوم صفر، وصفحة لكل يوم من الأيام الـ 90، ولقطة أسبوعية في نهاية كل أسبوع.",
-        meta: "الصفحات 133 إلى 194، 1.1 ميغابايت",
-        file: `${DL}/liv-tracker-chapter-9-daily-log.pdf`,
-      },
-      {
-        id: "ch10",
-        chapter: "الفصل العاشر",
-        title: "المراجعات الأسبوعية",
-        desc: "عشر دقائق كل أسبوع لتقرأ أرقامك وتلاحظ الأنماط، ثم ختام البروتوكول.",
-        meta: "الصفحات 195 إلى 205، 0.4 ميغابايت",
-        file: `${DL}/liv-tracker-chapter-10-weekly-reviews.pdf`,
-      },
-    ],
     gateTitle: "أدخل اسمك وبريدك لفتح التحميل",
     nameLabel: "الاسم",
     namePh: "اسمك",
@@ -62,7 +41,6 @@ const copy = {
     gateBtn: "افتح صفحات المتابعة",
     sending: "جارٍ الإرسال…",
     error: "أدخل اسمك وبريدًا إلكترونيًا صحيحًا وحاول مرة أخرى.",
-    locked: "تُفتح بعد التسجيل",
     privacy: "سنرسل لك أيضًا نصائح متفرقة عن مقاومة الإنسولين. يمكنك إلغاء الاشتراك في أي وقت.",
     stepsTitle: "كيف تبدأ",
     steps: [
@@ -131,26 +109,6 @@ const copy = {
     all: "Download all tracker pages",
     allFile: `${DL}/liv-english-tracker-pages.pdf`,
     allMeta: "One file, 76 pages, 1.6 MB",
-    or: "Or download each chapter on its own",
-    download: "Download PDF",
-    files: [
-      {
-        id: "ch9",
-        chapter: "Chapter 9",
-        title: "The Daily Log",
-        desc: "Day zero, one page for each of your 90 days, and a weekly snapshot at the end of every week.",
-        meta: "57 pages, 0.3 MB",
-        file: `${DL}/liv-tracker-chapter-9-daily-log-en.pdf`,
-      },
-      {
-        id: "ch10",
-        chapter: "Chapter 10",
-        title: "Weekly Reviews",
-        desc: "Ten minutes a week to read your numbers and spot patterns, then the protocol wrap-up.",
-        meta: "19 pages, 0.1 MB",
-        file: `${DL}/liv-tracker-chapter-10-weekly-reviews-en.pdf`,
-      },
-    ],
     gateTitle: "Enter your name and email to unlock the downloads",
     nameLabel: "Name",
     namePh: "Your name",
@@ -159,7 +117,6 @@ const copy = {
     gateBtn: "Unlock my tracker pages",
     sending: "Sending…",
     error: "Please enter your name and a valid email and try again.",
-    locked: "Unlocks after you sign up",
     privacy: "We'll also send occasional tips on insulin resistance. Unsubscribe any time.",
     stepsTitle: "How to start",
     steps: [
@@ -231,7 +188,6 @@ const readUnlocked = () => {
 
 /** Standalone page for readers of the book: name + email unlocks the tracker downloads, coaching upsell follows. */
 export function TrackerPage() {
-  const { i18n } = useTranslation();
   const lang = useUrlLang();
   const c = copy[lang];
   const dir = lang === "ar" ? "rtl" : "ltr";
@@ -266,17 +222,15 @@ export function TrackerPage() {
       return;
     }
     const sb = getSupabase();
-    const payload = { email: clean, locale: i18n.language, source: `${SOURCE}-${lang}` };
+    const payload = { email: clean, locale: lang, source: `${SOURCE}-${lang}` };
     try {
       if (sb) {
-        // The name rides along for the edge function; the table fallback has no name column.
-        const { error: fnErr } = await sb.functions.invoke("subscribe-newsletter", {
-          body: { ...payload, name: cleanName },
-        });
-        if (fnErr) {
-          const { error } = await sb.from("newsletter").insert(payload);
-          if (error) throw error;
-        }
+        // The live edge function ignores the name, so save it straight to the table (a duplicate email is fine),
+        // then call the function for the welcome email. The name is sent to it too, for when it stores names.
+        const ins = await sb.from("newsletter").insert({ ...payload, name: cleanName });
+        const fn = await sb.functions.invoke("subscribe-newsletter", { body: { ...payload, name: cleanName } });
+        const saved = !ins.error || ins.error.code === "23505";
+        if (!saved && fn.error) throw ins.error;
       }
       unlock();
       setStatus("idle");
@@ -301,13 +255,7 @@ export function TrackerPage() {
       />
 
       <div className="mx-auto w-full max-w-2xl px-5 pb-14 pt-5">
-        <div className="flex items-center justify-between">
-          <Link to="/" aria-label="Liv Functional" className="flex items-center gap-1.5" dir="ltr">
-            <img src="/liv-mark.png" alt="" width={261} height={175} className="h-9 w-auto" />
-            <span className="text-lg font-black tracking-tight" style={{ color: "#ff5757" }}>
-              Functional
-            </span>
-          </Link>
+        <div className="flex justify-end">
           <LanguageSwitcher compact />
         </div>
 
@@ -403,42 +351,6 @@ export function TrackerPage() {
             <p className="mt-4 text-center text-xs leading-relaxed text-ink-muted">{c.privacy}</p>
           </form>
         )}
-
-        <section className="mt-10" aria-labelledby="dl-title">
-          <h2 id="dl-title" className="mb-4 text-lg font-bold">
-            {c.or}
-          </h2>
-          <ul className="space-y-3">
-            {c.files.map((d) => (
-              <li
-                key={d.id}
-                className="flex flex-col gap-4 rounded-2xl border border-ink/10 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <p className="text-xs font-semibold text-forest-500">{d.chapter}</p>
-                  <h3 className="mt-1 text-lg font-bold">{d.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-muted">{d.desc}</p>
-                  {d.meta && <p className="mt-1 text-xs text-ink-muted">{d.meta}</p>}
-                </div>
-                {unlocked ? (
-                  <a
-                    href={d.file}
-                    download
-                    className={cn(btn, "border border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-bone-50 sm:w-auto sm:shrink-0")}
-                  >
-                    <Download className="h-5 w-5" aria-hidden />
-                    {c.download}
-                  </a>
-                ) : (
-                  <span className="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-full bg-ink/5 px-4 py-2 text-sm font-semibold text-ink-muted sm:self-center">
-                    <Lock className="h-3.5 w-3.5" aria-hidden />
-                    {c.locked}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
 
         <section className="mt-12" aria-labelledby="how-title">
           <h2 id="how-title" className="mb-4 text-lg font-bold">
