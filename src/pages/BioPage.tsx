@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowUpRight, Facebook, Instagram, Linkedin } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
-import { ThreadsGlyph, TikTokGlyph, XGlyph } from "@/components/layout/Footer";
+import { TikTokGlyph, XGlyph } from "@/components/layout/Footer";
 import { Link } from "@/lib/langRouting";
 import { BIO_PATH, IR_QUIZ_PATH, LIV_AT_WORK_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -67,7 +67,6 @@ const socials = [
   { href: "https://www.facebook.com/liv.lowcarb/", label: "Facebook", icon: <Facebook className="h-5 w-5" /> },
   { href: "https://x.com/livfunctional", label: "X", icon: <XGlyph /> },
   { href: "https://www.linkedin.com/company/livfunctional/", label: "LinkedIn", icon: <Linkedin className="h-5 w-5" /> },
-  { href: "https://www.threads.com/@livfunctional", label: "Threads", icon: <ThreadsGlyph /> },
 ];
 
 const linkClass = (primary?: boolean) =>
