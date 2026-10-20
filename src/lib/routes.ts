@@ -32,9 +32,3 @@ export const INSULIN_RESET_GUIDE_PATH = "/insulin-reset-guide";
 
 /** Downloadable agenda/tracker pages for readers of the book (standalone, Arabic first). */
 export const TRACKER_PATH = "/tracker";
-
-/** English twin of the tracker page. /tracker itself always opens the Arabic page (the Arabic book links to it). */
-export const TRACKER_EN_PATH = "/tracker-en";
-
-/** English-only URLs that must not be bounced to their /ar twin for visitors whose browser language is Arabic. */
-export const LANG_PINNED_PATHS: string[] = [TRACKER_EN_PATH];

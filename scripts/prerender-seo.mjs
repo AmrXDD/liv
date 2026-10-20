@@ -151,12 +151,6 @@ const routes = [
       "Download the Chapter 9 and 10 tracker pages from your book as PDFs. Print them or write on them from your tablet and log your 90 days.",
   },
   {
-    path: "/tracker-en",
-    title: "Download Your Tracker Pages | Liv Functional",
-    description:
-      "Download the Chapter 9 and 10 tracker pages from your book as PDFs. Print them or write on them from your tablet and log your 90 days.",
-  },
-  {
     path: "/p/cgm-guide",
     title:
       "CGM Guide — Continuous Glucose Monitoring for Insulin Resistance | Liv Functional",
@@ -291,7 +285,6 @@ const shareCopy = {
     "/bio": "Book a free call, take the insulin resistance quiz, or start a self-guided program.",
     "/insulin-reset-guide": "A free 10-day plan to improve insulin sensitivity. Enter your email and download it.",
     "/tracker": "Your book's tracker pages, ready to print or write on from your device.",
-    "/tracker-en": "Your book's tracker pages, ready to print or write on from your device.",
     "/p/cgm-guide": "What a glucose monitor shows about your insulin resistance, and how to use it.",
   },
   ar: {
