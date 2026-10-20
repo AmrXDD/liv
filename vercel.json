@@ -6,6 +6,7 @@
   "installCommand": "npm install",
   "trailingSlash": false,
   "redirects": [
+    { "source": "/tracker", "destination": "/ar/tracker", "permanent": false },
     { "source": "/p/link-in-bio", "destination": "/bio", "permanent": true },
     { "source": "/ar/p/link-in-bio", "destination": "/ar/bio", "permanent": true },
     { "source": "/b2b", "destination": "/liv-at-work", "permanent": true },

@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { Lang } from "@/lib/i18n";
+import { LANG_PINNED_PATHS } from "@/lib/routes";
 
 /** URL prefix for the Arabic site. English lives at the unprefixed root. */
 export const AR_PREFIX = "/ar";
@@ -93,7 +94,7 @@ export function LanguageRouteSync() {
 
     if (!firstLoadHandled) {
       firstLoadHandled = true;
-      if (urlLang === "en" && preferred === "ar") {
+      if (urlLang === "en" && preferred === "ar" && !LANG_PINNED_PATHS.includes(pathname)) {
         navigate(`${withLang(pathname, "ar")}${search}${hash}`, { replace: true });
         return;
       }

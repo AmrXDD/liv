@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Bell, Check, Download, PenLine, Printer, Smartphone } from "lucide-react";
+import { ArrowUpRight, Bell, Check, Download, Globe, PenLine, Printer, Smartphone } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
-import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Link, useUrlLang } from "@/lib/langRouting";
 import { getSupabase } from "@/lib/supabase";
-import { TRACKER_PATH } from "@/lib/routes";
+import { TRACKER_EN_PATH, TRACKER_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://www.livfunctional.com").replace(/\/$/, "");
@@ -269,7 +268,8 @@ export function TrackerPage() {
       <SEO
         title={c.seoTitle}
         description={c.seoDesc}
-        path={TRACKER_PATH}
+        path={lang === "ar" ? TRACKER_PATH : TRACKER_EN_PATH}
+        noindex={lang === "en"}
         image={`${SITE_URL}/og/default.png`}
       />
 
@@ -281,7 +281,14 @@ export function TrackerPage() {
               Functional
             </span>
           </Link>
-          <LanguageSwitcher compact />
+          {/* /tracker is Arabic only (the Arabic book links to it), so the toggle is a plain link, not the site switcher. */}
+          <a
+            href={lang === "ar" ? TRACKER_EN_PATH : `/ar${TRACKER_PATH}`}
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-ink/20 px-3 py-2 text-sm font-semibold transition-colors hover:border-ink/50"
+          >
+            <Globe className="h-4 w-4 opacity-70" aria-hidden />
+            {lang === "ar" ? "English" : "العربية"}
+          </a>
         </div>
 
         <header className="mt-8 text-center">

@@ -44,7 +44,7 @@ import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
 import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
 import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
 import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
-import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH, INSULIN_RESET_GUIDE_PATH, TRACKER_PATH } from "@/lib/routes";
+import { SELF_GUIDED_PATH, IR_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH, INSULIN_RESET_GUIDE_PATH, TRACKER_PATH, TRACKER_EN_PATH } from "@/lib/routes";
 import { InsulinResetGuidePage } from "@/pages/InsulinResetGuidePage";
 import { TrackerPage } from "@/pages/TrackerPage";
 import { LivAtWorkPage } from "@/pages/LivAtWorkPage";
@@ -123,7 +123,8 @@ export function App() {
       <Route path={`/ar${INSULIN_RESET_GUIDE_PATH}`} element={<InsulinResetGuidePage />} />
 
       {/* Book tracker downloads: standalone (no site header/footer) */}
-      <Route path={TRACKER_PATH} element={<TrackerPage />} />
+      <Route path={TRACKER_PATH} element={<Navigate to={`/ar${TRACKER_PATH}`} replace />} />
+      <Route path={TRACKER_EN_PATH} element={<TrackerPage />} />
       <Route path={`/ar${TRACKER_PATH}`} element={<TrackerPage />} />
 
       {/* Public site: English at the root, Arabic mirrored under /ar */}
