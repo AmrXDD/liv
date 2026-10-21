@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,10 +9,16 @@ import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
 import { DIAL_COUNTRIES, dialLabel } from "@/data/dialCodes";
 import { getSupabase } from "@/lib/supabase";
 import { renderQuizImage } from "@/lib/quizImage";
-import { IR_QUIZ_PATH } from "@/lib/routes";
-import { cn } from "@/lib/utils";
+import { IR_QUIZ_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
+import { useProduct } from "@/lib/queries";
+import { cn, formatPrice } from "@/lib/utils";
 import {
+  hasHighLabs,
   IR_QUIZ_SOURCE,
+  QUIZ_DISCLAIMER,
+  QUIZ_DOCTOR_NOTE,
+  QUIZ_OFFERS,
+  QUIZ_PLAN_SLUG,
   QUIZ_QUESTIONS,
   scoreQuiz,
   type QuizResult,
@@ -50,6 +56,7 @@ const copy = {
   badPhone: { en: "Please enter a valid WhatsApp number.", ar: "من فضلك أدخل رقم واتساب صحيحًا." },
   resultEyebrow: { en: "Your result", ar: "نتيجتك" },
   openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسل النتيجة لرهام على واتساب" },
+  nextStep: { en: "Your next step", ar: "خطوتك التالية" },
   download: { en: "Download my result (JPG)", ar: "تحميل نتيجتي (JPG)" },
   seoTitle: {
     en: "What are the insulin resistance symptoms and how do I know if I have it?",
@@ -102,13 +109,18 @@ export function InsulinQuizPage() {
     return out;
   }, []);
 
+  // A fast double tap used to queue two advances and push qIndex past the last question (blank page).
+  const advancing = useRef(false);
   const choose = useCallback(
     (optionIndex: number) => {
+      if (advancing.current) return;
+      advancing.current = true;
       const q = QUIZ_QUESTIONS[qIndex];
       setAnswers((a) => ({ ...a, [q.id]: optionIndex }));
       window.setTimeout(() => {
         if (qIndex + 1 >= total) setStep("contact");
         else setQIndex((i) => i + 1);
+        advancing.current = false;
       }, 220);
     },
     [qIndex, total],
@@ -189,6 +201,18 @@ export function InsulinQuizPage() {
       : `Hi Reham, I'm ${name.trim()}. I took the insulin resistance quiz and my result is: ${result.band.label.en} (${result.percent}%).`;
   }, [result, name, isAr]);
   const waHref = `https://wa.me/${WHATSAPP_PHONE}${waText ? `?text=${encodeURIComponent(waText)}` : ""}`;
+
+  // One next step per result band. The plan price is read live so it never drifts from the shop.
+  const planQuery = useProduct(QUIZ_PLAN_SLUG);
+  const offer = result ? QUIZ_OFFERS[result.band.id] : null;
+  const withTags = (path: string) =>
+    `${path}${path.includes("?") ? "&" : "?"}utm_source=quiz&utm_medium=result&utm_campaign=${result?.band.id ?? "unknown"}`;
+  const offerPath = offer ? (offer.href === "plan" ? `${SELF_GUIDED_PATH}/${QUIZ_PLAN_SLUG}` : offer.href) : "";
+  const planPrice =
+    offer?.kind === "plan" && planQuery.data && planQuery.data.price > 0
+      ? formatPrice(planQuery.data.price, planQuery.data.currency)
+      : null;
+  const showDoctorNote = offer?.kind === "plan" && hasHighLabs(answers);
 
   const Arrow = isAr ? ArrowRight : ArrowLeft;
   const q = QUIZ_QUESTIONS[qIndex];
@@ -387,6 +411,35 @@ export function InsulinQuizPage() {
                   <Download className="h-4 w-4" /> {t("download")}
                 </a>
               )}
+
+              {offer && (
+                <div className="mt-8 rounded-3xl border border-forest-500/20 bg-white p-6 shadow-elevation md:p-8">
+                  <div className="eyebrow mb-2 text-coral-600">{t("nextStep")}</div>
+                  <h2 className="display-serif text-2xl font-bold text-balance">{offer.title[lang]}</h2>
+                  <p className="mt-3 leading-relaxed text-ink-muted">{offer.body[lang]}</p>
+                  {showDoctorNote && (
+                    <p className="mt-3 rounded-2xl bg-bone-100 px-4 py-3 text-sm leading-relaxed text-ink">
+                      {QUIZ_DOCTOR_NOTE[lang]}
+                    </p>
+                  )}
+                  <Link
+                    to={withTags(offerPath)}
+                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-forest-500 px-8 py-4 text-base font-semibold text-white transition hover:bg-forest-600"
+                  >
+                    {offer.cta[lang]}
+                    {planPrice ? <span className="opacity-80">· {planPrice}</span> : null}
+                  </Link>
+                  {offer.secondary && (
+                    <Link
+                      to={withTags(offer.secondary.href)}
+                      className="mt-4 flex items-center justify-center text-sm font-medium text-forest-600 hover:underline"
+                    >
+                      {offer.secondary.label[lang]}
+                    </Link>
+                  )}
+                </div>
+              )}
+              <p className="mt-6 text-center text-xs leading-relaxed text-ink-muted">{QUIZ_DISCLAIMER[lang]}</p>
             </motion.section>
           )}
         </AnimatePresence>

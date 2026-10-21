@@ -224,6 +224,86 @@ export const QUIZ_DISCLAIMER: LocalizedString = {
   ar: "أداة تثقيفية فقط. ليست تشخيصًا طبيًا ولا تغني عن رعاية طبيبك.",
 };
 
+export type QuizOfferKind = "free-guide" | "plan" | "consultation";
+
+export interface QuizOffer {
+  kind: QuizOfferKind;
+  title: LocalizedString;
+  body: LocalizedString;
+  cta: LocalizedString;
+  /** Site path, without the UTM tags (the page adds them). */
+  href: string;
+  /** Slug of the product whose live price is shown on the button, when kind is "plan". */
+  productSlug?: string;
+  /** Optional second link under the main button. */
+  secondary?: { label: LocalizedString; href: string };
+}
+
+/** The plan sold from the result page. Price is read live from the products table. */
+export const QUIZ_PLAN_SLUG = "insulin-sensitivity-reset";
+
+export const QUIZ_OFFERS: Record<QuizBand["id"], QuizOffer> = {
+  low: {
+    kind: "free-guide",
+    title: { en: "Keep it this way", ar: "ابدأ بالدليل المجاني" },
+    body: {
+      en: "The free 10-day reset shows the daily habits that protect your insulin sensitivity.",
+      ar: "دليل الـ10 أيام يعرّفك على العادات اليومية التي تحمي حساسية الأنسولين.",
+    },
+    cta: { en: "Get the free reset", ar: "احصل على الدليل المجاني" },
+    href: "/insulin-reset-guide",
+  },
+  early: {
+    kind: "plan",
+    title: { en: "Start with the 10-day reset", ar: "ابدأ بخطة الـ10 أيام" },
+    body: {
+      en: "A step-by-step plan for 10 days: what to eat, when to move, how to sleep. Instant download, yours to keep.",
+      ar: "خطة خطوة بخطوة لعشرة أيام: ماذا تأكل، ومتى تتحرك، وكيف تنام. تحميل فوري وتبقى معك.",
+    },
+    cta: { en: "Start the reset", ar: "ابدأ الخطة" },
+    href: "plan",
+    productSlug: QUIZ_PLAN_SLUG,
+  },
+  moderate: {
+    kind: "plan",
+    title: { en: "Start a plan, then check your labs", ar: "ابدأ بخطة، ثم افحص تحاليلك" },
+    body: {
+      en: "Begin the 10-day reset now. Ask your doctor for fasting glucose, HbA1c and fasting insulin, so you can watch your numbers move.",
+      ar: "ابدأ خطة الـ10 أيام الآن. واطلب من طبيبك فحص سكر الصيام وHbA1c وأنسولين الصيام لترى أرقامك تتحرك.",
+    },
+    cta: { en: "Start the reset", ar: "ابدأ الخطة" },
+    href: "plan",
+    productSlug: QUIZ_PLAN_SLUG,
+    secondary: {
+      label: { en: "Or book a 1:1 consultation", ar: "أو احجز استشارة فردية" },
+      href: "/consultations",
+    },
+  },
+  strong: {
+    kind: "consultation",
+    title: { en: "Let's look at your case together", ar: "لنراجع حالتك معًا" },
+    body: {
+      en: "With this many signs, a 1:1 consultation comes first. We go through your history and labs and choose the right plan. Share this result with your doctor too.",
+      ar: "مع هذا العدد من العلامات، تبدأ بجلسة فردية. نراجع تاريخك وتحاليلك ونختار الخطة المناسبة. شارك هذه النتيجة مع طبيبك أيضًا.",
+    },
+    cta: { en: "Book a consultation", ar: "احجز استشارة" },
+    href: "/consultations",
+  },
+};
+
+/** Shown above a plan offer when the visitor says their labs are high or they have a diagnosis. */
+export const QUIZ_DOCTOR_NOTE: LocalizedString = {
+  en: "You said your blood tests are high or you were told prediabetes or diabetes. Share this plan with your doctor before you start.",
+  ar: "ذكرت أن تحاليلك مرتفعة أو أن لديك تشخيصًا. شارك الخطة مع طبيبك قبل أن تبدأ.",
+};
+
+/** True when the answer to the labs question is the highest option ("high, or told prediabetes / diabetes"). */
+export function hasHighLabs(answers: Record<string, number>): boolean {
+  const q = QUIZ_QUESTIONS.find((x) => x.id === "labs");
+  const idx = answers["labs"];
+  return !!q && idx != null && q.options[idx]?.points === 3;
+}
+
 export interface QuizResult {
   score: number;
   scoreMax: number;
