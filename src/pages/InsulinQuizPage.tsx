@@ -14,7 +14,10 @@ import { useProduct } from "@/lib/queries";
 import { cn, formatPrice } from "@/lib/utils";
 import {
   hasHighLabs,
+  hasPcosSignal,
   IR_QUIZ_SOURCE,
+  QUIZ_PCOS_LINK,
+  QUIZ_PCOS_SLUG,
   QUIZ_DISCLAIMER,
   QUIZ_DOCTOR_NOTE,
   QUIZ_OFFERS,
@@ -213,6 +216,7 @@ export function InsulinQuizPage() {
       ? formatPrice(planQuery.data.price, planQuery.data.currency)
       : null;
   const showDoctorNote = offer?.kind === "plan" && hasHighLabs(answers);
+  const showPcosLink = offer?.kind === "plan" && hasPcosSignal(answers);
 
   const Arrow = isAr ? ArrowRight : ArrowLeft;
   const q = QUIZ_QUESTIONS[qIndex];
@@ -429,6 +433,14 @@ export function InsulinQuizPage() {
                     {offer.cta[lang]}
                     {planPrice ? <span className="opacity-80">· {planPrice}</span> : null}
                   </Link>
+                  {showPcosLink && (
+                    <Link
+                      to={withTags(`${SELF_GUIDED_PATH}/${QUIZ_PCOS_SLUG}`)}
+                      className="mt-4 flex items-center justify-center text-sm font-medium text-forest-600 hover:underline"
+                    >
+                      {QUIZ_PCOS_LINK[lang]}
+                    </Link>
+                  )}
                   {offer.secondary && (
                     <Link
                       to={withTags(offer.secondary.href)}

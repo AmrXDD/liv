@@ -240,7 +240,14 @@ export interface QuizOffer {
 }
 
 /** The plan sold from the result page. Price is read live from the products table. */
-export const QUIZ_PLAN_SLUG = "insulin-sensitivity-reset";
+export const QUIZ_PLAN_SLUG = "30-day-diabetes-reset-protocol-علاج-مقاومة-الأنسولين";
+
+/** The PCOS protocol, offered as an extra link when the visitor says they have PCOS or very irregular cycles. */
+export const QUIZ_PCOS_SLUG = "pcos-insulin-reversal-protocol-خطة-علاج-غذائيه-للتخلص-من-تكيس-المبايض";
+export const QUIZ_PCOS_LINK: LocalizedString = {
+  en: "Have PCOS? See the 60-day PCOS protocol",
+  ar: "تعانين من تكيس المبايض؟ شاهدي بروتوكول الـ60 يومًا",
+};
 
 export const QUIZ_OFFERS: Record<QuizBand["id"], QuizOffer> = {
   low: {
@@ -255,10 +262,10 @@ export const QUIZ_OFFERS: Record<QuizBand["id"], QuizOffer> = {
   },
   early: {
     kind: "plan",
-    title: { en: "Start with the 10-day reset", ar: "ابدأ بخطة الـ10 أيام" },
+    title: { en: "Start with the 30-day metabolic reset", ar: "ابدأ بخطة الـ30 يومًا" },
     body: {
-      en: "A step-by-step plan for 10 days: what to eat, when to move, how to sleep. Instant download, yours to keep.",
-      ar: "خطة خطوة بخطوة لعشرة أيام: ماذا تأكل، ومتى تتحرك، وكيف تنام. تحميل فوري وتبقى معك.",
+      en: "A structured 4-week plan for steadier glucose: what to eat, when to move, how to sleep, with a tracking workbook. Instant download, yours to keep.",
+      ar: "خطة منظمة لأربعة أسابيع لسكر أكثر ثباتًا: ماذا تأكل، ومتى تتحرك، وكيف تنام، مع دفتر متابعة. تحميل فوري وتبقى معك.",
     },
     cta: { en: "Start the reset", ar: "ابدأ الخطة" },
     href: "plan",
@@ -268,8 +275,8 @@ export const QUIZ_OFFERS: Record<QuizBand["id"], QuizOffer> = {
     kind: "plan",
     title: { en: "Start a plan, then check your labs", ar: "ابدأ بخطة، ثم افحص تحاليلك" },
     body: {
-      en: "Begin the 10-day reset now. Ask your doctor for fasting glucose, HbA1c and fasting insulin, so you can watch your numbers move.",
-      ar: "ابدأ خطة الـ10 أيام الآن. واطلب من طبيبك فحص سكر الصيام وHbA1c وأنسولين الصيام لترى أرقامك تتحرك.",
+      en: "Begin the 30-day metabolic reset now. Ask your doctor for fasting glucose, HbA1c and fasting insulin, so you can watch your numbers move.",
+      ar: "ابدأ خطة الـ30 يومًا الآن. واطلب من طبيبك فحص سكر الصيام وHbA1c وأنسولين الصيام لترى أرقامك تتحرك.",
     },
     cta: { en: "Start the reset", ar: "ابدأ الخطة" },
     href: "plan",
@@ -301,6 +308,13 @@ export const QUIZ_DOCTOR_NOTE: LocalizedString = {
 export function hasHighLabs(answers: Record<string, number>): boolean {
   const q = QUIZ_QUESTIONS.find((x) => x.id === "labs");
   const idx = answers["labs"];
+  return !!q && idx != null && q.options[idx]?.points === 3;
+}
+
+/** True when the cycle question got its highest answer ("Yes, PCOS or very irregular"). */
+export function hasPcosSignal(answers: Record<string, number>): boolean {
+  const q = QUIZ_QUESTIONS.find((x) => x.id === "cycle");
+  const idx = answers["cycle"];
   return !!q && idx != null && q.options[idx]?.points === 3;
 }
 
