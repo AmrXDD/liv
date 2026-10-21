@@ -4,5 +4,6 @@ Disallow: /admin
 Disallow: /admin/
 Disallow: /checkout
 Disallow: /checkout/
+Disallow: /downloads/pcos
 
 Sitemap: https://www.livfunctional.com/sitemap.xml
