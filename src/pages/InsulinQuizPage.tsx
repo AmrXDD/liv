@@ -112,7 +112,9 @@ export function InsulinQuizPage() {
     return out;
   }, []);
 
-  // A fast double tap used to queue two advances and push qIndex past the last question (blank page).
+  // The old question stays on screen (and tappable) while it slides out. A tap in that window used to
+  // advance a second time, skipping questions and finally pushing qIndex past the end (blank page).
+  // So ignore taps until the next question has fully arrived, and always set an absolute index.
   const advancing = useRef(false);
   const choose = useCallback(
     (optionIndex: number) => {
@@ -122,8 +124,10 @@ export function InsulinQuizPage() {
       setAnswers((a) => ({ ...a, [q.id]: optionIndex }));
       window.setTimeout(() => {
         if (qIndex + 1 >= total) setStep("contact");
-        else setQIndex((i) => i + 1);
-        advancing.current = false;
+        else setQIndex(qIndex + 1);
+        window.setTimeout(() => {
+          advancing.current = false;
+        }, 600);
       }, 220);
     },
     [qIndex, total],
@@ -219,7 +223,7 @@ export function InsulinQuizPage() {
   const showPcosLink = offer?.kind === "plan" && hasPcosSignal(answers);
 
   const Arrow = isAr ? ArrowRight : ArrowLeft;
-  const q = QUIZ_QUESTIONS[qIndex];
+  const q = QUIZ_QUESTIONS[Math.min(qIndex, total - 1)];
   const slide = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -16 }, transition: { duration: 0.28 } };
 
   return (
