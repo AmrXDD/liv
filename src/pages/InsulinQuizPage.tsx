@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Download } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
@@ -60,7 +60,6 @@ const copy = {
   resultEyebrow: { en: "Your result", ar: "نتيجتك" },
   openWa: { en: "Send my result to Reham on WhatsApp", ar: "أرسل النتيجة لرهام على واتساب" },
   nextStep: { en: "Your next step", ar: "خطوتك التالية" },
-  download: { en: "Download my result (JPG)", ar: "تحميل نتيجتي (JPG)" },
   seoTitle: {
     en: "What are the insulin resistance symptoms and how do I know if I have it?",
     ar: "كيف أعرف إذا في عندي مقاومة أنسولين؟",
@@ -410,16 +409,6 @@ export function InsulinQuizPage() {
               >
                 {t("openWa")}
               </a>
-              {imageUrl && (
-                <a
-                  href={imageUrl}
-                  download="liv-insulin-resistance-result.jpg"
-                  className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-forest-600 hover:underline"
-                >
-                  <Download className="h-4 w-4" /> {t("download")}
-                </a>
-              )}
-
               {offer && (
                 <div className="mt-8 rounded-3xl border border-forest-500/20 bg-white p-6 shadow-elevation md:p-8">
                   <div className="eyebrow mb-2 text-coral-600">{t("nextStep")}</div>
