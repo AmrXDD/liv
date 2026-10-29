@@ -193,7 +193,7 @@ export function ApplyPage() {
 
               <p className="mt-4 text-xs text-ink-muted">
                 {t("coaching.discoveryNote", {
-                  defaultValue: "Every program starts with a free 45-minute discovery call.",
+                  defaultValue: "Every program starts with a free 30-minute discovery call.",
                 })}
               </p>
 

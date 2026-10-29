@@ -27,6 +27,16 @@ export function organizationSchema() {
     name: "Liv Functional",
     url: SITE_URL,
     logo: new URL("/liv-logo.png", SITE_URL).toString(),
+    telephone: "+1-818-448-6680",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Burbank Blvd.",
+      addressLocality: "Los Angeles",
+      addressRegion: "CA",
+      postalCode: "91356",
+      addressCountry: "US",
+    },
+    areaServed: ["Kuwait", "Saudi Arabia", "Qatar", "Bahrain", "Middle East"],
     sameAs: [
       "https://instagram.com/livfunctional",
       "https://www.linkedin.com/company/liv-functional",

@@ -156,7 +156,7 @@ export function CoachingProductPage() {
                   <p className="mt-3 text-xs opacity-70">
                     {t("coaching.discoveryNote", {
                       defaultValue:
-                        "Every program starts with a free 45-minute discovery call.",
+                        "Every program starts with a free 30-minute discovery call.",
                     })}
                   </p>
 
