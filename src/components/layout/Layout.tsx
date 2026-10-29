@@ -7,6 +7,7 @@ import { PageTransitionCover } from "@/components/ui/PageTransition";
 import { Loader } from "@/components/ui/Loader";
 import { WhatsAppFab } from "@/components/ui/WhatsAppFab";
 import { NavDock } from "@/components/ui/NavDock";
+import { MetaPixelRouteTracker } from "@/components/analytics/MetaPixelRouteTracker";
 import { useLenis } from "@/hooks/useLenis";
 import { DOCK_NAV } from "@/lib/navConfig";
 
@@ -14,6 +15,7 @@ export function Layout() {
   useLenis();
   return (
     <>
+      <MetaPixelRouteTracker />
       <Loader />
       <Cursor />
       <PageTransitionCover />
