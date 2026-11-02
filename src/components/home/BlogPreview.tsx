@@ -10,6 +10,12 @@ import { useDirection } from "@/hooks/useDirection";
 import { ArrowUpRight } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 
+const PINNED_SLUGS = [
+  "كيفية-علاج-و-عكس-مقاومة-الأنسولين",
+  "best-fruits-for-insulin-resistance-نظام-غذائي-لمقاومة-الانسولين",
+  "insulin-resistance-women-over-40-مقاومة-الانسولين-للنساء-فوق-الاربعين",
+];
+
 export function BlogPreview() {
   const { t, i18n } = useTranslation();
   const { isRtl } = useDirection();
@@ -18,7 +24,14 @@ export function BlogPreview() {
 
   const { data: dbPosts = [] } = useBlogPosts();
   const source = dbPosts.length > 0 ? dbPosts : fallbackPosts;
-  const featured = source.filter((p) => p.slug && p.slug.trim()).slice(0, 3);
+  // Pin the posts Google already shows for our target searches (Search Console,
+  // Aug to Oct 2026) so the homepage passes them link weight; the rest follow.
+  const featured = source
+    .filter((p) => p.slug && p.slug.trim())
+    .map((p, i) => ({ p, i, rank: PINNED_SLUGS.indexOf(p.slug) }))
+    .sort((a, b) => (a.rank < 0 ? 99 : a.rank) - (b.rank < 0 ? 99 : b.rank) || a.i - b.i)
+    .map(({ p }) => p)
+    .slice(0, 3);
 
   return (
     <Section variant="sunken" pad="lg">

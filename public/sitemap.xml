@@ -257,6 +257,32 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/p/cgm-guide" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/p/cgm-guide" />
   </url>
+  <url>
+    <loc>https://www.livfunctional.com/what-are-insulin-resistance-symptoms-how-do-i-know-if-i-have-it-%D9%83%D9%8A%D9%81-%D8%A7%D8%B9%D8%B1%D9%81-%D8%A5%D8%B0%D8%A7-%D9%81%D9%8A-%D8%B9%D9%86%D8%AF%D9%8A-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.livfunctional.com/menopause-metabolic-quiz</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/menopause-metabolic-quiz" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/menopause-metabolic-quiz" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/menopause-metabolic-quiz" />
+  </url>
+  <url>
+    <loc>https://www.livfunctional.com/ar/menopause-metabolic-quiz</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.livfunctional.com/menopause-metabolic-quiz" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.livfunctional.com/ar/menopause-metabolic-quiz" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.livfunctional.com/menopause-metabolic-quiz" />
+  </url>
+  <url>
+    <loc>https://www.livfunctional.com/insulin-reset-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <url><loc>https://www.livfunctional.com/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.livfunctional.com/ar/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.livfunctional.com/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>

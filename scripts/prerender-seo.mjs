@@ -433,7 +433,98 @@ function buildHtml(template, route, lang = "en") {
   return html;
 }
 
-function main() {
+// ---- Dynamic pages (blog posts, products) -------------------------------
+// These live in Supabase, so without this step every post is served the home
+// page shell (home title and a canonical pointing at "/") until Google renders
+// the JavaScript. If Supabase is unreachable the build continues without them.
+const SELF_GUIDED_PATH = "/self-guided-programs-خطة-مقاومة-الانسولين";
+const FREE_ASSESSMENT_SLUG = "free-assessment-كيف-اعرف-إذا-عندي-مقاومة-انسولين";
+
+function loadEnv() {
+  for (const f of [".env.local", ".env"]) {
+    const p = path.join(ROOT, f);
+    if (!fs.existsSync(p)) continue;
+    for (const line of fs.readFileSync(p, "utf8").split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  }
+}
+
+async function rest(table, select, filter = "") {
+  const base = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_ANON_KEY;
+  const res = await fetch(`${base}/rest/v1/${table}?select=${select}&is_published=eq.true${filter}`, {
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  });
+  if (!res.ok) throw new Error(`${table}: HTTP ${res.status}`);
+  return res.json();
+}
+
+const clip = (s, n = 158) => {
+  const t = (s ?? "").replace(/\s+/g, " ").trim();
+  return t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t;
+};
+const withBrand = (t) => (t.includes("Liv Functional") ? t : `${t} · Liv Functional`);
+
+async function dynamicRoutes() {
+  loadEnv();
+  if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+    console.warn("[prerender-seo] Supabase env not set; skipping blog/product pages");
+    return [];
+  }
+  let products, posts;
+  try {
+    [products, posts] = await Promise.all([
+      rest(
+        "products",
+        "slug,category,format,title_en,title_ar,tagline_en,tagline_ar,description_en,description_ar",
+        "&category=in.(diy,coaching,physical)"
+      ),
+      rest("blog_posts", "slug,title_en,title_ar,excerpt_en,excerpt_ar"),
+    ]);
+  } catch (err) {
+    console.warn(`[prerender-seo] ${err.message}; skipping blog/product pages`);
+    return [];
+  }
+
+  const out = [];
+  // Slugs may contain spaces (encodeURI turns them into %20); a literal "%" would double-encode.
+  const ok = (slug) => slug && !slug.includes("%");
+
+  for (const p of posts) {
+    if (!ok(p.slug)) continue;
+    const en = { title: withBrand(p.title_en || p.title_ar || ""), description: clip(p.excerpt_en || p.excerpt_ar) };
+    const ar = { title: withBrand(p.title_ar || p.title_en || ""), description: clip(p.excerpt_ar || p.excerpt_en) };
+    out.push({ path: `/blog/${p.slug}`, ...en, ar });
+  }
+  for (const p of products) {
+    if (!ok(p.slug) || p.slug === FREE_ASSESSMENT_SLUG) continue;
+    const base =
+      p.category === "coaching"
+        ? "/coaching"
+        : p.category === "physical" || p.format === "Physical"
+          ? "/shop"
+          : SELF_GUIDED_PATH;
+    const mk = (l, o) => {
+      const t = p[`title_${l}`] || p[`title_${o}`] || "";
+      const tag = p[`tagline_${l}`] || p[`tagline_${o}`] || "";
+      return {
+        title: withBrand(tag ? `${t} — ${tag}` : t),
+        description: clip(
+          p[`description_${l}`] ||
+            p[`description_${o}`] ||
+            tag ||
+            (l === "ar" ? `${t}، برنامج من ليف فنكشنال.` : `${t}, a program from Liv Functional.`)
+        ),
+      };
+    };
+    out.push({ path: `${base}/${p.slug}`, ...mk("en", "ar"), ar: mk("ar", "en") });
+  }
+  return out.filter((r) => r.title && r.description);
+}
+
+async function main() {
   const indexPath = path.join(DIST, "index.html");
   if (!fs.existsSync(indexPath)) {
     console.error(`[prerender-seo] dist/index.html not found at ${indexPath}`);
@@ -443,7 +534,11 @@ function main() {
   const template = fs.readFileSync(indexPath, "utf8");
   let count = 0;
 
-  for (const route of routes) {
+  const dynamic = await dynamicRoutes();
+  for (const r of dynamic) arCopy[r.path] = r.ar;
+  const allRoutes = [...routes, ...dynamic];
+
+  for (const route of allRoutes) {
     // Arabic twin at /ar/<route> (same shell; the SPA fills in Arabic content)
     const arDir = path.join(DIST, "ar", ...route.path.replace(/^\//, "").split("/").filter(Boolean));
     fs.mkdirSync(arDir, { recursive: true });
@@ -461,7 +556,10 @@ function main() {
     count += 1;
   }
 
-  console.log(`[prerender-seo] wrote ${count} route(s)`);
+  console.log(`[prerender-seo] wrote ${count} route(s) (${dynamic.length} blog/product)`);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
