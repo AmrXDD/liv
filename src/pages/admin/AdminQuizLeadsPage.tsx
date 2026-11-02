@@ -3,6 +3,7 @@ import { CheckCircle2, Circle, MessageCircle, Trash2 } from "lucide-react";
 import { requireSupabase } from "@/lib/supabase";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { QUIZ_BANDS } from "@/data/irQuiz";
+import { MENO_BANDS, MENO_QUIZ_SOURCE } from "@/data/menoQuiz";
 
 interface LeadRow {
   id: string;
@@ -44,7 +45,8 @@ export function AdminQuizLeadsPage() {
     refresh();
   };
 
-  const bandLabel = (id: string) => QUIZ_BANDS.find((b) => b.id === id)?.label.en ?? id;
+  const bandLabel = (id: string, source?: string) =>
+    (source === MENO_QUIZ_SOURCE ? MENO_BANDS : QUIZ_BANDS).find((b) => b.id === id)?.label.en ?? id;
   const unread = leads.filter((l) => !l.handled).length;
 
   return (
@@ -130,7 +132,7 @@ export function AdminQuizLeadsPage() {
                       <div className="text-xs uppercase text-ink-muted">{l.locale}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium">{bandLabel(l.band)}</div>
+                      <div className="font-medium">{bandLabel(l.band, l.source)}</div>
                       <div className="text-xs text-ink-muted">
                         {l.score}/{l.score_max}
                       </div>

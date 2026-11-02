@@ -49,11 +49,14 @@ export interface QuizImageInput {
   name: string;
   result: QuizResult;
   lang: "en" | "ar";
+  /** Which quiz the image is for. Defaults to the insulin resistance quiz. */
+  variant?: "ir" | "meno";
 }
 
 /** Renders the one-page result and returns it as a JPEG data URL. */
-export async function renderQuizImage({ name, result, lang }: QuizImageInput): Promise<string> {
+export async function renderQuizImage({ name, result, lang, variant = "ir" }: QuizImageInput): Promise<string> {
   const isAr = lang === "ar";
+  const meno = variant === "meno";
   try {
     await Promise.all([
       document.fonts.load("700 48px Cairo"),
@@ -95,7 +98,9 @@ export async function renderQuizImage({ name, result, lang }: QuizImageInput): P
   ctx.textAlign = align;
   ctx.fillStyle = MUTED;
   ctx.font = font(600, 30);
-  const eyebrow = isAr ? "ملخص مقاومة الأنسولين" : "YOUR INSULIN RESISTANCE SNAPSHOT";
+  const eyebrow = meno
+    ? isAr ? "ملخص صحتك الأيضية مع التغيّر الهرموني" : "YOUR MENOPAUSE METABOLIC SNAPSHOT"
+    : isAr ? "ملخص مقاومة الأنسولين" : "YOUR INSULIN RESISTANCE SNAPSHOT";
   ctx.fillText(eyebrow, edge, 230);
 
   ctx.fillStyle = INK;
@@ -138,17 +143,16 @@ export async function renderQuizImage({ name, result, lang }: QuizImageInput): P
   ctx.fillText(isAr ? "قليلة" : "Few signs", barX, barY + 100);
   ctx.textAlign = "right";
   ctx.fillText(isAr ? "قوية" : "Strong signs", barX + barW, barY + 100);
+  const scoreLine = meno
+    ? isAr ? `${result.percent}٪ من علامات الضغط الأيضي الهرموني` : `${result.percent}% of the common hormonal metabolic strain signs`
+    : isAr ? `${result.percent}٪ من علامات مقاومة الأنسولين` : `${result.percent}% of the common insulin resistance signs`;
   ctx.direction = isAr ? "rtl" : "ltr";
 
   // Score pill
   ctx.textAlign = "center";
   ctx.font = font(700, 30);
   ctx.fillStyle = INK;
-  ctx.fillText(
-    isAr ? `${result.percent}٪ من علامات مقاومة الأنسولين` : `${result.percent}% of the common insulin resistance signs`,
-    W / 2,
-    barY + 175,
-  );
+  ctx.fillText(scoreLine, W / 2, barY + 175);
 
   // Summary card
   const cardY = 800;
