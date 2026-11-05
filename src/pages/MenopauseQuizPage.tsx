@@ -200,7 +200,7 @@ const sales = {
     ar: "مش بوت ولا مساعدة. ابعتيلي نتيجتك عالواتساب وببعتلك ردّي بنفسي، حسب ترتيب وصول الرسايل. منراجع إجاباتك وأرقامك سوا قبل ما تقرري أي شي.",
   },
   openWa: { en: "Send my result to Reham on WhatsApp", ar: "ابعتي النتيجة لرهام عالواتساب" },
-  buyPlan: { en: "Get my plan", ar: "خدي خطتي" },
+  buyPlan: { en: "Get your plan", ar: "نزلي خطتك" },
   notSure: { en: "Not sure yet? Message me before you buy.", ar: "لسا مش متأكدة؟ راسليني قبل ما تشتري." },
   faqTitle: { en: "Questions I get", ar: "أسئلة بتوصلني" },
   faq: [
@@ -209,13 +209,6 @@ const sales = {
       a: {
         en: "Keep taking what your doctor prescribed. The plan works on food, strength, sleep and reading your labs. Share it with your doctor before you start.",
         ar: "كمّلي بالدوا اللي وصفه طبيبك. الخطة بتشتغل على الأكل والقوة والنوم وقراءة التحاليل. شاركيها مع طبيبك قبل ما تبلّشي.",
-      },
-    },
-    {
-      q: { en: "Is this medical advice?", ar: "هيدا نصيحة طبية؟" },
-      a: {
-        en: "No. It is education and coaching. It does not diagnose or treat, and it does not replace your doctor.",
-        ar: "لأ. هيدا تثقيف وكوتشينغ. ما بيشخّص وما بيعالج، وما بيحلّ مكان طبيبك.",
       },
     },
     {
@@ -563,7 +556,17 @@ export function MenopauseQuizPage() {
                   </div>
                 )}
                 {lowMood && <p className="mt-5 rounded-2xl bg-white px-5 py-4 text-sm leading-relaxed ring-1 ring-ink/10">{MENO_SUPPORT_NOTE[lang]}</p>}
-                <div className="mt-5">{waButton()}</div>
+                {planLive && (
+                  <div className="mt-5">
+                    <Link
+                        to={planHref}
+                        className="flex w-full items-center justify-center gap-2 rounded-full bg-forest-500 px-8 py-4 text-base font-semibold text-white transition hover:bg-forest-600"
+                      >
+                        {sales.buyPlan[lang]}
+                        {planPrice ? <span className="opacity-80">· {planPrice}</span> : null}
+                      </Link>
+                  </div>
+                )}
               </div>
 
               {/* 2. Reham's video (hidden until a URL is set in menoQuiz.ts) */}
@@ -643,7 +646,6 @@ export function MenopauseQuizPage() {
                 </ul>
                 {flagged && <p className="mt-5 rounded-2xl bg-bone-100 px-4 py-3 text-sm leading-relaxed">{MENO_DOCTOR_NOTE[lang]}</p>}
                 <div className="mt-6 space-y-3">
-                  {waButton()}
                   {planLive && (
                     <Link
                       to={planHref}
@@ -654,21 +656,6 @@ export function MenopauseQuizPage() {
                     </Link>
                   )}
                 </div>
-              </div>
-
-              {/* 7. Personal follow-up */}
-              <div className="rounded-3xl bg-forest-500 p-6 text-white md:p-8">
-                <h2 className="display-serif text-2xl font-bold">{sales.personalTitle[lang]}</h2>
-                <p className="mt-3 leading-relaxed text-white/90">{sales.personalBody[lang]}</p>
-                <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 flex w-full items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-forest-600 transition hover:bg-bone-100"
-                >
-                  {sales.openWa[lang]}
-                </a>
-                <p className="mt-3 text-center text-sm text-white/80">{sales.notSure[lang]}</p>
               </div>
 
               {/* 8. FAQ + disclaimer */}
@@ -685,6 +672,8 @@ export function MenopauseQuizPage() {
               </div>
 
               <p className="text-center text-xs leading-relaxed text-ink-muted">{MENO_DISCLAIMER[lang]}</p>
+
+              <div>{waButton()}</div>
             </motion.section>
           )}
         </AnimatePresence>
