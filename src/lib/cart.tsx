@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { LocalizedString, Product, ProductCategory } from "@/types";
+import { productParams, trackPixel } from "@/lib/pixel";
 
 export interface CartItem {
   productId: string;
@@ -70,6 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (product.stock != null && product.stock <= 0) {
       return;
     }
+    trackPixel("AddToCart", productParams({ ...product, price: product.price * qty }));
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id);
       const isPhysical =

@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Navigate, useNavigate } from "@/lib/langRouting";
+import { productParams, trackPixel } from "@/lib/pixel";
 import { useTranslation } from "react-i18next";
 import { Check, BadgeCheck } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
@@ -27,6 +29,10 @@ export function DIYProductPage() {
   const { data: product, isLoading } = useProduct(slug);
   const { addItem } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (product) trackPixel("ViewContent", productParams(product));
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (

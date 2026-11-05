@@ -10,6 +10,7 @@ import { SEO } from "@/components/seo/SEO";
 import { useCart } from "@/lib/cart";
 import { getSupabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
+import { trackPixel } from "@/lib/pixel";
 
 const POPULAR_COUNTRIES = [
   { code: "KW", nameEn: "Kuwait", nameAr: "الكويت" },
@@ -104,6 +105,14 @@ export function CheckoutPage() {
         return;
       }
     }
+
+    trackPixel("InitiateCheckout", {
+      content_ids: items.map((i) => i.productId),
+      content_type: "product",
+      num_items: items.reduce((n, i) => n + i.qty, 0),
+      value: subtotal,
+      currency,
+    });
 
     try {
       const { data, error } = await sb.functions.invoke<{

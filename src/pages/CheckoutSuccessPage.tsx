@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/Section";
 import { SEO } from "@/components/seo/SEO";
 import { useCart } from "@/lib/cart";
 import { getSupabase } from "@/lib/supabase";
+import { trackPixel } from "@/lib/pixel";
 import type { Order } from "@/types";
 
 interface DigitalRow {
@@ -109,6 +110,30 @@ export function CheckoutSuccessPage() {
       cancelled = true;
     };
   }, [sessionId, clear, isAr]);
+
+  // Purchase: once per order, only for a real order that was not cancelled or refunded.
+  // The order id doubles as the event ID so a future server-side event can be de-duplicated.
+  useEffect(() => {
+    if (!order || order.status === "cancelled" || order.status === "refunded") return;
+    const key = `liv-purchase-tracked-${order.id}`;
+    try {
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, "1");
+    } catch {
+      // storage blocked: fall through and fire once for this page view
+    }
+    trackPixel(
+      "Purchase",
+      {
+        content_ids: order.items.map((i) => i.product_id),
+        content_type: "product",
+        num_items: order.items.reduce((n, i) => n + i.quantity, 0),
+        value: order.total,
+        currency: order.currency,
+      },
+      order.id
+    );
+  }, [order]);
 
   const hasPhysical =
     order?.has_physical ||

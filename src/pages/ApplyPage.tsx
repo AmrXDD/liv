@@ -12,6 +12,7 @@ import { Credentials } from "@/components/home/Credentials";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { useProduct, useNutritionIssues } from "@/lib/queries";
 import { getSupabase } from "@/lib/supabase";
+import { trackPixel } from "@/lib/pixel";
 import { cn, formatPrice } from "@/lib/utils";
 import { labelForIssueSlug } from "@/data/nutritionIssues";
 import { SELF_GUIDED_PATH } from "@/lib/routes";
@@ -101,6 +102,7 @@ export function ApplyPage() {
         }
       }
       setStatus("ok");
+      trackPixel("Lead");
       setName("");
       setEmail("");
       setPhone("");

@@ -9,6 +9,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { smoothScrollTo } from "@/hooks/useLenis";
 import { getSupabase } from "@/lib/supabase";
+import { trackPixel } from "@/lib/pixel";
 import { LIV_AT_WORK_PATH } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -390,6 +391,7 @@ export function LivAtWorkPage() {
         if (error) throw error;
       }
       setStatus("ok");
+      trackPixel("Lead");
     } catch (err) {
       console.error("[liv-at-work] submit failed:", err);
       setStatus("err");

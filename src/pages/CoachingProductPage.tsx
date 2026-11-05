@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { productParams, trackPixel } from "@/lib/pixel";
 import { useParams } from "react-router-dom";
 import { Link, Navigate, useNavigate } from "@/lib/langRouting";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,10 @@ export function CoachingProductPage() {
   const lang = (i18n.language?.startsWith("ar") ? "ar" : "en") as "en" | "ar";
   const { data: product, isLoading } = useProduct(slug);
   const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    if (product) trackPixel("ViewContent", productParams(product));
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (

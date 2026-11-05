@@ -13,6 +13,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { getSupabase } from "@/lib/supabase";
+import { trackPixel } from "@/lib/pixel";
 import type { ContactPayload, Locale } from "@/types";
 
 const schema = z.object({
@@ -52,6 +53,7 @@ export function ContactPage() {
         }
       }
       setStatus("ok");
+      trackPixel("Lead");
       reset();
     } catch (e) {
       console.error("[contact] submit failed:", e);

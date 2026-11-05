@@ -7,6 +7,7 @@ import { Calendar, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { getSupabase } from "@/lib/supabase";
+import { trackPixel } from "@/lib/pixel";
 import { withLang } from "@/lib/langRouting";
 import type { BookingPayload, Locale } from "@/types";
 import { buildGoogleCalendarUrl, PRACTITIONER_EMAIL } from "@/lib/googleCalendar";
@@ -122,6 +123,7 @@ export function BookingWidget() {
       if (!res?.ok) throw new Error(res?.error ?? "Booking failed");
       setCalendarUrl(res.html_link ?? fallbackUrl);
       setStatus("ok");
+      trackPixel("Lead");
     } catch (e) {
       console.error("[booking] failed:", e);
       setCalendarUrl(fallbackUrl);
