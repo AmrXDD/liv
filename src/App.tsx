@@ -1,57 +1,59 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, useParams } from "react-router-dom";
 import { Navigate } from "@/lib/langRouting";
 import { Layout } from "@/components/layout/Layout";
 import { HomePage } from "@/pages/HomePage";
-import { DIYPlansPage } from "@/pages/DIYPlansPage";
-import { DIYProductPage } from "@/pages/DIYProductPage";
-import { ShopPage } from "@/pages/ShopPage";
-import { CoachingPage } from "@/pages/CoachingPage";
-import { CoachingProductPage } from "@/pages/CoachingProductPage";
-import { ConsultationsPage } from "@/pages/ConsultationsPage";
-import { BlogPage } from "@/pages/BlogPage";
-import { BlogPostPage } from "@/pages/BlogPostPage";
-import { WhyUsPage } from "@/pages/WhyUsPage";
-import { ContactPage } from "@/pages/ContactPage";
-import { RecommendedProductsPage } from "@/pages/RecommendedProductsPage";
-import { NotFoundPage } from "@/pages/NotFoundPage";
-import { DynamicPage } from "@/pages/DynamicPage";
-import { CheckoutPage } from "@/pages/CheckoutPage";
-import { CheckoutSuccessPage } from "@/pages/CheckoutSuccessPage";
-import { CheckoutCancelPage } from "@/pages/CheckoutCancelPage";
-import { ApplyPage } from "@/pages/ApplyPage";
-import { CollectionPage } from "@/pages/CollectionPage";
 
-import { AdminLayout } from "@/components/admin/AdminLayout";
-import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
-import { AdminLoginPage } from "@/pages/admin/AdminLoginPage";
-import { AdminProductsPage } from "@/pages/admin/AdminProductsPage";
-import { AdminProductFormPage } from "@/pages/admin/AdminProductFormPage";
-import { AdminCollectionsPage } from "@/pages/admin/AdminCollectionsPage";
-import { AdminCollectionFormPage } from "@/pages/admin/AdminCollectionFormPage";
-import { AdminPagesPage } from "@/pages/admin/AdminPagesPage";
-import { AdminPageBuilderPage } from "@/pages/admin/AdminPageBuilderPage";
-import { AdminPageTextPage } from "@/pages/admin/AdminPageTextPage";
-import { AdminConsultationsPage } from "@/pages/admin/AdminConsultationsPage";
-import { AdminPaymentsPage } from "@/pages/admin/AdminPaymentsPage";
-import { AdminCoachingPage } from "@/pages/admin/AdminCoachingPage";
-import { AdminImportPage } from "@/pages/admin/AdminImportPage";
-import { AdminInquiriesPage } from "@/pages/admin/AdminInquiriesPage";
-import { AdminEmailsPage } from "@/pages/admin/AdminEmailsPage";
-import { AdminNewsletterPage } from "@/pages/admin/AdminNewsletterPage";
-import { AdminBlogPage } from "@/pages/admin/AdminBlogPage";
-import { AdminBlogFormPage } from "@/pages/admin/AdminBlogFormPage";
-import { AdminAccreditationsPage } from "@/pages/admin/AdminAccreditationsPage";
-import { AdminNutritionIssuesPage } from "@/pages/admin/AdminNutritionIssuesPage";
-import { AdminRecommendedProductsPage } from "@/pages/admin/AdminRecommendedProductsPage";
-import { AdminB2bPillarsPage } from "@/pages/admin/AdminB2bPillarsPage";
 import { SELF_GUIDED_PATH, IR_QUIZ_PATH, MENO_QUIZ_PATH, FREE_ASSESSMENT_SLUG, LIV_AT_WORK_PATH, CORPORATE_PRODUCT_SLUG, BIO_PATH, INSULIN_RESET_GUIDE_PATH, TRACKER_PATH } from "@/lib/routes";
-import { InsulinResetGuidePage } from "@/pages/InsulinResetGuidePage";
-import { TrackerPage } from "@/pages/TrackerPage";
-import { LivAtWorkPage } from "@/pages/LivAtWorkPage";
-import { InsulinQuizPage } from "@/pages/InsulinQuizPage";
-import { MenopauseQuizPage } from "@/pages/MenopauseQuizPage";
-import { BioPage } from "@/pages/BioPage";
-import { AdminQuizLeadsPage } from "@/pages/admin/AdminQuizLeadsPage";
+
+const DIYPlansPage = lazy(() => import("@/pages/DIYPlansPage").then((m) => ({ default: m.DIYPlansPage })));
+const DIYProductPage = lazy(() => import("@/pages/DIYProductPage").then((m) => ({ default: m.DIYProductPage })));
+const ShopPage = lazy(() => import("@/pages/ShopPage").then((m) => ({ default: m.ShopPage })));
+const CoachingPage = lazy(() => import("@/pages/CoachingPage").then((m) => ({ default: m.CoachingPage })));
+const CoachingProductPage = lazy(() => import("@/pages/CoachingProductPage").then((m) => ({ default: m.CoachingProductPage })));
+const ConsultationsPage = lazy(() => import("@/pages/ConsultationsPage").then((m) => ({ default: m.ConsultationsPage })));
+const BlogPage = lazy(() => import("@/pages/BlogPage").then((m) => ({ default: m.BlogPage })));
+const BlogPostPage = lazy(() => import("@/pages/BlogPostPage").then((m) => ({ default: m.BlogPostPage })));
+const WhyUsPage = lazy(() => import("@/pages/WhyUsPage").then((m) => ({ default: m.WhyUsPage })));
+const ContactPage = lazy(() => import("@/pages/ContactPage").then((m) => ({ default: m.ContactPage })));
+const RecommendedProductsPage = lazy(() => import("@/pages/RecommendedProductsPage").then((m) => ({ default: m.RecommendedProductsPage })));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage })));
+const DynamicPage = lazy(() => import("@/pages/DynamicPage").then((m) => ({ default: m.DynamicPage })));
+const CheckoutPage = lazy(() => import("@/pages/CheckoutPage").then((m) => ({ default: m.CheckoutPage })));
+const CheckoutSuccessPage = lazy(() => import("@/pages/CheckoutSuccessPage").then((m) => ({ default: m.CheckoutSuccessPage })));
+const CheckoutCancelPage = lazy(() => import("@/pages/CheckoutCancelPage").then((m) => ({ default: m.CheckoutCancelPage })));
+const ApplyPage = lazy(() => import("@/pages/ApplyPage").then((m) => ({ default: m.ApplyPage })));
+const CollectionPage = lazy(() => import("@/pages/CollectionPage").then((m) => ({ default: m.CollectionPage })));
+const AdminLayout = lazy(() => import("@/components/admin/AdminLayout").then((m) => ({ default: m.AdminLayout })));
+const ProtectedRoute = lazy(() => import("@/components/admin/ProtectedRoute").then((m) => ({ default: m.ProtectedRoute })));
+const AdminLoginPage = lazy(() => import("@/pages/admin/AdminLoginPage").then((m) => ({ default: m.AdminLoginPage })));
+const AdminProductsPage = lazy(() => import("@/pages/admin/AdminProductsPage").then((m) => ({ default: m.AdminProductsPage })));
+const AdminProductFormPage = lazy(() => import("@/pages/admin/AdminProductFormPage").then((m) => ({ default: m.AdminProductFormPage })));
+const AdminCollectionsPage = lazy(() => import("@/pages/admin/AdminCollectionsPage").then((m) => ({ default: m.AdminCollectionsPage })));
+const AdminCollectionFormPage = lazy(() => import("@/pages/admin/AdminCollectionFormPage").then((m) => ({ default: m.AdminCollectionFormPage })));
+const AdminPagesPage = lazy(() => import("@/pages/admin/AdminPagesPage").then((m) => ({ default: m.AdminPagesPage })));
+const AdminPageBuilderPage = lazy(() => import("@/pages/admin/AdminPageBuilderPage").then((m) => ({ default: m.AdminPageBuilderPage })));
+const AdminPageTextPage = lazy(() => import("@/pages/admin/AdminPageTextPage").then((m) => ({ default: m.AdminPageTextPage })));
+const AdminConsultationsPage = lazy(() => import("@/pages/admin/AdminConsultationsPage").then((m) => ({ default: m.AdminConsultationsPage })));
+const AdminPaymentsPage = lazy(() => import("@/pages/admin/AdminPaymentsPage").then((m) => ({ default: m.AdminPaymentsPage })));
+const AdminCoachingPage = lazy(() => import("@/pages/admin/AdminCoachingPage").then((m) => ({ default: m.AdminCoachingPage })));
+const AdminImportPage = lazy(() => import("@/pages/admin/AdminImportPage").then((m) => ({ default: m.AdminImportPage })));
+const AdminInquiriesPage = lazy(() => import("@/pages/admin/AdminInquiriesPage").then((m) => ({ default: m.AdminInquiriesPage })));
+const AdminEmailsPage = lazy(() => import("@/pages/admin/AdminEmailsPage").then((m) => ({ default: m.AdminEmailsPage })));
+const AdminNewsletterPage = lazy(() => import("@/pages/admin/AdminNewsletterPage").then((m) => ({ default: m.AdminNewsletterPage })));
+const AdminBlogPage = lazy(() => import("@/pages/admin/AdminBlogPage").then((m) => ({ default: m.AdminBlogPage })));
+const AdminBlogFormPage = lazy(() => import("@/pages/admin/AdminBlogFormPage").then((m) => ({ default: m.AdminBlogFormPage })));
+const AdminAccreditationsPage = lazy(() => import("@/pages/admin/AdminAccreditationsPage").then((m) => ({ default: m.AdminAccreditationsPage })));
+const AdminNutritionIssuesPage = lazy(() => import("@/pages/admin/AdminNutritionIssuesPage").then((m) => ({ default: m.AdminNutritionIssuesPage })));
+const AdminRecommendedProductsPage = lazy(() => import("@/pages/admin/AdminRecommendedProductsPage").then((m) => ({ default: m.AdminRecommendedProductsPage })));
+const AdminB2bPillarsPage = lazy(() => import("@/pages/admin/AdminB2bPillarsPage").then((m) => ({ default: m.AdminB2bPillarsPage })));
+const InsulinResetGuidePage = lazy(() => import("@/pages/InsulinResetGuidePage").then((m) => ({ default: m.InsulinResetGuidePage })));
+const TrackerPage = lazy(() => import("@/pages/TrackerPage").then((m) => ({ default: m.TrackerPage })));
+const LivAtWorkPage = lazy(() => import("@/pages/LivAtWorkPage").then((m) => ({ default: m.LivAtWorkPage })));
+const InsulinQuizPage = lazy(() => import("@/pages/InsulinQuizPage").then((m) => ({ default: m.InsulinQuizPage })));
+const MenopauseQuizPage = lazy(() => import("@/pages/MenopauseQuizPage").then((m) => ({ default: m.MenopauseQuizPage })));
+const BioPage = lazy(() => import("@/pages/BioPage").then((m) => ({ default: m.BioPage })));
+const AdminQuizLeadsPage = lazy(() => import("@/pages/admin/AdminQuizLeadsPage").then((m) => ({ default: m.AdminQuizLeadsPage })));
 
 const publicRoutes = (
   <>
@@ -110,6 +112,7 @@ const publicRoutes = (
 
 export function App() {
   return (
+    <Suspense fallback={null}>
     <Routes>
       {/* Lead-gen quiz: standalone (no site header/footer), linked from ads and social only */}
       <Route path={IR_QUIZ_PATH} element={<InsulinQuizPage />} />
@@ -167,6 +170,7 @@ export function App() {
         <Route path="b2b-pillars" element={<AdminB2bPillarsPage />} />
       </Route>
     </Routes>
+    </Suspense>
   );
 }
 
