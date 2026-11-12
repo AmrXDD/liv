@@ -463,7 +463,11 @@ async function rest(table, select, filter = "") {
 
 const clip = (s, n = 158) => {
   const t = (s ?? "").replace(/\s+/g, " ").trim();
-  return t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t;
+  if (t.length <= n) return t;
+  const cut = t.slice(0, n - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  const base = lastSpace > n * 0.6 ? cut.slice(0, lastSpace) : cut;
+  return `${base.replace(/[\s,;:—–-]+$/, "")}…`;
 };
 const withBrand = (t) => (t.includes("Liv Functional") ? t : `${t} · Liv Functional`);
 

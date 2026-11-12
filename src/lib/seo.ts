@@ -53,11 +53,6 @@ export function websiteSchema() {
     name: "Liv Functional",
     url: SITE_URL,
     inLanguage: ["en", "ar"],
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${SITE_URL.replace(/\/$/, "")}/blog?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
