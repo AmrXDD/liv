@@ -50,13 +50,14 @@ export function trackQuizLead(quiz: string): void {
   trackPixel("Lead", { content_category: "quiz", content_name: quiz });
 }
 
+/** Product slug as the content id, the same id InitiateCheckout and Purchase send. */
 export function productParams(p: {
-  id: string;
+  slug: string;
   price: number;
   currency: string;
 }): Record<string, unknown> {
   return {
-    content_ids: [p.id],
+    content_ids: [p.slug],
     content_type: "product",
     value: p.price,
     currency: p.currency,
