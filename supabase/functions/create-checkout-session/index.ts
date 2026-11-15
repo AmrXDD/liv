@@ -82,6 +82,20 @@ interface IncomingPayload {
   notes?: string;
   locale?: "en" | "ar";
   shipping_address?: IncomingAddress;
+  utm?: Record<string, unknown>;
+}
+
+// Campaign tags sent by the browser (see src/lib/attribution.ts). Only these keys are kept.
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "ref", "src"];
+
+function cleanUtm(raw: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  for (const k of UTM_KEYS) {
+    const v = (raw as Record<string, unknown>)[k];
+    if (typeof v === "string" && v.trim()) out[k] = v.trim().slice(0, 120);
+  }
+  return out;
 }
 
 Deno.serve(async (req) => {
@@ -233,6 +247,7 @@ Deno.serve(async (req) => {
       shipping_postal_code: shippingAddress?.postal_code?.trim() ?? null,
       shipping_country: shippingAddress?.country?.trim() ?? null,
       has_physical: hasPhysical,
+      utm: cleanUtm(payload.utm),
     };
 
     const { data: order, error: orderErr } = await sb

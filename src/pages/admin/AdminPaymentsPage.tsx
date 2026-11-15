@@ -43,6 +43,7 @@ interface OrderRow {
   shipping_postal_code?: string | null;
   shipping_country?: string | null;
   has_physical?: boolean;
+  utm?: Record<string, string> | null;
   created_at: string;
 }
 
@@ -191,6 +192,16 @@ export function AdminPaymentsPage() {
                           {isPhysicalOrder && (
                             <span className="inline-flex items-center gap-1 rounded-full bg-coral-100 px-2 py-0.5 text-[11px] font-semibold text-coral-700">
                               <Truck className="h-3 w-3" /> Physical Delivery
+                            </span>
+                          )}
+                          {o.utm?.utm_campaign && (
+                            <span
+                              className="inline-flex items-center rounded-full bg-forest-100 px-2 py-0.5 text-[11px] font-semibold text-forest-800"
+                              title={Object.entries(o.utm)
+                                .map(([k, v]) => `${k}=${v}`)
+                                .join(" · ")}
+                            >
+                              Campaign: {o.utm.utm_campaign}
                             </span>
                           )}
                         </div>

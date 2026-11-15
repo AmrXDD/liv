@@ -11,6 +11,7 @@ import { useCart } from "@/lib/cart";
 import { getSupabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
 import { trackPixel } from "@/lib/pixel";
+import { getAttribution } from "@/lib/attribution";
 
 const POPULAR_COUNTRIES = [
   { code: "KW", nameEn: "Kuwait", nameAr: "الكويت" },
@@ -107,7 +108,7 @@ export function CheckoutPage() {
     }
 
     trackPixel("InitiateCheckout", {
-      content_ids: items.map((i) => i.productId),
+      content_ids: items.map((i) => i.slug),
       content_type: "product",
       num_items: items.reduce((n, i) => n + i.qty, 0),
       value: subtotal,
@@ -126,6 +127,8 @@ export function CheckoutPage() {
           phone: phone || undefined,
           notes: notes || undefined,
           locale: lang,
+          // Campaign tags saved on landing, stored with the order (orders.utm)
+          utm: getAttribution(),
           shipping_address: hasPhysical
             ? {
                 line1: line1.trim(),

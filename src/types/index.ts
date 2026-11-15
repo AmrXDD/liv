@@ -238,6 +238,7 @@ export interface Order {
   shipping_postal_code?: string | null;
   shipping_country?: string | null;
   has_physical?: boolean;
+  utm?: Record<string, string> | null;
   created_at: string;
   updated_at?: string;
 }

@@ -89,6 +89,7 @@ export function AdminQuizLeadsPage() {
                   <th className="px-6 py-3">When</th>
                   <th className="px-6 py-3">Lead</th>
                   <th className="px-6 py-3">Result</th>
+                  <th className="px-6 py-3">Campaign</th>
                   <th className="px-6 py-3">Source</th>
                   <th className="px-6 py-3"></th>
                 </tr>
@@ -136,6 +137,15 @@ export function AdminQuizLeadsPage() {
                       <div className="text-xs text-ink-muted">
                         {l.score}/{l.score_max}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 text-xs">
+                      {l.utm?.utm_campaign ? (
+                        <span className="inline-flex rounded-full bg-forest-100 px-2.5 py-1 font-medium text-forest-800">
+                          {l.utm.utm_campaign}
+                        </span>
+                      ) : (
+                        <span className="text-ink-muted">—</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-xs">
                       <div className="font-medium">{l.source}</div>

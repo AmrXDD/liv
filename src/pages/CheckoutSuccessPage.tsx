@@ -89,8 +89,9 @@ export function CheckoutSuccessPage() {
         return;
       }
 
-      // If order is found and is confirmed (or paid)
-      if (orderData) {
+      // Order found. A "pending" order means Stripe's confirmation has not reached us yet,
+      // so keep checking until it is marked paid (or we run out of attempts).
+      if (orderData && (orderData.status !== "pending" || attempts >= 15)) {
         if (!cancelled) {
           setStatus("ready");
         }
@@ -111,10 +112,16 @@ export function CheckoutSuccessPage() {
     };
   }, [sessionId, clear, isAr]);
 
-  // Purchase: once per order, only for a real order that was not cancelled or refunded.
-  // The order id doubles as the event ID so a future server-side event can be de-duplicated.
+  // Purchase: once per order, only once the order is confirmed paid.
+  // Value, currency and items are read from the order record itself, never hardcoded. If any of
+  // them is missing the event is skipped rather than sent empty.
+  // The order id doubles as the event ID so a future server-side event can be de-duplicated,
+  // and it is remembered in this browser so a refresh does not fire the event again.
   useEffect(() => {
-    if (!order || order.status === "cancelled" || order.status === "refunded") return;
+    if (!order || (order.status !== "paid" && order.status !== "fulfilled")) return;
+    const value = Number(order.total);
+    const slugs = (order.items ?? []).map((i) => i.slug).filter(Boolean);
+    if (!order.id || !order.currency || !Number.isFinite(value) || slugs.length === 0) return;
     const key = `liv-purchase-tracked-${order.id}`;
     try {
       if (localStorage.getItem(key)) return;
@@ -125,10 +132,10 @@ export function CheckoutSuccessPage() {
     trackPixel(
       "Purchase",
       {
-        content_ids: order.items.map((i) => i.product_id),
+        content_ids: slugs,
         content_type: "product",
-        num_items: order.items.reduce((n, i) => n + i.quantity, 0),
-        value: order.total,
+        num_items: order.items.reduce((n, i) => n + Number(i.quantity || 1), 0),
+        value,
         currency: order.currency,
       },
       order.id

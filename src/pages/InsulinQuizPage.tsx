@@ -8,6 +8,8 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
 import { DIAL_COUNTRIES, dialLabel } from "@/data/dialCodes";
 import { getSupabase } from "@/lib/supabase";
+import { getAttribution } from "@/lib/attribution";
+import { trackQuizLead } from "@/lib/pixel";
 import { renderQuizImage } from "@/lib/quizImage";
 import { IR_QUIZ_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
 import { useProduct } from "@/lib/queries";
@@ -29,7 +31,6 @@ import {
 
 type Step = "intro" | "questions" | "contact" | "result";
 
-const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "ref", "src"] as const;
 
 const copy = {
   eyebrow: { en: "Free 2-minute quiz", ar: "اختبار مجاني في دقيقتين" },
@@ -101,15 +102,6 @@ export function InsulinQuizPage() {
   const total = QUIZ_QUESTIONS.length;
   const progress = step === "intro" ? 0 : step === "questions" ? (qIndex / (total + 1)) * 100 : step === "contact" ? (total / (total + 1)) * 100 : 100;
 
-  const utm = useMemo(() => {
-    const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
-    const out: Record<string, string> = {};
-    UTM_KEYS.forEach((k) => {
-      const v = params.get(k);
-      if (v) out[k] = v.slice(0, 120);
-    });
-    return out;
-  }, []);
 
   // The old question stays on screen (and tappable) while it slides out. A tap in that window used to
   // advance a second time, skipping questions and finally pushing qIndex past the end (blank page).
@@ -178,10 +170,11 @@ export function InsulinQuizPage() {
           score_max: scored.scoreMax,
           band: scored.band.id,
           answers,
-          utm,
+          utm: getAttribution(),
         });
         if (error) console.error("[quiz] could not save lead:", error);
       }
+      trackQuizLead(IR_QUIZ_SOURCE);
     }
 
     setResult(scored);
@@ -211,8 +204,8 @@ export function InsulinQuizPage() {
   // One next step per result band. The plan price is read live so it never drifts from the shop.
   const planQuery = useProduct(QUIZ_PLAN_SLUG);
   const offer = result ? QUIZ_OFFERS[result.band.id] : null;
-  const withTags = (path: string) =>
-    `${path}${path.includes("?") ? "&" : "?"}utm_source=quiz&utm_medium=result&utm_campaign=${result?.band.id ?? "unknown"}`;
+  // Result links carry no tags: the result band is health information and must not appear in a URL,
+  // and the visit's campaign tags are already saved (src/lib/attribution.ts).
   const offerPath = offer ? (offer.href === "plan" ? `${SELF_GUIDED_PATH}/${QUIZ_PLAN_SLUG}` : offer.href) : "";
   const planPrice =
     offer?.kind === "plan" && planQuery.data && planQuery.data.price > 0
@@ -420,7 +413,7 @@ export function InsulinQuizPage() {
                     </p>
                   )}
                   <Link
-                    to={withTags(offerPath)}
+                    to={offerPath}
                     className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-forest-500 px-8 py-4 text-base font-semibold text-white transition hover:bg-forest-600"
                   >
                     {offer.cta[lang]}
@@ -428,7 +421,7 @@ export function InsulinQuizPage() {
                   </Link>
                   {showPcosLink && (
                     <Link
-                      to={withTags(`${SELF_GUIDED_PATH}/${QUIZ_PCOS_SLUG}`)}
+                      to={`${SELF_GUIDED_PATH}/${QUIZ_PCOS_SLUG}`}
                       className="mt-4 flex items-center justify-center text-sm font-medium text-forest-600 hover:underline"
                     >
                       {QUIZ_PCOS_LINK[lang]}
@@ -436,7 +429,7 @@ export function InsulinQuizPage() {
                   )}
                   {offer.secondary && (
                     <Link
-                      to={withTags(offer.secondary.href)}
+                      to={offer.secondary.href}
                       className="mt-4 flex items-center justify-center text-sm font-medium text-forest-600 hover:underline"
                     >
                       {offer.secondary.label[lang]}
