@@ -98,6 +98,7 @@ export function personSchema() {
       "https://instagram.com/livfunctional",
       "https://www.linkedin.com/company/liv-functional",
       "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
+      "https://www.iphm.co.uk/directory/find-a-professional-practitioner/reham-alsharif/",
     ],
   };
 }
