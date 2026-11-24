@@ -19,43 +19,48 @@ const copy = {
   cta2: { en: "Work with Reham", ar: "اعملي مع رهام" } as L,
 };
 
+// LivMethod pillars: fixed names and fixed order. Do not rename or reorder.
+// Arabic names are kept as they were (Reham, 2026-11-15); only their order follows the English.
 const pillars: { title: L; body: L }[] = [
   {
-    title: { en: "Gut microbiome", ar: "ميكروبيوم الأمعاء" },
-    body: {
-      en: "Support the gut bacteria that influence blood sugar, cravings and inflammation.",
-      ar: "دعم بكتيريا الأمعاء المؤثرة في سكر الدم والاشتهاء والالتهاب.",
-    },
-  },
-  {
-    title: { en: "Stress response", ar: "استجابة التوتر" },
+    title: { en: "Nervous System Regulation", ar: "استجابة التوتر" },
     body: {
       en: "Calm the stress signals that keep your body in survival mode and your insulin high.",
       ar: "تهدئة إشارات التوتر التي تُبقي الجسم في وضع البقاء وتُبقي الأنسولين مرتفعًا.",
     },
   },
   {
-    title: { en: "Food as medicine", ar: "الغذاء كدواء" },
+    title: { en: "The Gut-Insulin Axis", ar: "ميكروبيوم الأمعاء" },
+    body: {
+      en: "Support the gut bacteria that influence insulin, blood sugar, cravings and inflammation.",
+      ar: "دعم بكتيريا الأمعاء المؤثرة في الأنسولين وسكر الدم والاشتهاء والالتهاب.",
+    },
+  },
+  {
+    title: { en: "Functional Food as Medicine", ar: "الغذاء كدواء" },
     body: {
       en: "Eat in an order and a rhythm that keeps your glucose steady, using food you actually enjoy.",
       ar: "تناولي الطعام بترتيب وإيقاع يحافظان على استقرار سكرك، بأطعمة تستمتعين بها فعلًا.",
     },
   },
   {
-    title: { en: "The right movement", ar: "الحركة المناسبة" },
-    body: {
-      en: "Short, well-timed movement that helps your muscles use sugar instead of storing it.",
-      ar: "حركة قصيرة في وقتها المناسب تساعد عضلاتك على استخدام السكر بدل تخزينه.",
-    },
-  },
-  {
     title: {
-      en: "Reading your labs from a functional health point of view",
+      en: "Reading Lab Results with Functional Ranges",
       ar: "قراءة تحاليلك من منظور الصحة الوظيفية",
     },
     body: {
       en: "Look beyond “normal” and understand what your results say about where you are heading.",
       ar: "النظر إلى ما وراء كلمة «طبيعي» وفهم ما تقوله نتائجك عن مسارك الصحي.",
+    },
+  },
+  {
+    title: {
+      en: "Smart Exercise with Weights (Muscle as a Metabolic Organ)",
+      ar: "الحركة المناسبة",
+    },
+    body: {
+      en: "Short, well-timed sessions with weights that help your muscles use sugar instead of storing it.",
+      ar: "تمارين أوزان قصيرة في وقتها المناسب تساعد عضلاتك على استخدام السكر بدل تخزينه.",
     },
   },
 ];

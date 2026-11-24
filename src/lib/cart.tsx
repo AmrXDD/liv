@@ -68,22 +68,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = useCallback((product: Product, qty = 1) => {
-    if (product.stock != null && product.stock <= 0) {
+    const isPhysical =
+      product.category === "physical" ||
+      product.format === "Physical" ||
+      product.requiresShipping === true;
+    // Stock only applies to physical products. A digital plan saved with stock 0
+    // must still be buyable (the server applies the same rule).
+    const stock = isPhysical ? product.stock : undefined;
+    if (stock != null && stock <= 0) {
       return;
     }
     trackPixel("AddToCart", productParams({ ...product, price: product.price * qty }));
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id);
-      const isPhysical =
-        product.category === "physical" ||
-        product.format === "Physical" ||
-        product.requiresShipping === true;
-      const maxStock = product.stock != null ? product.stock : 99;
+      const maxStock = stock != null ? stock : 99;
 
       if (existing) {
         return prev.map((i) =>
           i.productId === product.id
-            ? { ...i, qty: Math.min(i.qty + qty, maxStock), stock: product.stock }
+            ? { ...i, qty: Math.min(i.qty + qty, maxStock), stock }
             : i
         );
       }
@@ -98,7 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           currency: product.currency,
           image: product.heroImage ?? product.images?.[0],
           qty: Math.min(qty, maxStock),
-          stock: product.stock,
+          stock,
           requiresShipping: isPhysical,
         },
       ];

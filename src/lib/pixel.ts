@@ -34,13 +34,30 @@ export function trackPixel(
   }
 }
 
+/**
+ * Quiz finished and contact details submitted. Sends only which quiz it was:
+ * never answers, score, result band, name or phone number.
+ * Fires at most once per quiz per visit, so a refresh or a retake does not count twice.
+ */
+export function trackQuizLead(quiz: string): void {
+  const key = `liv-lead-tracked-${quiz}`;
+  try {
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+  } catch {
+    // storage blocked: fall through and fire for this submit
+  }
+  trackPixel("Lead", { content_category: "quiz", content_name: quiz });
+}
+
+/** Product slug as the content id, the same id InitiateCheckout and Purchase send. */
 export function productParams(p: {
-  id: string;
+  slug: string;
   price: number;
   currency: string;
 }): Record<string, unknown> {
   return {
-    content_ids: [p.id],
+    content_ids: [p.slug],
     content_type: "product",
     value: p.price,
     currency: p.currency,

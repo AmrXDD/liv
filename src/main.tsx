@@ -8,7 +8,11 @@ import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/lib/cart";
 import { App } from "./App";
 import { LanguageRouteSync } from "@/lib/langRouting";
+import { captureAttribution } from "@/lib/attribution";
 import "./index.css";
+
+// Save the campaign tags from the landing URL before anything can navigate away from it.
+captureAttribution();
 
 const queryClient = new QueryClient({
   defaultOptions: {

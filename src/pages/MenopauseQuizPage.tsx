@@ -8,6 +8,8 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { WHATSAPP_PHONE } from "@/components/ui/WhatsAppFab";
 import { DIAL_COUNTRIES, dialLabel } from "@/data/dialCodes";
 import { getSupabase } from "@/lib/supabase";
+import { getAttribution } from "@/lib/attribution";
+import { trackQuizLead } from "@/lib/pixel";
 import { renderQuizImage } from "@/lib/quizImage";
 import { MENO_QUIZ_PATH, SELF_GUIDED_PATH } from "@/lib/routes";
 import { useProduct } from "@/lib/queries";
@@ -33,7 +35,6 @@ import {
 type Step = "intro" | "questions" | "contact" | "result";
 type L = { en: string; ar: string };
 
-const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "ref", "src"] as const;
 
 const copy = {
   eyebrow: { en: "Free 2-minute quiz", ar: "اختبار مجاني بدقيقتين" },
@@ -252,15 +253,6 @@ export function MenopauseQuizPage() {
   const total = MENO_QUESTIONS.length;
   const progress = step === "intro" ? 0 : step === "questions" ? (qIndex / (total + 1)) * 100 : step === "contact" ? (total / (total + 1)) * 100 : 100;
 
-  const utm = useMemo(() => {
-    const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
-    const out: Record<string, string> = {};
-    UTM_KEYS.forEach((k) => {
-      const v = params.get(k);
-      if (v) out[k] = v.slice(0, 120);
-    });
-    return out;
-  }, []);
 
   // Ignore taps while the previous question is still sliding out (see InsulinQuizPage for the bug this prevents).
   const advancing = useRef(false);
@@ -326,10 +318,11 @@ export function MenopauseQuizPage() {
           score_max: scored.scoreMax,
           band: scored.band.id,
           answers,
-          utm,
+          utm: getAttribution(),
         });
         if (error) console.error("[quiz] could not save lead:", error);
       }
+      trackQuizLead(MENO_QUIZ_SOURCE);
     }
 
     setResult(scored);
@@ -367,7 +360,8 @@ export function MenopauseQuizPage() {
   const planLive = !!planQuery.data;
   const planPrice =
     planQuery.data && planQuery.data.price > 0 ? formatPrice(planQuery.data.price, planQuery.data.currency) : null;
-  const planHref = `${SELF_GUIDED_PATH}/${planSlug}?utm_source=quiz&utm_medium=result&utm_campaign=${result?.band.id ?? "unknown"}`;
+  // No tags on this link: the result band is health information and must not appear in a URL.
+  const planHref = `${SELF_GUIDED_PATH}/${planSlug}`;
 
   const Arrow = isAr ? ArrowRight : ArrowLeft;
   const q = MENO_QUESTIONS[Math.min(qIndex, total - 1)];

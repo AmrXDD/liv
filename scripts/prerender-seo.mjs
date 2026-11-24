@@ -305,7 +305,7 @@ const shareCopy = {
   en: {
     "/": "Functional nutrition coaching for women with insulin resistance. Programs, 1:1 coaching and a free call.",
     "/self-guided-programs-خطة-مقاومة-الانسولين": "Self-paced plans to reset insulin resistance, hormones and gut health. Start today, at your own speed.",
-    "/coaching": "1:1 coaching with Reham to reverse insulin resistance, one realistic habit at a time.",
+    "/coaching": "1:1 coaching with Reham that may support insulin sensitivity, one realistic habit at a time.",
     "/consultations": "A free 30-minute call. You leave knowing your next step.",
     "/blog": "Plain-language notes on hormones, gut health and blood sugar.",
     "/about": "A bilingual wellness studio built on functional medicine and real behavior change.",
@@ -325,7 +325,7 @@ const shareCopy = {
   ar: {
     "/": "تغذية وظيفية للنساء مع مقاومة الإنسولين. برامج، وتدريب فردي، ومكالمة مجانية.",
     "/self-guided-programs-خطة-مقاومة-الانسولين": "خطط ذاتية لإعادة ضبط مقاومة الإنسولين والهرمونات والأمعاء. ابدئي اليوم وبالسرعة التي تناسبك.",
-    "/coaching": "تدريب فردي مع رهام لعكس مقاومة الإنسولين، بعادة واقعية كل مرة.",
+    "/coaching": "تدريب فردي مع رهام قد يدعم حساسية الإنسولين، بعادة واقعية كل مرة.",
     "/consultations": "مكالمة مجانية مدتها ٣٠ دقيقة. تخرجين منها وأنتِ تعرفين خطوتك التالية.",
     "/blog": "ملاحظات بلغة بسيطة عن الهرمونات والأمعاء وسكر الدم.",
     "/about": "استوديو صحي ثنائي اللغة، مبني على الطب الوظيفي وتغيير السلوك الحقيقي.",

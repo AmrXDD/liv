@@ -25,7 +25,7 @@ export function DIYPlansPage() {
         title={t("diy.hero.title")}
         description={t("diy.hero.lede")}
         path={SELF_GUIDED_PATH}
-        keywords="10 day reset plan, insulin sensitivity reset, insulin resistance protocol, lower fasting insulin, lower A1C naturally, fasting glucose protocol, blood sugar stabilization, prediabetes plan, PCOS nutrition plan, pcos, no medication for diabetes prevention, metabolic health program, gut health insulin resistance, functional nutrition protocol, مقاومه الأنسولين, علاج السكري من غير دوا, علاج السكري الكويت, دايت لعلاج السكري, تكيس المبايض"
+        keywords="10 day reset plan, insulin sensitivity reset, insulin resistance protocol, lower fasting insulin, lower A1C naturally, fasting glucose protocol, blood sugar stabilization, prediabetes plan, PCOS nutrition plan, pcos, metabolic health program, gut health insulin resistance, functional nutrition protocol, مقاومه الأنسولين, تكيس المبايض"
       />
 
       <CollectionHero
