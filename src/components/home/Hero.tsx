@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/utils";
@@ -131,7 +131,9 @@ export function Hero() {
               aria-label={titleWords.join(" ")}
             >
               {titleWords.map((word, i) => (
-                <span key={i} className="hero-word inline-block overflow-hidden align-baseline mx-1.5">
+                <Fragment key={i}>
+                  {i > 0 && " "}
+                  <span className="hero-word inline-block overflow-hidden align-baseline mx-0.5">
                   <span className="inline-block will-change-transform">
                     {i === 1 ? (
                       isRtl ? (
@@ -143,7 +145,8 @@ export function Hero() {
                       word
                     )}
                   </span>
-                </span>
+                  </span>
+                </Fragment>
               ))}
             </h1>
 

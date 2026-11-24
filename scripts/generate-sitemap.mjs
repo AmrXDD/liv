@@ -12,6 +12,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITEMAP = path.join(ROOT, "dist", "sitemap.xml");
 const SITE_URL = "https://www.livfunctional.com";
 const SELF_GUIDED_PATH = "/self-guided-programs-خطة-مقاومة-الانسولين";
+const RETIRED = new Set(["a-tuesday-morning-protocol", "the-bilingual-wellness-gap", "behaviour-design-for-wellness", "why-most-gut-protocols-fail", "perimenopause-and-the-glucose-question"]);
 const FREE_ASSESSMENT_SLUG = "free-assessment-كيف-اعرف-إذا-عندي-مقاومة-انسولين";
 
 // Vercel provides env vars; locally fall back to .env files.
@@ -100,7 +101,7 @@ async function main() {
     push(`${base}/${p.slug}`, { priority: "0.8", changefreq: "weekly" });
   }
   for (const p of posts) {
-    if (!p.slug) continue;
+    if (!p.slug || RETIRED.has(p.slug)) continue;
     const lastmod = p.published_at ? new Date(p.published_at).toISOString().slice(0, 10) : "";
     push(`/blog/${p.slug}`, { priority: "0.6", changefreq: "monthly", lastmod });
   }

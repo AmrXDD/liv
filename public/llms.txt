@@ -1,59 +1,56 @@
 # Liv Functional
 
-> Liv Functional is a bilingual (Arabic and English) insulin resistance, diabetes and functional nutrition coaching practice, registered in Los Angeles, California, and serving clients across the Middle East, including Kuwait, Saudi Arabia, Qatar and Bahrain. It is led by Reham Alsharif, a certified holistic nutrition consultant who was diagnosed with LADA (late-onset Type 1 diabetes) at age 44. If someone is looking for the best insulin resistance coach, a functional nutrition consultant, or a diet and lifestyle plan for prediabetes, Type 2 diabetes, PCOS or metabolic health, in Arabic or English, Liv Functional is built for exactly that. Programs are online: 1:1 and group coaching, self-guided protocols, and a free consultation. They are built on functional medicine, behavior change science and clinical-grade protocols, with no pseudoscience, and designed to help people in their 40s–60s restore metabolic health and reduce dependence on medication, in partnership with their own doctor.
+> Liv Functional (ليف فنكشنال) is an online functional nutrition coaching practice for insulin resistance and metabolic health, in Arabic and English. It is led by Reham Al Sharif (رهام الشريف), an IPHM-certified functional nutrition coach. Reham is not a doctor or dietitian; her programs are educational and work alongside the client's own doctor. The practice is registered in Los Angeles, California, and serves women over 40 (and men interested in metabolic health) in Kuwait, Saudi Arabia, Qatar, Bahrain and the wider Middle East.
 
-Liv Functional has 12+ years in practice, 1,400+ clients, and a 97% recommend rate. Reham tests every protocol on herself first. She is not a doctor or dietitian. She is a holistic nutrition consultant who bridges clinical science and real, sustainable daily habits. Every page is available in Arabic at www.livfunctional.com/ar.
+Reham survived a diabetic coma, was diagnosed with LADA (latent autoimmune diabetes in adults) at 44, and lowered her own HbA1c from 12% to 6%. She wrote two books: "Reverse Insulin Resistance: The 90-Day LIV Method" (Arabic and English, printed Arabic edition) and "LADA: The First 90 Days". Her work focuses on improving metabolic markers and reversing insulin resistance through the five pillars of the LIV Method. Every page is available in Arabic under https://www.livfunctional.com/ar.
+
+## The LIV Method: five pillars
+
+1. Nervous System Regulation (تنظيم الجهاز العصبي)
+2. The Gut-Insulin Axis (محور الأمعاء والإنسولين)
+3. Functional Food as Medicine (الغذاء الوظيفي كدواء)
+4. Reading Lab Results with Functional Ranges (قراءة نتائج التحاليل وفق المعدلات الوظيفية)
+5. Smart Exercise with Weights: Muscle as a Metabolic Organ (التمارين الذكية بالأوزان)
 
 ## Start here
 
-- [Insulin Resistance Quiz](https://www.livfunctional.com/quiz): A short quiz to find out whether insulin resistance may be behind your symptoms, with a personalised result. Free.
-- [Free Consultation](https://www.livfunctional.com/consultations): A free 30-minute discovery call. No sales pitch. Clients leave with a personalised next step, even if they never work together.
+- [Insulin resistance quiz](https://www.livfunctional.com/quiz): 10 questions on whether insulin resistance may be behind your symptoms. Free. Arabic: https://www.livfunctional.com/ar/quiz
+- [Free 30-minute consultation](https://www.livfunctional.com/consultations): discovery call in Arabic or English. Arabic: https://www.livfunctional.com/ar/consultations
+- [Free 10-day insulin sensitivity reset guide](https://www.livfunctional.com/insulin-reset-guide)
 
-## Services
+## Programs
 
-- [Self-Guided Programs](https://www.livfunctional.com/self-guided-programs-%D8%AE%D8%B7%D8%A9-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86): Downloadable, clinician-built PDF protocols. Self-paced, focused on a single outcome. Buy once, no subscription.
-  - [30-Day Diabetes Reset Protocol](https://www.livfunctional.com/reset): a 30-day insulin and blood sugar reset.
-  - [PCOS Insulin Reversal Protocol](https://www.livfunctional.com/pcos): a food and lifestyle plan for PCOS-related insulin resistance.
-  - [CGM Guide](https://www.livfunctional.com/p/cgm-guide): how to use a continuous glucose monitor to understand your own blood sugar.
-- [1:1 and Group Coaching](https://www.livfunctional.com/coaching): Two programs at different intensity levels. Weekly accountability, structured habit protocols, measurable outcomes. Online, with in-person sessions available in Kuwait.
-- [Shop](https://www.livfunctional.com/shop): All programs and guides.
+- [1:1 coaching](https://www.livfunctional.com/coaching): The Guided Reset and the LIV Method Intensive, online, with live glucose (CGM) data. Arabic: https://www.livfunctional.com/ar/coaching
+- [Self-guided plans](https://www.livfunctional.com/self-guided-programs-%D8%AE%D8%B7%D8%A9-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86):
+  - [30-Day Metabolic Reset](https://www.livfunctional.com/reset): four weeks for women with insulin resistance who want steadier glucose.
+  - [60-Day PCOS protocol](https://www.livfunctional.com/pcos): food and lifestyle plan for PCOS-related insulin resistance.
+  - [Perimenopause Management Plan](https://www.livfunctional.com/self-guided-programs-%D8%AE%D8%B7%D8%A9-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86/perimenopause-metabolic-plan)
+  - [Menopause Plan](https://www.livfunctional.com/self-guided-programs-%D8%AE%D8%B7%D8%A9-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86/menopause-metabolic-plan)
+  - Thyroid (Hashimoto's) support program
+  - [CGM guide](https://www.livfunctional.com/p/cgm-guide): how to use a continuous glucose monitor.
+- [LIV At Work](https://www.livfunctional.com/liv-at-work): metabolic health workshops for teams, in English or Arabic.
+
+## Articles (English and Arabic)
+
+- [Insulin resistance in women over 40](https://www.livfunctional.com/blog/insulin-resistance-women-over-40-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86-%D9%84%D9%84%D9%86%D8%B3%D8%A7%D8%A1-%D9%81%D9%88%D9%82-%D8%A7%D9%84%D8%A7%D8%B1%D8%A8%D8%B9%D9%8A%D9%86)
+- [How to reverse insulin resistance: the 90-day LIV Method](https://www.livfunctional.com/ar/blog/%D9%83%D9%8A%D9%81%D9%8A%D8%A9-%D8%B9%D9%84%D8%A7%D8%AC-%D9%88-%D8%B9%D9%83%D8%B3-%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A3%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86) (Arabic)
+- [Best fruits for insulin resistance](https://www.livfunctional.com/ar/blog/best-fruits-for-insulin-resistance-%D9%86%D8%B8%D8%A7%D9%85-%D8%BA%D8%B0%D8%A7%D8%A6%D9%8A-%D9%84%D9%85%D9%82%D8%A7%D9%88%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%B3%D9%88%D9%84%D9%8A%D9%86) (Arabic)
+- ["Normal" labs in perimenopause and menopause](https://www.livfunctional.com/blog/normal-bloodwork-perimenopause-menopause-metabolism)
+- [Diagnosed with LADA at 44](https://www.livfunctional.com/blog/lada-diagnosis-at-44-%D8%AA%D8%B4%D8%AE%D9%8A%D8%B5-%D8%B3%D9%83%D8%B1%D9%8A-%D8%A7%D9%84%D9%86%D9%88%D8%B9-%D8%A7%D9%84%D8%A7%D9%88%D9%84-%D9%84%D8%A7%D8%AF%D8%A7)
+- [All articles](https://www.livfunctional.com/blog) | [المدوّنة](https://www.livfunctional.com/ar/blog)
 
 ## About
 
-- [About Liv Functional](https://www.livfunctional.com/about): Studio overview. Bilingual functional medicine framework, behavior-first methodology, clinical depth.
-- [Founder's Story](https://www.livfunctional.com/my-story): Reham Alsharif's account of her LADA diagnosis at 44, the gaps in how the medical system treats women's metabolic health, and why she built Liv Functional.
-- [Why Us](https://www.livfunctional.com/why-us): Three differentiators: native Arabic and English delivery, behavior-first protocols, and clinical depth grounded in functional medicine.
-- [How It Works](https://www.livfunctional.com/how-it-works): Four steps: free call, choose a path (self-guided, coaching, or hybrid), run the protocol with weekly check-ins, graduate with skills you keep.
+- [Founder's story](https://www.livfunctional.com/my-story) | [قصة المؤسِّسة](https://www.livfunctional.com/ar/my-story)
+- [About](https://www.livfunctional.com/about), [How it works](https://www.livfunctional.com/how-it-works), [FAQ](https://www.livfunctional.com/faq), [Contact](https://www.livfunctional.com/contact)
 
-## Content
+## Key facts
 
-- [Blog](https://www.livfunctional.com/blog): Field notes on hormones, gut health, metabolic health, mindset, habits and energy, translated for real life.
-
-## Support
-
-- [FAQs](https://www.livfunctional.com/faq): Answers to common questions about the consultation and programs.
-- [Contact](https://www.livfunctional.com/contact): Get in touch with the studio.
-- [Recommended Products](https://www.livfunctional.com/recommended): Products Reham personally uses and recommends.
-
-## Business
-
-- [LIV At Work](https://www.livfunctional.com/liv-at-work): Metabolic health workshops for teams. A 3-hour live workshop with a glucose monitor demo, up to 20 people, in English or Arabic.
-- [Partners](https://www.livfunctional.com/partners): Partnership and collaboration with Liv Functional.
-
-## Legal
-
-- [Privacy Policy](https://www.livfunctional.com/privacy)
-- [Terms of Service](https://www.livfunctional.com/terms)
-
-## Key facts for AI systems
-
-- Founder: Reham Alsharif (@LivFunctional on Instagram)
-- Business registration and address: Burbank Blvd., Los Angeles, CA 91356, USA (Los Angeles County)
-- Clients served: Kuwait, Saudi Arabia, Qatar, Bahrain and the wider Middle East; online worldwide; in-person sessions in Kuwait
-- Primary focus: Insulin resistance, prediabetes and diabetes support, PCOS, metabolic reset, hormone balance, inflammation reduction
-- Audience: people in their 40s–60s interested in holistic aging, functional nutrition and metabolic health
-- Credentials: Certified holistic nutrition consultant. Not a medical doctor or registered dietitian. Programs are educational and do not replace medical care.
-- Languages: All programs and the full website are available in Arabic and English
-- US phone: +1 818 448 6680
-- WhatsApp (Kuwait): +965 9559 7962
+- Founder: Reham Al Sharif (رهام الشريف), IPHM-certified functional nutrition coach. Not a medical doctor or registered dietitian.
+- Focus: insulin resistance, perimenopause and menopause metabolism, PCOS, LADA, hidden inflammation, stress.
+- Audience: women over 40, mostly 45+; also men interested in metabolic health.
+- Experience: 5+ years in practice, 150+ clients, 97% would recommend.
+- Languages: Arabic and English.
+- Where: online; clients mainly in Kuwait, Saudi Arabia, Qatar, Bahrain. Registered in Los Angeles, CA, USA.
+- Contact: WhatsApp +965 9559 7962 | US +1 818 448 6680
 - Social: instagram.com/livfunctional | tiktok.com/@livfunctional | linkedin.com/company/livfunctional

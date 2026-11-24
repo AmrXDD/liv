@@ -104,7 +104,7 @@
   },
   "product": {
     "buy": "Buy now",
-    "trust": "Clinician-built by Reham Alsharif — every protocol tested before it's shared. 1,400+ clients."
+    "trust": "Built by Reham Alsharif, functional nutrition coach — every protocol tested before it's shared. 150+ clients."
   },
   "cta": {
     "primary": "Book a free 30-min call",
@@ -129,8 +129,8 @@
     "titleD": "functional science.",
     "lede": "Bilingual programs in functional medicine, behaviour change, and metabolic health — designed for women rebuilding their energy, hormones, and confidence.",
     "metrics": [
-      { "value": "12+", "label": "Years in practice" },
-      { "value": "1.4k", "label": "Clients transformed" },
+      { "value": "5+", "label": "Years in practice" },
+      { "value": "150+", "label": "Clients supported" },
       { "value": "97%", "label": "Recommend us" }
     ]
   },

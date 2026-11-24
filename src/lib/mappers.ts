@@ -217,6 +217,7 @@ type BlogPostRow = {
   is_featured: boolean;
   is_published: boolean;
   published_at: string;
+  updated_at?: string | null;
 };
 
 export function mapBlogPost(row: BlogPostRow): BlogPost {
@@ -229,6 +230,7 @@ export function mapBlogPost(row: BlogPostRow): BlogPost {
     category: row.category,
     author: row.author,
     publishedAt: row.published_at,
+    updatedAt: row.updated_at ?? undefined,
     readingMinutes: row.reading_minutes,
     heroImage: row.hero_image ?? undefined,
     featured: row.is_featured,

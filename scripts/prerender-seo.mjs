@@ -25,6 +25,9 @@ const escapeAttr = (s) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
+const IR_QUIZ =
+  "/what-are-insulin-resistance-symptoms-how-do-i-know-if-i-have-it-كيف-اعرف-إذا-في-عندي-مقاومة-انسولين";
+
 const routes = [
   {
     path: "/",
@@ -42,9 +45,9 @@ const routes = [
   {
     path: "/coaching",
     title:
-      "1:1 Holistic Nutrition Coaching for Insulin Resistance | Liv Functional",
+      "1:1 Functional Nutrition Coaching for Insulin Resistance | Liv Functional",
     description:
-      "Work 1:1 with a certified holistic nutrition consultant to reverse insulin resistance through behavior change and functional protocols.",
+      "Work 1:1 with a functional nutrition coach to improve insulin resistance markers through behavior change and functional protocols.",
   },
   {
     path: "/consultations",
@@ -151,6 +154,24 @@ const routes = [
       "Download the Chapter 9 and 10 tracker pages from your book as PDFs. Print them or write on them from your tablet and log your 90 days.",
   },
   {
+    path: "/shop",
+    title: "The LIV Shop — Books, Tools and Products | Liv Functional",
+    description:
+      "Books, tools, and small-batch products Reham makes and uses, built to support your insulin resistance reset.",
+  },
+  {
+    path: IR_QUIZ,
+    title: "Insulin Resistance Symptoms: Free 2-Minute Quiz | Liv Functional",
+    description:
+      "A free 2-minute quiz on common insulin resistance symptoms. See where you sit on the spectrum and get a one-page result on WhatsApp.",
+  },
+  {
+    path: "/menopause-metabolic-quiz",
+    title: "Is Menopause Changing Your Metabolism? Free Quiz | Liv Functional",
+    description:
+      "A free 2-minute quiz on how perimenopause and menopause affect your muscle, sleep and insulin. Get your score and a plan built around your answers.",
+  },
+  {
     path: "/p/cgm-guide",
     title:
       "CGM Guide — Continuous Glucose Monitoring for Insulin Resistance | Liv Functional",
@@ -172,14 +193,14 @@ const arCopy = {
       "برامج ذاتية لإعادة ضبط مقاومة الإنسولين والهرمونات وصحة الأمعاء والتمثيل الغذائي، من إعداد أخصائيات تغذية وظيفية.",
   },
   "/coaching": {
-    title: "تدريب تغذية علاجية فردي لمقاومة الإنسولين | ليف فنكشنال",
+    title: "تدريب تغذية وظيفية فردي لمقاومة الإنسولين | ليف فنكشنال",
     description:
-      "اعملي بشكل فردي مع مستشارة تغذية علاجية معتمدة لعكس مقاومة الإنسولين عبر تغيير السلوك والبروتوكولات الوظيفية.",
+      "اعملي بشكل فردي مع مدرّبة تغذية وظيفية لتحسين مؤشرات مقاومة الإنسولين عبر تغيير السلوك والبروتوكولات الوظيفية.",
   },
   "/consultations": {
     title: "احجزي مكالمتك التعريفية المجانية ٣٠ دقيقة | ليف فنكشنال",
     description:
-      "احجزي مكالمة تعريفية مجانية مدتها ٣٠ دقيقة، أو استشارة علاجية معمّقة مع ممارسة تغذية وظيفية.",
+      "احجزي مكالمة تعريفية مجانية مدتها ٣٠ دقيقة، أو استشارة معمّقة مع مدرّبة تغذية وظيفية.",
   },
   "/blog": {
     title: "المدوّنة — ملاحظات في الصحة الوظيفية والتمثيل الغذائي | ليف فنكشنال",
@@ -256,6 +277,20 @@ const arCopy = {
     title: "صفحات المتابعة لكتاب تغلب على مقاومة الأنسولين | ليف فنكشنال",
     description:
       "حمّل صفحات الفصلين التاسع والعاشر من كتابك بصيغة PDF. اطبعها أو اكتب عليها من جهازك اللوحي وسجّل أيامك الـ 90.",
+  },
+  "/shop": {
+    title: "متجر ليف — كتب وأدوات ومنتجات | ليف فنكشنال",
+    description: "كتب وأدوات ومنتجات محدودة من إعداد رهام واستخدامها، لدعم رحلتك في تحسين مقاومة الإنسولين.",
+  },
+  [IR_QUIZ]: {
+    title: "أعراض مقاومة الإنسولين: اختبار مجاني في دقيقتين | ليف فنكشنال",
+    description:
+      "اختبار مجاني في دقيقتين عن أعراض مقاومة الإنسولين الشائعة. اعرفي أين تقفين على الطيف واحصلي على نتيجتك في صفحة واحدة عبر واتساب.",
+  },
+  "/menopause-metabolic-quiz": {
+    title: "هل انقطاع الطمث يغيّر الأيض عندك؟ اختبار مجاني | ليف فنكشنال",
+    description:
+      "اختبار مجاني بدقيقتين عن تأثير ما قبل انقطاع الطمث وانقطاعه على العضل والنوم والأنسولين. تأخذين نتيجتك وخطة مبنية على إجاباتك.",
   },
   "/p/cgm-guide": {
     title: "دليل جهاز CGM — مراقبة الجلوكوز المستمرة لمقاومة الإنسولين | ليف فنكشنال",
@@ -494,12 +529,19 @@ async function dynamicRoutes() {
 
   const out = [];
   // Slugs may contain spaces (encodeURI turns them into %20); a literal "%" would double-encode.
-  const ok = (slug) => slug && !slug.includes("%");
+  const REDIRECTED = new Set([
+    "a-tuesday-morning-protocol",
+    "the-bilingual-wellness-gap",
+    "behaviour-design-for-wellness",
+    "why-most-gut-protocols-fail",
+    "perimenopause-and-the-glucose-question",
+  ]);
+  const ok = (slug) => slug && !slug.includes("%") && !REDIRECTED.has(slug);
 
   for (const p of posts) {
     if (!ok(p.slug)) continue;
-    const en = { title: withBrand(p.title_en || p.title_ar || ""), description: clip(p.excerpt_en || p.excerpt_ar) };
-    const ar = { title: withBrand(p.title_ar || p.title_en || ""), description: clip(p.excerpt_ar || p.excerpt_en) };
+    const en = { title: withBrand(p.title_en || p.title_ar || ""), description: clip(p.excerpt_en || p.excerpt_ar, 200) };
+    const ar = { title: withBrand(p.title_ar || p.title_en || ""), description: clip(p.excerpt_ar || p.excerpt_en, 200) };
     out.push({ path: `/blog/${p.slug}`, ...en, ar });
   }
   for (const p of products) {
@@ -559,6 +601,14 @@ async function main() {
     }
     count += 1;
   }
+
+  // dist/404.html: Vercel serves it with HTTP 404 for any URL that has no file and no rewrite.
+  const nf = template
+    .replace(/<title>[\s\S]*?<\/title>/, "<title>Page not found · Liv Functional</title>")
+    .replace(/<meta\s+name=["']description["'][^>]*>/i, '<meta name="description" content="This page does not exist." />')
+    .replace(/<meta\s+name=["']robots["'][^>]*>/i, '<meta name="robots" content="noindex,nofollow" />')
+    .replace(/\s*<link\s+rel=["'](?:canonical|alternate)["'][^>]*>/gi, "");
+  fs.writeFileSync(path.join(DIST, "404.html"), nf, "utf8");
 
   console.log(`[prerender-seo] wrote ${count} route(s) (${dynamic.length} blog/product)`);
 }

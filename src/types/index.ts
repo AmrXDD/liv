@@ -162,6 +162,7 @@ export interface BlogPost {
   category: string;
   author: string;
   publishedAt: string;
+  updatedAt?: string;
   readingMinutes: number;
   heroImage?: string;
   featured?: boolean;

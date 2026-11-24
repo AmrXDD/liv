@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { findPostBySlug, posts as fallbackPosts } from "@/data/posts";
 import { useBlogPost, useBlogPosts } from "@/lib/queries";
-import { articleSchema, buildCanonical } from "@/lib/seo";
+import { articleSchema, buildLangUrl, personSchema } from "@/lib/seo";
 import { formatDate, cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { useDirection } from "@/hooks/useDirection";
@@ -109,13 +109,21 @@ export function BlogPostPage() {
         description={excerpt}
         path={`/blog/${post.slug}`}
         type="article"
-        schema={articleSchema({
-          title: post.title.en || post.title.ar,
-          description: post.excerpt.en || post.excerpt.ar,
-          datePublished: post.publishedAt,
-          author: post.author,
-          url: buildCanonical(`/blog/${post.slug}`),
-        })}
+        schema={{
+          "@context": "https://schema.org",
+          "@graph": [
+            personSchema(),
+            articleSchema({
+              title,
+              description: excerpt,
+              image: post.heroImage,
+              datePublished: post.publishedAt,
+              dateModified: post.updatedAt,
+              inLanguage: lang,
+              url: buildLangUrl(`/blog/${post.slug}`, lang),
+            }),
+          ],
+        }}
       />
 
       <Section variant="default" pad="md" className="bg-editorial">

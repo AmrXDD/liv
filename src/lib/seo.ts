@@ -81,12 +81,35 @@ export function breadcrumbSchema(items: { name: string; url: string }[]) {
   };
 }
 
+export const REHAM_PERSON_ID = `${SITE_URL}/#reham-al-sharif`;
+
+export function personSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": REHAM_PERSON_ID,
+    name: "Reham Al Sharif",
+    alternateName: "رهام الشريف",
+    jobTitle: "Functional Nutrition Coach",
+    url: new URL("/my-story", SITE_URL).toString(),
+    image: new URL("/reham.png", SITE_URL).toString(),
+    worksFor: { "@type": "Organization", name: "Liv Functional", url: SITE_URL },
+    sameAs: [
+      "https://instagram.com/livfunctional",
+      "https://www.linkedin.com/company/liv-functional",
+      "https://www.amazon.com/Reham-Alsharif/e/B0H2SCWWNJ",
+    ],
+  };
+}
+
 export function articleSchema(opts: {
   title: string;
   description: string;
   image?: string;
   datePublished: string;
-  author: string;
+  dateModified?: string;
+  inLanguage?: "en" | "ar";
+  author?: string;
   url: string;
 }) {
   return {
@@ -94,10 +117,13 @@ export function articleSchema(opts: {
     "@type": "Article",
     headline: opts.title,
     description: opts.description,
-    image: opts.image,
+    image: opts.image ?? new URL("/liv-logo.png", SITE_URL).toString(),
     datePublished: opts.datePublished,
-    author: { "@type": "Person", name: opts.author },
-    mainEntityOfPage: opts.url,
+    dateModified: opts.dateModified ?? opts.datePublished,
+    inLanguage: opts.inLanguage ?? "en",
+    author: { "@id": REHAM_PERSON_ID },
+    publisher: { "@type": "Organization", name: "Liv Functional", url: SITE_URL },
+    mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
   };
 }
 
