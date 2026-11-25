@@ -13,7 +13,7 @@ function useLang(): Locale {
   return i18n.language?.startsWith("ar") ? "ar" : "en";
 }
 
-export function BlockRenderer({ block }: { block: Block }) {
+export function BlockRenderer({ block, asH1 = false }: { block: Block; asH1?: boolean }) {
   const lang = useLang();
 
   switch (block.type) {
@@ -23,7 +23,7 @@ export function BlockRenderer({ block }: { block: Block }) {
         2: "text-display-lg",
         3: "text-display-md",
       } as const;
-      const Tag = (`h${block.level}` as unknown) as keyof JSX.IntrinsicElements;
+      const Tag = (`h${asH1 ? 1 : block.level}` as unknown) as keyof JSX.IntrinsicElements;
       return (
         <Container>
           <Tag
@@ -202,6 +202,11 @@ function CoachingGridBlockRenderer({
 export function BlocksList({ blocks }: { blocks: Block[] }) {
   const lang = useLang();
   const out: JSX.Element[] = [];
+  // Every page needs one H1. If the page has no level-1 heading block, the first heading becomes the H1
+  // (same look, only the tag changes).
+  const h1Index = blocks.some((x) => x.type === "heading" && x.level === 1)
+    ? -1
+    : blocks.findIndex((x) => x.type === "heading");
   for (let i = 0; i < blocks.length; i++) {
     const b = blocks[i];
     const next = blocks[i + 1];
@@ -236,7 +241,7 @@ export function BlocksList({ blocks }: { blocks: Block[] }) {
       i++;
       continue;
     }
-    out.push(<BlockRenderer key={b.id} block={b} />);
+    out.push(<BlockRenderer key={b.id} block={b} asH1={i === h1Index} />);
   }
   return <div className="space-y-12 py-12 md:space-y-16 md:py-20">{out}</div>;
 }
