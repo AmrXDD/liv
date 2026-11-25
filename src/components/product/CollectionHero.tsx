@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, type ReactNode } from "react";
 import { gsap, registerGsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
@@ -71,10 +71,14 @@ export function CollectionHero({ eyebrow, title, lede, accent = "forest", side, 
           <div className={wideSide ? "lg:col-span-7" : "lg:col-span-8"}>
             <div data-coll-eyebrow className="eyebrow mb-6">{eyebrow}</div>
             <h1 className="display-serif text-display-xl tracking-tightest text-balance">
-              {title.split(" ").map((w, i) => (
-                <span key={i} className="coll-word inline-block overflow-hidden me-2 align-baseline">
-                  <span className="inline-block translate-y-[110%] will-change-transform">{w}</span>
-                </span>
+              {title.trim().split(/\s+/).map((w, i) => (
+                <Fragment key={i}>
+                  {/* A real space between the word spans, so crawlers read separate words, not one run-together string */}
+                  {i > 0 && " "}
+                  <span className="coll-word inline-block overflow-hidden align-baseline">
+                    <span className="inline-block translate-y-[110%] will-change-transform">{w}</span>
+                  </span>
+                </Fragment>
               ))}
             </h1>
             <p data-coll-lede className="mt-8 max-w-2xl text-lg text-ink-muted leading-relaxed">
